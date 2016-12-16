@@ -198,10 +198,45 @@ class CsvImportController
         return count($this->getErrors()) > 0;
     }
 
+
     /**
      * 会員登録CSVヘッダー定義
      */
-    private function getCustomerCsvHeader()
+    protected function getCustomerCsvHeader()
+    {
+        return array(
+            '会員ID' => 'id',
+            '公開ステータス(ID)' => 'status',
+            '商品名' => 'name',
+            'ショップ用メモ欄' => 'note',
+            '商品説明(一覧)' => 'description_list',
+            '商品説明(詳細)' => 'description_detail',
+            '検索ワード' => 'search_word',
+            'フリーエリア' => 'free_area',
+            '商品削除フラグ' => 'product_del_flg',
+            '商品画像' => 'product_image',
+            '商品カテゴリ(ID)' => 'product_category',
+            'タグ(ID)' => 'product_tag',
+            '商品種別(ID)' => 'product_type',
+            '規格分類1(ID)' => 'class_category1',
+            '規格分類2(ID)' => 'class_category2',
+            '発送日目安(ID)' => 'deliveryFee',
+            '商品コード' => 'product_code',
+            '在庫数' => 'stock',
+            '在庫数無制限フラグ' => 'stock_unlimited',
+            '販売制限数' => 'sale_limit',
+            '通常価格' => 'price01',
+            '販売価格' => 'price02',
+            '送料' => 'delivery_fee',
+            '商品規格削除フラグ' => 'product_class_del_flg',
+        );
+    }
+
+
+    /**
+     * 受注登録CSVヘッダー定義
+     */
+    protected function getOrderCsvHeader()
     {
         return array(
             '商品ID' => 'id',
@@ -231,37 +266,5 @@ class CsvImportController
         );
     }
 
-    /**
-     * 受注登録CSVヘッダー定義
-     */
-    private function getOrderCsvHeader()
-    {
-        return array(
-            '商品ID' => 'id',
-            '公開ステータス(ID)' => 'status',
-            '商品名' => 'name',
-            'ショップ用メモ欄' => 'note',
-            '商品説明(一覧)' => 'description_list',
-            '商品説明(詳細)' => 'description_detail',
-            '検索ワード' => 'search_word',
-            'フリーエリア' => 'free_area',
-            '商品削除フラグ' => 'product_del_flg',
-            '商品画像' => 'product_image',
-            '商品カテゴリ(ID)' => 'product_category',
-            'タグ(ID)' => 'product_tag',
-            '商品種別(ID)' => 'product_type',
-            '規格分類1(ID)' => 'class_category1',
-            '規格分類2(ID)' => 'class_category2',
-            '発送日目安(ID)' => 'deliveryFee',
-            '商品コード' => 'product_code',
-            '在庫数' => 'stock',
-            '在庫数無制限フラグ' => 'stock_unlimited',
-            '販売制限数' => 'sale_limit',
-            '通常価格' => 'price01',
-            '販売価格' => 'price02',
-            '送料' => 'delivery_fee',
-            '商品規格削除フラグ' => 'product_class_del_flg',
-        );
-    }
 
 }

@@ -36,7 +36,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class CsvImportController extends Plugin\DataImport\Controller\Base\CsvImportController
+class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportController
 {
 
 
@@ -63,7 +63,7 @@ class CsvImportController extends Plugin\DataImport\Controller\Base\CsvImportCon
 
                 if (!empty($formFile)) {
 
-                    log_info('会員CSV登録開始');
+                    //log_info('会員CSV登録開始');
 
                     $data = $this->getImportData($app, $formFile);
                     if ($data === false) {
@@ -384,7 +384,7 @@ class CsvImportController extends Plugin\DataImport\Controller\Base\CsvImportCon
                     $this->em->flush();
                     $this->em->getConnection()->commit();
 
-                    log_info('会員CSV登録完了');
+                    //log_info('会員CSV登録完了');
 
                     $app->addSuccess('admin.dataimport.customer.csv_import.save.complete', 'admin');
                 }
@@ -392,9 +392,8 @@ class CsvImportController extends Plugin\DataImport\Controller\Base\CsvImportCon
             }
         }
 
-        return $this->render($app, $form, $headers, $this->productTwig);
+        return $this->render($app, $form, $headers, $this->customerTwig);
     }
-
 
 
 

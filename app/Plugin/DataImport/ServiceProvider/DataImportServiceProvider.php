@@ -111,8 +111,8 @@ class DataImportServiceProvider implements ServiceProviderInterface
          * 管理画面 > 会員管理管理 > 会員CSV登録
          */
         $app->match(
-            '/'.$app['config']['admin_route'].'/order/csvimport',
-            'Plugin\DataImport\Controller\Admin\Order\CsvImportController::csvOrder'
+            '/'.$app['config']['admin_route'].'/customer/csvimport',
+            'Plugin\DataImport\Controller\Admin\Customer\CsvImportController::csvCustomer'
         )->bind('admin_dataimport_customer_csv_import');
 
         /**
@@ -120,13 +120,13 @@ class DataImportServiceProvider implements ServiceProviderInterface
          * 管理画面 > 受注管理 > 受注CSV登録
          */
         $app->match(
-            '/'.$app['config']['admin_route'].'/customer/csvimport',
-            'Plugin\DataImport\Controller\Admin\Customer\CsvImportController::csvCustomer'
+            '/'.$app['config']['admin_route'].'/order/csvimport',
+            'Plugin\DataImport\Controller\Admin\Order\CsvImportController::csvOrder'
         )->bind('admin_dataimport_order_csv_import');
 
         $app->match(
             '/'.$app['config']['admin_route'].'/dataimport/csv_template/{type}', 
-            '\Eccube\Controller\Admin\Product\CsvImportController::csvTemplate'
+            'Plugin\DataImport\Controller\Base\CsvImportController::csvTemplate'
         )->bind('admin_dataimport_csv_template');
 
 
@@ -163,9 +163,9 @@ class DataImportServiceProvider implements ServiceProviderInterface
             )
         );
         $app['config'] = $app->share($app->extend('config', function ($config) {
-            $addNavi['id'] = "admin_order_csvimport";
+            $addNavi['id'] = "admin_dataimport_order_csv_import";
             $addNavi['name'] = "受注CSV登録";
-            $addNavi['url'] = "admin_order_csvimport";
+            $addNavi['url'] = "admin_dataimport_order_csv_import";
 
             $nav = $config['nav'];
             foreach ($nav as $key => $val) {
@@ -178,9 +178,9 @@ class DataImportServiceProvider implements ServiceProviderInterface
             return $config;
         }));
         $app['config'] = $app->share($app->extend('config', function ($config) {
-            $addNavi['id'] = "admin_customer_csvimport";
+            $addNavi['id'] = "admin_dataimport_customer_csv_import";
             $addNavi['name'] = "会員CSV登録";
-            $addNavi['url'] = "admin_customer_csvimport";
+            $addNavi['url'] = "admin_dataimport_customer_csv_import";
 
             $nav = $config['nav'];
             foreach ($nav as $key => $val) {
