@@ -1,0 +1,1 @@
+name: 問い合わせメール設定code: ContactMailConfigversion: 1.0.0service:    - ContactMailConfigServiceProviderorm.path:    - /Resource/doctrineevent: ContactMailConfigEvent

@@ -1,0 +1,44 @@
+Plugin\ContactMailConfig\Entity\ContactMailConfig:
+    type: entity
+    table: plg_contact_mail_config
+    repositoryClass: Plugin\ContactMailConfig\Repository\ContactMailConfigRepository
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: id
+            generator:
+                strategy: AUTO
+    fields:
+        type:
+            type: string
+            length: 100
+            unique: true
+            nullable: false
+            column: mail_type
+        subject:
+            type: text
+            nullable: true
+            column: mail_subject
+        from:
+            type: text
+            nullable: true
+            column: mail_from
+        cc:
+            type: text
+            nullable: true
+            column: mail_cc
+        bcc:
+            type: text
+            nullable: true
+            column: mail_bcc
+        reply_to:
+            type: text
+            nullable: true
+        return_path:
+            type: text
+            nullable: true
+    lifecycleCallbacks: {  }
