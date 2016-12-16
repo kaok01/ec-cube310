@@ -1,0 +1,4 @@
+admin.dataimport.save.complete: ポイント基本情報を保存しました。
+admin.dataimport.save.error: ポイント基本情報の保存に失敗しました。
+admin.dataimport.display.usedataimport.error: ポイントが不正です。
+admin.dataimport.validate.zero.error: 0は設定できません。

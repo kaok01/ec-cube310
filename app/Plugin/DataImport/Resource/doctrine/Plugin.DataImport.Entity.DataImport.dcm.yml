@@ -1,0 +1,66 @@
+Plugin\DataImport\Entity\DataImport:
+    type: entity
+    table: plg_dataimport
+    repositoryClass: Plugin\DataImport\Repository\DataImportRepository
+    id:
+        plg_dataimport_id:
+            type: integer
+            nullable: false
+            unsigned: false
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        plg_dynamic_dataimport:
+            type: integer
+            nullable: false
+            unsigned: false
+        order_id:
+            type: integer
+            nullable: true
+            unsigned: false
+        customer_id:
+            type: integer
+            nullable: false
+            unsigned: false
+        plg_dataimport_type:
+            type: smallint
+            nullable: false
+            unsigned: false
+        plg_dataimport_action_name:
+            type: string
+            length: 255
+            nullable: true
+        plg_dataimport_info_id:
+            type: integer
+            nullable: false
+            unsigned: false
+        create_date:
+            type: datetime
+            nullable: false
+        update_date:
+            type: datetime
+            nullable: false
+    manyToOne:
+        Order:
+            targetEntity: Eccube\Entity\Order
+            joinColumn:
+                name: order_id
+                referencedColumnName: order_id
+        Customer:
+            targetEntity: Eccube\Entity\Customer
+            joinColumn:
+                name: customer_id
+                referencedColumnName: customer_id
+        DataImportInfo:
+            targetEntity: Plugin\DataImport\Entity\DataImportInfo
+            joinColumn:
+                name: plg_dataimport_info_id
+                referencedColumnName: plg_dataimport_info_id
+        DataImportProductRate:
+            targetEntity: Plugin\DataImport\Entity\DataImportProductRate
+            joinColumn:
+                name: plg_dataimport_product_rate_id
+                referencedColumnName: plg_dataimport_product_rate_id
+    lifecycleCallbacks:
+        loadClassMetadata: {  }

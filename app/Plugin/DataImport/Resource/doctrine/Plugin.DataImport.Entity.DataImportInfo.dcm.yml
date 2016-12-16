@@ -1,0 +1,38 @@
+Plugin\DataImport\Entity\DataImportInfo:
+    type: entity
+    table: plg_dataimport_info
+    repositoryClass: Plugin\DataImport\Repository\DataImportInfoRepository
+    id:
+        plg_dataimport_info_id:
+            type: integer
+            nullable: false
+            unsigned: false
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        plg_add_dataimport_status:
+            type: smallint
+            nullable: false
+        plg_basic_dataimport_rate:
+            type: integer
+            unsigned: false
+            nullable: false
+        plg_dataimport_conversion_rate:
+            type: integer
+            unsigned: false
+            nullable: false
+        plg_round_type:
+            type: smallint
+            nullable: false
+        plg_calculation_type:
+            type: smallint
+            nullable: false
+        create_date:
+            type: datetime
+            nullable: false
+        update_date:
+            type: datetime
+            nullable: false
+    lifecycleCallbacks:
+        loadClassMetadata: {  }

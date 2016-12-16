@@ -1,0 +1,9 @@
+name: DataImportプラグイン
+code: DataImport
+version: 1.0.0
+event: DataImportEvent
+service:
+  - DataImportServiceProvider
+orm.path:
+  - /Resource/doctrine
+
