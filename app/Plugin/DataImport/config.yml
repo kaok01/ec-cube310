@@ -7,3 +7,39 @@ service:
 orm.path:
   - /Resource/doctrine
 
+settingdata:
+  customer:
+    defalutpassword: 'abcd1234'
+    status: 2  # 1:仮会員,2:正会員
+    mailmagasend: 1  # 0:受け取らない,1:受け取る
+  order:
+    defalutprice: 1
+    defalutpayment: 1
+extention:
+  customer:
+    tags:
+      1: ほげ１
+      2: ほげ２
+      3: ほげ３
+      4: ほげ４
+      5: ほげ５
+      6: ほげ６
+  order:
+    #ＥＣＣＵＢＥ商品と連携元の商品マッピング
+    productmaps:
+      1: 
+        id: 10
+        name: '商品１'
+      1: 
+        id: 10
+        name: '商品１'
+      1: 
+        id: 10
+        name: '商品１'
+      1: 
+        id: 10
+        name: '商品１'
+      1: 
+        id: 10
+        name: '商品１'
+

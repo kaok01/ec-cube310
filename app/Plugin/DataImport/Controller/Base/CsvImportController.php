@@ -67,7 +67,6 @@ class CsvImportController
         }
 
         $response->setCallback(function () use ($app, $request, $headers) {
-
             // ヘッダ行の出力
             $row = array();
             foreach ($headers as $key => $value) {
@@ -206,29 +205,41 @@ class CsvImportController
     {
         return array(
             '会員ID' => 'id',
-            '公開ステータス(ID)' => 'status',
-            '商品名' => 'name',
+            '連携ID' => 'refid',
+            '会員ステータス' => 'status',
+            '会員名１' => 'name01',
+            '会員名2' => 'name02',
+            '会員カナ１' => 'kana01',
+            '会員カナ2' => 'kana02',
+            '会社名' => 'company_name',
+            '郵便番号１' => 'zip01',
+            '郵便番号２' => 'zip02',
+            '都道府県' => 'pref',
+            '住所１' => 'addr1',
+            '住所２' => 'addr2',
+            'メール' => 'email',
+            '電話１' => 'tel01',
+            '電話２' => 'tel02',
+            '電話３' => 'tel03',
+            'ＦＡＸ１' => 'fax01',
+            'ＦＡＸ２' => 'fax02',
+            'ＦＡＸ３' => 'fax03',
+            'パスワード' => 'password',
+            '性別' => 'sex',
+            '生年月日' => 'birth',
+            'メルマガ受信' => 'mailmaga_flg',
             'ショップ用メモ欄' => 'note',
-            '商品説明(一覧)' => 'description_list',
-            '商品説明(詳細)' => 'description_detail',
-            '検索ワード' => 'search_word',
-            'フリーエリア' => 'free_area',
-            '商品削除フラグ' => 'product_del_flg',
-            '商品画像' => 'product_image',
-            '商品カテゴリ(ID)' => 'product_category',
-            'タグ(ID)' => 'product_tag',
-            '商品種別(ID)' => 'product_type',
-            '規格分類1(ID)' => 'class_category1',
-            '規格分類2(ID)' => 'class_category2',
-            '発送日目安(ID)' => 'deliveryFee',
-            '商品コード' => 'product_code',
-            '在庫数' => 'stock',
-            '在庫数無制限フラグ' => 'stock_unlimited',
-            '販売制限数' => 'sale_limit',
-            '通常価格' => 'price01',
-            '販売価格' => 'price02',
-            '送料' => 'delivery_fee',
-            '商品規格削除フラグ' => 'product_class_del_flg',
+            '削除フラグ' => 'del_flg',
+            '会員情報タグ０１' => 'tag01',
+            '会員情報タグ０２' => 'tag02',
+            '会員情報タグ０３' => 'tag03',
+            '会員情報タグ０４' => 'tag04',
+            '会員情報タグ０５' => 'tag05',
+            '会員情報タグ０６' => 'tag06',
+            '会員情報タグ０７' => 'tag07',
+            '会員情報タグ０８' => 'tag08',
+            '会員情報タグ０９' => 'tag09',
+            '会員情報タグ１０' => 'tag10'
         );
     }
 
@@ -239,29 +250,9 @@ class CsvImportController
     protected function getOrderCsvHeader()
     {
         return array(
-            '商品ID' => 'id',
-            '公開ステータス(ID)' => 'status',
-            '商品名' => 'name',
-            'ショップ用メモ欄' => 'note',
-            '商品説明(一覧)' => 'description_list',
-            '商品説明(詳細)' => 'description_detail',
-            '検索ワード' => 'search_word',
-            'フリーエリア' => 'free_area',
-            '商品削除フラグ' => 'product_del_flg',
-            '商品画像' => 'product_image',
-            '商品カテゴリ(ID)' => 'product_category',
-            'タグ(ID)' => 'product_tag',
-            '商品種別(ID)' => 'product_type',
-            '規格分類1(ID)' => 'class_category1',
-            '規格分類2(ID)' => 'class_category2',
-            '発送日目安(ID)' => 'deliveryFee',
-            '商品コード' => 'product_code',
-            '在庫数' => 'stock',
-            '在庫数無制限フラグ' => 'stock_unlimited',
-            '販売制限数' => 'sale_limit',
-            '通常価格' => 'price01',
-            '販売価格' => 'price02',
-            '送料' => 'delivery_fee',
+            '注文ID' => 'id',
+            '商品ID' => 'productid',
+            '連携商品ID' => 'refproductid',
             '商品規格削除フラグ' => 'product_class_del_flg',
         );
     }
