@@ -94,11 +94,16 @@ dump($data);//die();
 
                     $BaseInfo = $app['eccube.repository.base_info']->get();
 
+
+                    $key = 'テスト';
+                    $this->addErrors( "行目の{$key}が設定されていません。");
+                    return $this->render($app, $form, $headers, $this->customerTwig);
+
                     // CSVファイルの登録処理
                     foreach ($data as $row) {
 
                         if ($headerSize != count($row)) {
-                            $this->addErrors(($data->key() + 1) . '行目のCSVフォーマットが一致しません。');
+                            $this->addErrors(($data->key() + 1) . "行目のCSVフォーマットが一致しません。");
                             return $this->render($app, $form, $headers, $this->customerTwig);
                         }
 
@@ -149,35 +154,35 @@ dump('a');
 
                         $key= '会員名１';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . '行目の{$key}が設定されていません。');
+                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
                             return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setName01(Str::trimAll($row[$key]));
                         }
                         $key= '会員名2';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . '行目の{$key}が設定されていません。');
+                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
                             return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setName02(Str::trimAll($row[$key]));
                         }
                         $key= '会員カナ１';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . '行目の{$key}が設定されていません。');
+                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
                             return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setKana01(Str::trimAll($row[$key]));
                         }
                         $key= '会員カナ2';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . '行目の{$key}が設定されていません。');
+                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
                             return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setKana02(Str::trimAll($row[$key]));
                         }
                         $key= '会社名';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . '行目の{$key}が設定されていません。');
+                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
                             return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setCompanyName(Str::trimAll($row[$key]));
@@ -185,27 +190,27 @@ dump('a');
 
                         $key= '郵便番号１';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . '行目の{$key}が設定されていません。');
+                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
                             return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $zip = str_replace(',', '', $row[$key]);
                             if (preg_match('/^\d+$/', $zip) ) {
                                 $Customer->setZip01(Str::trimAll($row[$key]));
                             } else {
-                                $this->addErrors(($data->key() + 1) . '行目の{$key}は数字を設定してください。');
+                                $this->addErrors(($data->key() + 1) . "行目の{$key}は数字を設定してください。");
                                 return $this->render($app, $form, $headers, $this->customerTwig);
                             }
                         }
                         $key= '郵便番号２';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . '行目の{$key}が設定されていません。');
+                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
                             return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $zip = str_replace(',', '', $row[$key]);
                             if (preg_match('/^\d+$/', $zip) ) {
                                 $Customer->setZip02(Str::trimAll($row[$key]));
                             } else {
-                                $this->addErrors(($data->key() + 1) . '行目の{$key}は数字を設定してください。');
+                                $this->addErrors(($data->key() + 1) . "行目の{$key}は数字を設定してください。");
                                 return $this->render($app, $form, $headers, $this->customerTwig);
                             }
                         }
@@ -214,7 +219,7 @@ dump('a');
 
                         $key= '都道府県';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . '行目の{$key}が設定されていません。');
+                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
                             return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $prefstr = str_replace(',', '', $row[$key]);
@@ -222,28 +227,28 @@ dump('a');
                             if ($Pref) {
                                 $Customer->setPref($Pref);
                             } else {
-                                $this->addErrors(($data->key() + 1) . '行目の{$key}は存在する都道府県名を設定してください。');
+                                $this->addErrors(($data->key() + 1) . "行目の{$key}は存在する都道府県名を設定してください。");
                                 return $this->render($app, $form, $headers, $this->customerTwig);
                             }
                         }
 
                         $key= '住所１';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . '行目の{$key}が設定されていません。');
+                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
                             return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setAddr01(Str::trimAll($row[$key]));
                         }
                         $key= '住所２';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . '行目の{$key}が設定されていません。');
+                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
                             return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setAddr02(Str::trimAll($row[$key]));
                         }
                         $key= 'メール';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . '行目の{$key}が設定されていません。');
+                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
                             return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setEmail(Str::trimAll($row[$key]));
@@ -252,7 +257,7 @@ dump('a');
                         $keys= array('電話１','電話２','電話３');
                         foreach($keys as $key){
                             if (Str::isBlank($row[$key])) {
-                                $this->addErrors(($data->key() + 1) . '行目の{$key}が設定されていません。');
+                                $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
                                 return $this->render($app, $form, $headers, $this->customerTwig);
                             } else {
                                 $tel = str_replace(',', '', $row[$key]);
@@ -267,7 +272,7 @@ dump('a');
                                         $Customer->setTel03(Str::trimAll($row[$key]));
                                     }
                                 } else {
-                                    $this->addErrors(($data->key() + 1) . '行目の{$key}は数字を設定してください。');
+                                    $this->addErrors(($data->key() + 1) . "行目の{$key}は数字を設定してください。");
                                     return $this->render($app, $form, $headers, $this->customerTwig);
                                 }
                             }
@@ -299,18 +304,60 @@ dump('a');
                                         $Customer->setFax03(Str::trimAll($row[$key]));
                                     }
                                 } else {
-                                    $this->addErrors(($data->key() + 1) . '行目の{$key}は数字を設定してください。');
+                                    $this->addErrors(($data->key() + 1) . "行目の{$key}は数字を設定してください。");
                                     return $this->render($app, $form, $headers, $this->customerTwig);
                                 }
                             }
                         }
                         $key= 'メール';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . '行目の{$key}が設定されていません。');
+                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
                             return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
+                            if($Customer->getId()==null){
+                                $Customer = $app['orm.em']
+                                    ->getRepository('Eccube\Entity\Customer')
+                                    ->findOneBy(array('email'=>'','del_flg'=>0));
+                                if ($Customer) {
+                                    $this->addErrors(($data->key() + 1) . '行目のメールアドレスで会員情報が登録済です。');
+                                    return $this->render($app, $form, $headers, $this->customerTwig);
+                                }
+
+
+                            }
                             $Customer->setEmail(Str::trimAll($row[$key]));
                         }
+
+
+                        $key= '性別';
+                        if (Str::isBlank($row[$key])) {
+                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
+                            return $this->render($app, $form, $headers, $this->customerTwig);
+                        } else {
+                            $sex = str_replace(',', '', $row[$key]);
+                            $Sex = $app['eccube.repository.master.sex']->find($sex);
+                            if ($Sex) {
+                                $Customer->setSex($Sex);
+                            } else {
+                                $this->addErrors(($data->key() + 1) . "行目の{$key}は存在する性別IDを設定してください。");
+                                return $this->render($app, $form, $headers, $this->customerTwig);
+                            }
+                        }
+
+                        $key= '生年月日';
+                        if (Str::isBlank($row[$key])) {
+                            //
+                        } else {
+                            $birth = Str::Trim($row[$key]);
+                            $Birth = new \Datetime($birth);
+                            if ($Birth) {
+                                $Customer->setBirth($Birth);
+                            } else {
+                                $this->addErrors(($data->key() + 1) . '行目の{$key}の形式が正しくありません。');
+                                return $this->render($app, $form, $headers, $this->customerTwig);
+                            }
+                        }
+
 dump('ab');
                         $key= 'パスワード';
                         if (Str::isBlank($row[$key])) {
