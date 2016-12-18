@@ -94,11 +94,6 @@ dump($data);//die();
 
                     $BaseInfo = $app['eccube.repository.base_info']->get();
 
-
-                    $key = 'テスト';
-                    $this->addErrors( "行目の{$key}が設定されていません。");
-                    return $this->render($app, $form, $headers, $this->customerTwig);
-
                     // CSVファイルの登録処理
                     foreach ($data as $row) {
 
@@ -315,10 +310,10 @@ dump('a');
                             return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             if($Customer->getId()==null){
-                                $Customer = $app['orm.em']
+                                $Customermail = $app['orm.em']
                                     ->getRepository('Eccube\Entity\Customer')
-                                    ->findOneBy(array('email'=>'','del_flg'=>0));
-                                if ($Customer) {
+                                    ->findOneBy(array('email'=>Str::trimAll($row[$key]),'del_flg'=>0));
+                                if ($Customermail) {
                                     $this->addErrors(($data->key() + 1) . '行目のメールアドレスで会員情報が登録済です。');
                                     return $this->render($app, $form, $headers, $this->customerTwig);
                                 }
@@ -348,7 +343,7 @@ dump('a');
                         if (Str::isBlank($row[$key])) {
                             //
                         } else {
-                            $birth = Str::Trim($row[$key]);
+                            $birth = Str::trimAll($row[$key]);
                             $Birth = new \Datetime($birth);
                             if ($Birth) {
                                 $Customer->setBirth($Birth);
