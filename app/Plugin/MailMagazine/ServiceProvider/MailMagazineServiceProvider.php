@@ -189,6 +189,11 @@ class MailMagazineServiceProvider implements ServiceProviderInterface
                         'url' => "admin_mail_magazine",
                     ),
                     array(
+                        'id' => "mailmagazine",
+                        'name' => "スケジュール配信管理",
+                        'url' => "admin_mail_magazine",
+                    ),
+                    array(
                         'id' => "mailmagazine_template",
                         'name' => "テンプレート設定",
                         'url' => "admin_mail_magazine_template",

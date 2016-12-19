@@ -22,11 +22,12 @@
  */
 
 
-namespace Plugin\DataImport\Controller\Admin\Order;
+namespace Plugin\DataImport\Controller\Admin\Customer;
 
 use Eccube\Application;
 use Eccube\Common\Constant;
-use Eccube\Entity\Order;
+use Eccube\Entity\Customer;
+use Eccube\Entity\CustomerAddress;
 //use Plugin\DataImport\Entity\CustomerTag;
 use Eccube\Exception\CsvImportException;
 use Eccube\Service\CsvImportService;
@@ -36,27 +37,22 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Eccube\Entity\ShipmentItem;
-//use Eccube\Event\EccubeEvents;
-//use Eccube\Event\EventArgs;
-
-class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportController
+class CustomerTagController extends \Plugin\DataImport\Controller\Base\CsvImportController
 {
 
 
-    private $orderTwig = 'DataImport/Resource/template/admin/Order/csv_order.twig';
+    private $customertagTwig = 'DataImport/Resource/template/admin/Customer/csv_customertag.twig';
 
 
 
     /**
      * 会員登録CSVアップロード
      */
-    public function csvOrder(Application $app, Request $request)
+    public function csvCustomerTag(Application $app, Request $request)
     {
         $form = $app['form.factory']->createBuilder('admin_csv_import')->getForm();
 
-        $headers = $this->getOrderCsvHeader();
+        $headers = $this->getCustomerCsvHeader();
 
         if ('POST' === $request->getMethod()) {
 
@@ -73,20 +69,20 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                     $data = $this->getImportData($app, $formFile);
                     if ($data === false) {
                         $this->addErrors('CSVのフォーマットが一致しません。');
-                        return $this->render($app, $form, $headers, $this->orderTwig);
+                        return $this->render($app, $form, $headers, $this->customerTwig);
                     }
 
                     $keys = array_keys($headers);
                     $columnHeaders = $data->getColumnHeaders();
                     if ($keys !== $columnHeaders) {
                         $this->addErrors('CSVのフォーマットが一致しません。');
-                        return $this->render($app, $form, $headers, $this->orderTwig);
+                        return $this->render($app, $form, $headers, $this->customerTwig);
                     }
 
                     $size = count($data);
                     if ($size < 1) {
                         $this->addErrors('CSVデータが存在しません。');
-                        return $this->render($app, $form, $headers, $this->orderTwig);
+                        return $this->render($app, $form, $headers, $this->customerTwig);
                     }
 
                     $headerSize = count($keys);
@@ -103,7 +99,7 @@ dump($data);//die();
 
                         if ($headerSize != count($row)) {
                             $this->addErrors(($data->key() + 1) . "行目のCSVフォーマットが一致しません。");
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            return $this->render($app, $form, $headers, $this->customerTwig);
                         }
 
                         $id = $row['会員ID'];
@@ -122,7 +118,7 @@ dump('a');
                                     ->find($id);
                                 if (!$Customer) {
                                     $this->addErrors(($data->key() + 1) . '行目の会員IDが存在しません。');
-                                    return $this->render($app, $form, $headers, $this->orderTwig);
+                                    return $this->render($app, $form, $headers, $this->customerTwig);
                                 }
                                  // 編集用にデフォルトパスワードをセット
                                 $previous_password = $Customer->getPassword();
@@ -130,7 +126,7 @@ dump('a');
                                
                             } else {
                                 $this->addErrors(($data->key() + 1) . '行目の会員IDが存在しません。');
-                                return $this->render($app, $form, $headers, $this->orderTwig);
+                                return $this->render($app, $form, $headers, $this->customerTwig);
                             }
 
                         }
@@ -154,35 +150,35 @@ dump('a');
                         $key= '会員名１';
                         if (Str::isBlank($row[$key])) {
                             $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setName01(Str::trimAll($row[$key]));
                         }
                         $key= '会員名2';
                         if (Str::isBlank($row[$key])) {
                             $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setName02(Str::trimAll($row[$key]));
                         }
                         $key= '会員カナ１';
                         if (Str::isBlank($row[$key])) {
                             $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setKana01(Str::trimAll($row[$key]));
                         }
                         $key= '会員カナ2';
                         if (Str::isBlank($row[$key])) {
                             $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setKana02(Str::trimAll($row[$key]));
                         }
                         $key= '会社名';
                         if (Str::isBlank($row[$key])) {
                             $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setCompanyName(Str::trimAll($row[$key]));
                         }
@@ -190,27 +186,27 @@ dump('a');
                         $key= '郵便番号１';
                         if (Str::isBlank($row[$key])) {
                             $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $zip = str_replace(',', '', $row[$key]);
                             if (preg_match('/^\d+$/', $zip) ) {
                                 $Customer->setZip01(Str::trimAll($row[$key]));
                             } else {
                                 $this->addErrors(($data->key() + 1) . "行目の{$key}は数字を設定してください。");
-                                return $this->render($app, $form, $headers, $this->orderTwig);
+                                return $this->render($app, $form, $headers, $this->customerTwig);
                             }
                         }
                         $key= '郵便番号２';
                         if (Str::isBlank($row[$key])) {
                             $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $zip = str_replace(',', '', $row[$key]);
                             if (preg_match('/^\d+$/', $zip) ) {
                                 $Customer->setZip02(Str::trimAll($row[$key]));
                             } else {
                                 $this->addErrors(($data->key() + 1) . "行目の{$key}は数字を設定してください。");
-                                return $this->render($app, $form, $headers, $this->orderTwig);
+                                return $this->render($app, $form, $headers, $this->customerTwig);
                             }
                         }
                         $Customer->setZipcode(Str::trimAll($row['郵便番号１']).Str::trimAll($row['郵便番号２']));
@@ -219,7 +215,7 @@ dump('a');
                         $key= '都道府県';
                         if (Str::isBlank($row[$key])) {
                             $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $prefstr = str_replace(',', '', $row[$key]);
                             $Pref = $app['eccube.repository.master.pref']->findOneBy(array('name'=>$row[$key]));
@@ -227,28 +223,28 @@ dump('a');
                                 $Customer->setPref($Pref);
                             } else {
                                 $this->addErrors(($data->key() + 1) . "行目の{$key}は存在する都道府県名を設定してください。");
-                                return $this->render($app, $form, $headers, $this->orderTwig);
+                                return $this->render($app, $form, $headers, $this->customerTwig);
                             }
                         }
 
                         $key= '住所１';
                         if (Str::isBlank($row[$key])) {
                             $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setAddr01(Str::trimAll($row[$key]));
                         }
                         $key= '住所２';
                         if (Str::isBlank($row[$key])) {
                             $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setAddr02(Str::trimAll($row[$key]));
                         }
                         $key= 'メール';
                         if (Str::isBlank($row[$key])) {
                             $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setEmail(Str::trimAll($row[$key]));
                         }
@@ -257,7 +253,7 @@ dump('a');
                         foreach($keys as $key){
                             if (Str::isBlank($row[$key])) {
                                 $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                                return $this->render($app, $form, $headers, $this->orderTwig);
+                                return $this->render($app, $form, $headers, $this->customerTwig);
                             } else {
                                 $tel = str_replace(',', '', $row[$key]);
                                 if (preg_match('/^\d+$/', $tel) ) {
@@ -272,7 +268,7 @@ dump('a');
                                     }
                                 } else {
                                     $this->addErrors(($data->key() + 1) . "行目の{$key}は数字を設定してください。");
-                                    return $this->render($app, $form, $headers, $this->orderTwig);
+                                    return $this->render($app, $form, $headers, $this->customerTwig);
                                 }
                             }
 
@@ -304,14 +300,14 @@ dump('a');
                                     }
                                 } else {
                                     $this->addErrors(($data->key() + 1) . "行目の{$key}は数字を設定してください。");
-                                    return $this->render($app, $form, $headers, $this->orderTwig);
+                                    return $this->render($app, $form, $headers, $this->customerTwig);
                                 }
                             }
                         }
                         $key= 'メール';
                         if (Str::isBlank($row[$key])) {
                             $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             if($Customer->getId()==null){
                                 $Customermail = $app['orm.em']
@@ -319,7 +315,7 @@ dump('a');
                                     ->findOneBy(array('email'=>Str::trimAll($row[$key]),'del_flg'=>0));
                                 if ($Customermail) {
                                     $this->addErrors(($data->key() + 1) . '行目のメールアドレスで会員情報が登録済です。');
-                                    return $this->render($app, $form, $headers, $this->orderTwig);
+                                    return $this->render($app, $form, $headers, $this->customerTwig);
                                 }
 
 
@@ -331,7 +327,7 @@ dump('a');
                         $key= '性別';
                         if (Str::isBlank($row[$key])) {
                             $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $sex = str_replace(',', '', $row[$key]);
                             $Sex = $app['eccube.repository.master.sex']->find($sex);
@@ -339,7 +335,7 @@ dump('a');
                                 $Customer->setSex($Sex);
                             } else {
                                 $this->addErrors(($data->key() + 1) . "行目の{$key}は存在する性別IDを設定してください。");
-                                return $this->render($app, $form, $headers, $this->orderTwig);
+                                return $this->render($app, $form, $headers, $this->customerTwig);
                             }
                         }
 
@@ -353,7 +349,7 @@ dump('a');
                                 $Customer->setBirth($Birth);
                             } else {
                                 $this->addErrors(($data->key() + 1) . '行目の{$key}の形式が正しくありません。');
-                                return $this->render($app, $form, $headers, $this->orderTwig);
+                                return $this->render($app, $form, $headers, $this->customerTwig);
                             }
                         }
 
@@ -381,7 +377,7 @@ dump('ab');
                                 $Customer->setDelFlg($row['削除フラグ']);
                             } else {
                                 $this->addErrors(($data->key() + 1) . '行目の削除フラグが設定されていません。');
-                                return $this->render($app, $form, $headers, $this->orderTwig);
+                                return $this->render($app, $form, $headers, $this->customerTwig);
                             }
                         }
 
@@ -440,7 +436,7 @@ dump($Customer);
 dump($CustomerAddress);
 
                         if ($this->hasErrors()) {
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            return $this->render($app, $form, $headers, $this->customerTwig);
                         }
 
 
@@ -454,297 +450,101 @@ dump($CustomerAddress);
 
                     //log_info('会員CSV登録完了');
 
-                    $app->addSuccess('admin.dataimport.order.csv_import.save.complete', 'admin');
+                    $app->addSuccess('admin.dataimport.customer.csv_import.save.complete', 'admin');
                 }
 
             }
         }
 
-        return $this->render($app, $form, $headers, $this->orderTwig);
+        return $this->render($app, $form, $headers, $this->customerTwig);
     }
 
 
-
-    //Order\EditControllerから流用
-
-
     /**
-     * 顧客情報を検索する.
+     * 会員情報タグCSVの出力.
      *
      * @param Application $app
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return StreamedResponse
      */
-    public function searchCustomerById(Application $app, Request $request)
+    public function export(Application $app, Request $request)
     {
-        if ($request->isXmlHttpRequest()) {
-            $app['monolog']->addDebug('search customer by id start.');
+        // タイムアウトを無効にする.
+        set_time_limit(0);
 
-            /** @var $Customer \Eccube\Entity\Customer */
-            $Customer = $app['eccube.repository.customer']
-                ->find($request->get('id'));
+        // sql loggerを無効にする.
+        $em = $app['orm.em'];
+        $em->getConfiguration()->setSQLLogger(null);
 
-            $event = new EventArgs(
-                array(
-                    'Customer' => $Customer,
-                ),
-                $request
-            );
-            $app['eccube.event.dispatcher']->dispatch(EccubeEvents::ADMIN_ORDER_EDIT_SEARCH_CUSTOMER_BY_ID_INITIALIZE, $event);
+        $response = new StreamedResponse();
+        $response->setCallback(function () use ($app, $request) {
 
-            if (is_null($Customer)) {
-                $app['monolog']->addDebug('search customer by id not found.');
+            // CSV種別を元に初期化.
+            $app['eccube.service.csv.export']->initCsvType(CsvType::CSV_TYPE_PRODUCT);
 
-                return $app->json(array(), 404);
-            }
+            // ヘッダ行の出力.
+            $app['eccube.service.csv.export']->exportHeader();
 
-            $app['monolog']->addDebug('search customer by id found.');
+            // 商品データ検索用のクエリビルダを取得.
+            $qb = $app['eccube.service.csv.export']
+                ->getProductQueryBuilder($request);
 
-            $data = array(
-                'id' => $Customer->getId(),
-                'name01' => $Customer->getName01(),
-                'name02' => $Customer->getName02(),
-                'kana01' => $Customer->getKana01(),
-                'kana02' => $Customer->getKana02(),
-                'zip01' => $Customer->getZip01(),
-                'zip02' => $Customer->getZip02(),
-                'pref' => is_null($Customer->getPref()) ? null : $Customer->getPref()->getId(),
-                'addr01' => $Customer->getAddr01(),
-                'addr02' => $Customer->getAddr02(),
-                'email' => $Customer->getEmail(),
-                'tel01' => $Customer->getTel01(),
-                'tel02' => $Customer->getTel02(),
-                'tel03' => $Customer->getTel03(),
-                'fax01' => $Customer->getFax01(),
-                'fax02' => $Customer->getFax02(),
-                'fax03' => $Customer->getFax03(),
-                'company_name' => $Customer->getCompanyName(),
-            );
+            // joinする場合はiterateが使えないため, select句をdistinctする.
+            // http://qiita.com/suin/items/2b1e98105fa3ef89beb7
+            // distinctのmysqlとpgsqlの挙動をあわせる.
+            // http://uedatakeshi.blogspot.jp/2010/04/distinct-oeder-by-postgresmysql.html
+            $qb->resetDQLPart('select')
+                ->resetDQLPart('orderBy')
+                ->select('p')
+                ->orderBy('p.update_date', 'DESC')
+                ->distinct();
 
-            $event = new EventArgs(
-                array(
-                    'data' => $data,
-                    'Customer' => $Customer,
-                ),
-                $request
-            );
-            $app['eccube.event.dispatcher']->dispatch(EccubeEvents::ADMIN_ORDER_EDIT_SEARCH_CUSTOMER_BY_ID_COMPLETE, $event);
-            $data = $event->getArgument('data');
+            // データ行の出力.
+            $app['eccube.service.csv.export']->setExportQueryBuilder($qb);
+            $app['eccube.service.csv.export']->exportData(function ($entity, $csvService) {
 
-            return $app->json($data);
-        }
-    }
+                $Csvs = $csvService->getCsvs();
 
-    public function searchProduct(Application $app, Request $request)
-    {
-        if ($request->isXmlHttpRequest()) {
-            $app['monolog']->addDebug('search product start.');
+                /** @var $Product \Eccube\Entity\Product */
+                $Product = $entity;
 
-            $searchData = array(
-                'name' => $request->get('id'),
-            );
+                /** @var $Product \Eccube\Entity\ProductClass[] */
+                $ProductClassess = $Product->getProductClasses();
 
-            if ($categoryId = $request->get('category_id')) {
-                $Category = $app['eccube.repository.category']->find($categoryId);
-                $searchData['category_id'] = $Category;
-            }
+                foreach ($ProductClassess as $ProductClass) {
+                    $row = array();
 
-            /** @var $Products \Eccube\Entity\Product[] */
-            $qb = $app['eccube.repository.product']
-                ->getQueryBuilderBySearchData($searchData);
-
-            $event = new EventArgs(
-                array(
-                    'qb' => $qb,
-                    'searchData' => $searchData,
-                ),
-                $request
-            );
-            $app['eccube.event.dispatcher']->dispatch(EccubeEvents::ADMIN_ORDER_EDIT_SEARCH_PRODUCT_SEARCH, $event);
-
-            /** @var $Products \Eccube\Entity\Product[] */
-            $Products = $qb->getQuery()->getResult();
-
-            if (empty($Products)) {
-                $app['monolog']->addDebug('search product not found.');
-            }
-
-            $forms = array();
-            foreach ($Products as $Product) {
-                /* @var $builder \Symfony\Component\Form\FormBuilderInterface */
-                $builder = $app['form.factory']->createNamedBuilder('', 'add_cart', null, array(
-                    'product' => $Product,
-                ));
-                $addCartForm = $builder->getForm();
-                $forms[$Product->getId()] = $addCartForm->createView();
-            }
-
-            $event = new EventArgs(
-                array(
-                    'forms' => $forms,
-                    'Products' => $Products,
-                ),
-                $request
-            );
-            $app['eccube.event.dispatcher']->dispatch(EccubeEvents::ADMIN_ORDER_EDIT_SEARCH_PRODUCT_COMPLETE, $event);
-
-            return $app->render('Order/search_product.twig', array(
-                'forms' => $forms,
-                'Products' => $Products,
-            ));
-        }
-    }
-
-    protected function newOrder()
-    {
-        $Order = new \Eccube\Entity\Order();
-        $Shipping = new \Eccube\Entity\Shipping();
-        $Shipping->setDelFlg(0);
-        $Order->addShipping($Shipping);
-        $Shipping->setOrder($Order);
-
-        return $Order;
-    }
-
-    /**
-     * フォームからの入直内容に基づいて、受注情報の再計算を行う
-     *
-     * @param $app
-     * @param $Order
-     */
-    protected function calculate($app, \Eccube\Entity\Order $Order)
-    {
-        $taxtotal = 0;
-        $subtotal = 0;
-
-        // 受注明細データの税・小計を再計算
-        /** @var $OrderDetails \Eccube\Entity\OrderDetail[] */
-        $OrderDetails = $Order->getOrderDetails();
-        foreach ($OrderDetails as $OrderDetail) {
-            // 新規登録の場合は, 入力されたproduct_id/produc_class_idから明細にセットする.
-            if (!$OrderDetail->getId()) {
-                $TaxRule = $app['eccube.repository.tax_rule']->getByRule($OrderDetail->getProduct(),
-                    $OrderDetail->getProductClass());
-                $OrderDetail->setTaxRule($TaxRule->getCalcRule()->getId());
-                $OrderDetail->setProductName($OrderDetail->getProduct()->getName());
-                $OrderDetail->setProductCode($OrderDetail->getProductClass()->getCode());
-                $OrderDetail->setClassName1($OrderDetail->getProductClass()->hasClassCategory1()
-                    ? $OrderDetail->getProductClass()->getClassCategory1()->getClassName()->getName()
-                    : null);
-                $OrderDetail->setClassName2($OrderDetail->getProductClass()->hasClassCategory2()
-                    ? $OrderDetail->getProductClass()->getClassCategory2()->getClassName()->getName()
-                    : null);
-                $OrderDetail->setClassCategoryName1($OrderDetail->getProductClass()->hasClassCategory1()
-                    ? $OrderDetail->getProductClass()->getClassCategory1()->getName()
-                    : null);
-                $OrderDetail->setClassCategoryName2($OrderDetail->getProductClass()->hasClassCategory2()
-                    ? $OrderDetail->getProductClass()->getClassCategory2()->getName()
-                    : null);
-            }
-
-            // 税
-            $tax = $app['eccube.service.tax_rule']
-                ->calcTax($OrderDetail->getPrice(), $OrderDetail->getTaxRate(), $OrderDetail->getTaxRule());
-            $OrderDetail->setPriceIncTax($OrderDetail->getPrice() + $tax);
-
-            $taxtotal += $tax;
-
-            // 小計
-            $subtotal += $OrderDetail->getTotalPrice();
-        }
-
-        $shippings = $Order->getShippings();
-        /** @var \Eccube\Entity\Shipping $Shipping */
-        foreach ($shippings as $Shipping) {
-            $shipmentItems = $Shipping->getShipmentItems();
-            $Shipping->setDelFlg(Constant::DISABLED);
-            /** @var \Eccube\Entity\ShipmentItem $ShipmentItem */
-            foreach ($shipmentItems as $ShipmentItem) {
-                $ShipmentItem->setProductName($ShipmentItem->getProduct()->getName());
-                $ShipmentItem->setProductCode($ShipmentItem->getProductClass()->getCode());
-                $ShipmentItem->setClassName1($ShipmentItem->getProductClass()->hasClassCategory1()
-                    ? $ShipmentItem->getProductClass()->getClassCategory1()->getClassName()->getName()
-                    : null);
-                $ShipmentItem->setClassName2($ShipmentItem->getProductClass()->hasClassCategory2()
-                    ? $ShipmentItem->getProductClass()->getClassCategory2()->getClassName()->getName()
-                    : null);
-                $ShipmentItem->setClassCategoryName1($ShipmentItem->getProductClass()->hasClassCategory1()
-                    ? $ShipmentItem->getProductClass()->getClassCategory1()->getName()
-                    : null);
-                $ShipmentItem->setClassCategoryName2($ShipmentItem->getProductClass()->hasClassCategory2()
-                    ? $ShipmentItem->getProductClass()->getClassCategory2()->getName()
-                    : null);
-            }
-        }
-
-        // 受注データの税・小計・合計を再計算
-        $Order->setTax($taxtotal);
-        $Order->setSubtotal($subtotal);
-        $Order->setTotal($subtotal + $Order->getCharge() + $Order->getDeliveryFeeTotal() - $Order->getDiscount());
-        // お支払い合計は、totalと同一金額(2系ではtotal - point)
-        $Order->setPaymentTotal($Order->getTotal());
-    }
-
-    /**
-     * 受注ステータスに応じて, 受注日/入金日/発送日を更新する,
-     * 発送済ステータスが設定された場合は, お届け先情報の発送日も更新を行う.
-     *
-     * 編集の場合
-     * - 受注ステータスが他のステータスから発送済へ変更された場合に発送日を更新
-     * - 受注ステータスが他のステータスから入金済へ変更された場合に入金日を更新
-     *
-     * 新規登録の場合
-     * - 受注日を更新
-     * - 受注ステータスが発送済に設定された場合に発送日を更新
-     * - 受注ステータスが入金済に設定された場合に入金日を更新
-     *
-     *
-     * @param $app
-     * @param $TargetOrder
-     * @param $OriginOrder
-     */
-    protected function updateDate($app, $TargetOrder, $OriginOrder)
-    {
-        $dateTime = new \DateTime();
-
-        // 編集
-        if ($TargetOrder->getId()) {
-            // 発送済
-            if ($TargetOrder->getOrderStatus()->getId() == $app['config']['order_deliv']) {
-                // 編集前と異なる場合のみ更新
-                if ($TargetOrder->getOrderStatus()->getId() != $OriginOrder->getOrderStatus()->getId()) {
-                    $TargetOrder->setCommitDate($dateTime);
-                    // お届け先情報の発送日も更新する.
-                    $Shippings = $TargetOrder->getShippings();
-                    foreach ($Shippings as $Shipping) {
-                        $Shipping->setShippingCommitDate($dateTime);
+                    // CSV出力項目と合致するデータを取得.
+                    foreach ($Csvs as $Csv) {
+                        // 商品データを検索.
+                        $data = $csvService->getData($Csv, $Product);
+                        if (is_null($data)) {
+                            // 商品規格情報を検索.
+                            $data = $csvService->getData($Csv, $ProductClass);
+                        }
+                        $row[] = $data;
                     }
+
+                    //$row[] = number_format(memory_get_usage(true));
+                    // 出力.
+                    $csvService->fputcsv($row);
                 }
-                // 入金済
-            } elseif ($TargetOrder->getOrderStatus()->getId() == $app['config']['order_pre_end']) {
-                // 編集前と異なる場合のみ更新
-                if ($TargetOrder->getOrderStatus()->getId() != $OriginOrder->getOrderStatus()->getId()) {
-                    $TargetOrder->setPaymentDate($dateTime);
-                }
-            }
-            // 新規
-        } else {
-            // 発送済
-            if ($TargetOrder->getOrderStatus()->getId() == $app['config']['order_deliv']) {
-                $TargetOrder->setCommitDate($dateTime);
-                // お届け先情報の発送日も更新する.
-                $Shippings = $TargetOrder->getShippings();
-                foreach ($Shippings as $Shipping) {
-                    $Shipping->setShippingCommitDate($dateTime);
-                }
-                // 入金済
-            } elseif ($TargetOrder->getOrderStatus()->getId() == $app['config']['order_pre_end']) {
-                $TargetOrder->setPaymentDate($dateTime);
-            }
-            // 受注日時
-            $TargetOrder->setOrderDate($dateTime);
-        }
+            });
+        });
+
+        $now = new \DateTime();
+        $filename = 'product_' . $now->format('YmdHis') . '.csv';
+        $response->headers->set('Content-Type', 'application/octet-stream');
+        $response->headers->set('Content-Disposition', 'attachment; filename=' . $filename);
+        $response->send();
+
+        return $response;
     }
+
+
+
+
+
 
 
 

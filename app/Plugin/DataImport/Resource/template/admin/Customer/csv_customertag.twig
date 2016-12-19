@@ -1,0 +1,162 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
+
+http://www.lockon.co.jp/
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#}
+{% extends 'default_frame.twig' %}
+
+{% set menus = ['customer', 'customer_csv_import'] %}
+
+{% block title %}会員情報タグ管理{% endblock %}
+{% block sub_title %}会員情報タグ　インポート・エクスポート{% endblock %}
+
+{% form_theme form 'Form/bootstrap_3_horizontal_layout.html.twig' %}
+
+{% block javascript %}
+<script src="{{ app.config.admin_urlpath }}/assets/js/vendor/spin.min.js"></script>
+<script>
+$(function() {
+
+    var opts = {
+        lines: 13,
+        length: 30,
+        width: 2,
+        radius: 12,
+        corners: 1,
+        rotate: 0,
+        direction: 1,
+        color: '#BBB',
+        speed: 1,
+        trail: 67,
+        shadow: true,
+        hwaccel: false,
+        className: 'spinner',
+        zIndex: 2e9,
+        top: top
+    };
+
+    ImageSpinner = new Spinner(opts).spin(document.getElementById('spinner'));
+    ImageSpinner.stop();
+
+    $('#upload-form').submit(function() {
+        $('#upload-button').attr('disabled', 'disabled');
+        $('#download-button').attr('disabled', 'disabled');
+        ImageSpinner.spin(document.getElementById('spinner'));
+    });
+});
+</script>
+{% endblock javascript %}
+
+{% block main %}
+<div id="upload_wrap" class="row">
+    <div id="upload_file_box" class="col-md-12">
+        <form id="upload-form" class="form-inline" method="post" action="{{ url('admin_dataimport_customer_csv_import') }}" {{ form_enctype(form) }}>
+            {{ form_widget(form._token) }}
+            <div id="upload_file_box__body" class="box">
+                <div id="upload_file_box__header" class="box-header">
+                    <h3 class="box-title">会員情報タグ登録CSV</h3>
+                </div><!-- /.box-header -->
+                <div id="upload_file_box__body_inner" class="box-body">
+                    <div id="upload_file_box__upload_box" class="form-group">
+                        <label class="col-sm-5 control-label">CSVファイル選択</label>
+                        <div id="upload_file_box__import_file" class="col-sm-7">
+                            {{ form_widget(form.import_file, {'attr': {'accept': 'text/csv,text/tsv'}}) }}
+                            {{ form_errors(form.import_file) }}
+                        </div>
+                        {% for error in errors %}
+                            <div id="upload_file_box__upload_error" class="text-danger">{{ error.message }}</div>
+                        {% endfor %}
+                    </div>
+                    <div id="spinner"></div>
+                </div><!-- /.box-body -->
+                <div id="button_box__upload_button" class="box-footer text-center">
+                    <button id="upload-button" type="submit" class="btn btn-primary btn-sm">CSVファイルのアップロード</button>
+                </div><!-- /.box-footer -->
+            </div><!-- /.box -->
+        </form>
+    </div><!-- /.col -->
+</div>
+
+<div id="file_format" class="row">
+    <div id="file_format_box" class="col-md-12">
+        <div id="file_format_box__body" class="box">
+            <div id="file_format_box__head" class="box-header">
+                <a href="{{ url('admin_dataimport_csv_template', {'type': 'customer'}) }}" id="download-button" class="btn btn-default pull-right btn-xs">会員情報タグCSVエクスポート</a>
+                <h3 class="box-title">会員情報タグCSVファイルフォーマット</h3>
+            </div><!-- /.box-header -->
+            <div id="file_format_box__body_inner" class="box-body no-padding">
+                <div id="file_format_box__list_box" class="table_list">
+                    <div id="file_format_box__list_box_body" class="table-responsive no-border table-menu table-responsive-overflow">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr id="file_format_box__header" class="text-nowrap">
+                                    {% for header in headers|keys %}
+                                        <th id="file_format_box__header--{{ loop.index }}">{{ header }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="file_format_box__list" class="text-nowrap">
+                                    <td id="file_format_box__id">新規取込、または、追加・更新取込時は未設定<br>既存会員の更新は会員IDを設定</td>
+                                    <td id="file_format_box__refid">新規取込、または、追加・更新取込時は未設定<br>既存会員の更新は会員IDを設定</td>
+                                    <td id="file_format_box__status">必須(1:仮会員、2:正会員)</td>
+                                    <td id="file_format_box__name01">必須</td>
+                                    <td id="file_format_box__name02">必須</td>
+                                    <td id="file_format_box__kana01">必須</td>
+                                    <td id="file_format_box__kana02">必須</td>
+                                    <td id="file_format_box__company_name"></td>
+                                    <td id="file_format_box__zip01"></td>
+                                    <td id="file_format_box__zip02"></td>
+                                    <td id="file_format_box__pref"></td>
+                                    <td id="file_format_box__addr1"></td>
+                                    <td id="file_format_box__addr2"></td>
+                                    <td id="file_format_box__email"></td>
+                                    <td id="file_format_box__tel01"></td>
+                                    <td id="file_format_box__tel02"></td>
+                                    <td id="file_format_box__tel03"></td>
+                                    <td id="file_format_box__fax01"></td>
+                                    <td id="file_format_box__fax02"></td>
+                                    <td id="file_format_box__fax03"></td>
+                                    <td id="file_format_box__password"></td>
+                                    <td id="file_format_box__sex">1:男,2:女</td>
+                                    <td id="file_format_box__birth">2016-12-01</td>
+                                    <td id="file_format_box__mailmaga_flg">1:受信する、0:受信しない</td>
+                                    <td id="file_format_box__note"></td>
+                                    <td id="file_format_box__del_flg">設定されていない場合<br>0を登録</td>
+                                    <td id="file_format_box__tag01"></td>
+                                    <td id="file_format_box__tag02"></td>
+                                    <td id="file_format_box__tag03"></td>
+                                    <td id="file_format_box__tag04"></td>
+                                    <td id="file_format_box__tag05"></td>
+                                    <td id="file_format_box__tag06"></td>
+                                    <td id="file_format_box__tag07"></td>
+                                    <td id="file_format_box__tag08"></td>
+                                    <td id="file_format_box__tag09"></td>
+                                    <td id="file_format_box__tag10"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div><!-- /.col -->
+</div>
+
+{% endblock %}

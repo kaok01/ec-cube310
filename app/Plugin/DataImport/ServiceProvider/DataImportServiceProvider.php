@@ -125,6 +125,11 @@ class DataImportServiceProvider implements ServiceProviderInterface
         )->bind('admin_dataimport_order_csv_import');
 
         $app->match(
+            '/'.$app['config']['admin_route'].'/order/infotopcsvimport',
+            'Plugin\DataImport\Controller\Admin\Order\CsvImportController::csvOrder'
+        )->bind('admin_dataimport_order_infotopcsv_import');
+
+        $app->match(
             '/'.$app['config']['admin_route'].'/dataimport/csv_template/{type}', 
             'Plugin\DataImport\Controller\Base\CsvImportController::csvTemplate'
         )->bind('admin_dataimport_csv_template');
@@ -178,8 +183,38 @@ class DataImportServiceProvider implements ServiceProviderInterface
             return $config;
         }));
         $app['config'] = $app->share($app->extend('config', function ($config) {
+            $addNavi['id'] = "admin_dataimport_order_infotopcsv_import";
+            $addNavi['name'] = "インフォトップCSV取込み（開発用）";
+            $addNavi['url'] = "admin_dataimport_order_infotopcsv_import";
+
+            $nav = $config['nav'];
+            foreach ($nav as $key => $val) {
+                if ("order" == $val["id"]) {
+                    $nav[$key]['child'][] = $addNavi;
+                }
+            }
+            $config['nav'] = $nav;
+
+            return $config;
+        }));
+        $app['config'] = $app->share($app->extend('config', function ($config) {
             $addNavi['id'] = "admin_dataimport_customer_csv_import";
             $addNavi['name'] = "会員CSV登録";
+            $addNavi['url'] = "admin_dataimport_customer_csv_import";
+
+            $nav = $config['nav'];
+            foreach ($nav as $key => $val) {
+                if ("customer" == $val["id"]) {
+                    $nav[$key]['child'][] = $addNavi;
+                }
+            }
+            $config['nav'] = $nav;
+
+            return $config;
+        }));
+        $app['config'] = $app->share($app->extend('config', function ($config) {
+            $addNavi['id'] = "admin_dataimport_customer_tag_export";
+            $addNavi['name'] = "会員情報タグ設定";
             $addNavi['url'] = "admin_dataimport_customer_csv_import";
 
             $nav = $config['nav'];
