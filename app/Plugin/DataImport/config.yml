@@ -28,18 +28,18 @@ extention:
     #ＥＣＣＵＢＥ商品と連携元の商品マッピング
     productmaps:
       1: 
-        id: 10
+        id: 1
         name: '商品１'
-      1: 
-        id: 10
+      10: 
+        id: 2
         name: '商品１'
-      1: 
-        id: 10
+      11: 
+        id: 2
         name: '商品１'
-      1: 
-        id: 10
+      12: 
+        id: 1
         name: '商品１'
-      1: 
-        id: 10
+      13: 
+        id: 2
         name: '商品１'
 

@@ -30,7 +30,7 @@ class DataImportCustomer extends \Eccube\Entity\AbstractEntity
     /**
      * @var integer
      */
-    private $ref_id;
+    private $customer_id;
     /**
      * @var \Eccube\Entity\Customer
      */

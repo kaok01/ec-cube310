@@ -1,0 +1,35 @@
+Plugin\DataImport\Entity\DataImportOrder:
+    type: entity
+    table: plg_dataimport_order
+    repositoryClass: Plugin\DataImport\Repository\DataImportOrderRepository
+    id:
+        plg_dataimport_order_id:
+            type: integer
+            nullable: false
+            unsigned: false
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        plg_dataimport_current:
+            type: integer
+            nullable: false
+            unsigned: false
+        order_id:
+            type: integer
+            nullable: false
+            unsigned: false
+        create_date:
+            type: datetime
+            nullable: false
+        update_date:
+            type: datetime
+            nullable: false
+    manyToOne:
+        Customer:
+            targetEntity: Eccube\Entity\Order
+            joinColumn:
+                name: order_id
+                referencedColumnName: order_id
+    lifecycleCallbacks:
+        loadClassMetadata: {  }

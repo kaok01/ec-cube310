@@ -106,6 +106,12 @@ class DataImportServiceProvider implements ServiceProviderInterface
             }
         );
 
+
+        $app['eccube.plugin.dataimport.repository.dataimportorder'] = $app->share(
+            function () use ($app) {
+                return $app['orm.em']->getRepository('Plugin\DataImport\Entity\DataImportOrder');
+            }
+        );
         /**
          * ルーティング登録
          * 管理画面 > 会員管理管理 > 会員CSV登録

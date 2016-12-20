@@ -17,12 +17,12 @@ use Doctrine\ORM\Mapping as ORM;
  * Class DataImportCustomer
  * @package Plugin\DataImport\Entity
  */
-class DataImportCustomer extends \Eccube\Entity\AbstractEntity
+class DataImportOrder extends \Eccube\Entity\AbstractEntity
 {
     /**
      * @var integer
      */
-    private $plg_dataimport_customer_id;
+    private $plg_dataimport_order_id;
     /**
      * @var integer
      */
@@ -30,11 +30,11 @@ class DataImportCustomer extends \Eccube\Entity\AbstractEntity
     /**
      * @var integer
      */
-    private $ref_id;
+    private $order_id;
     /**
-     * @var \Eccube\Entity\Customer
+     * @var \Eccube\Entity\Order
      */
-    private $Customer;
+    private $Order;
     /**
      * @var date
      */
@@ -45,14 +45,14 @@ class DataImportCustomer extends \Eccube\Entity\AbstractEntity
     private $update_date;
 
     /**
-     * Set plg_dataimport_customer_id
+     * Set plg_dataimport_order_id
      *
-     * @param integer $plg_dataimport_customer_id
-     * @return DataImportCustomer
+     * @param integer $plg_dataimport_order_id
+     * @return DataImportOrder
      */
-    public function setPlgDataImportCustomerId($plg_dataimport_customer_id)
+    public function setPlgDataImportOrderId($plg_dataimport_order_id)
     {
-        $this->plg_dataimport_customer_id = $plg_dataimport_customer_id;
+        $this->plg_dataimport_order_id = $plg_dataimport_order_id;
 
         return $this;
     }
@@ -62,9 +62,9 @@ class DataImportCustomer extends \Eccube\Entity\AbstractEntity
      *
      * @return integer
      */
-    public function getPlgDataImportCustomerId()
+    public function getPlgDataImportOrderId()
     {
-        return $this->plg_dataimport_customer_id;
+        return $this->plg_dataimport_order_id;
     }
 
     /**
@@ -96,9 +96,9 @@ class DataImportCustomer extends \Eccube\Entity\AbstractEntity
      * @param integer $customer_id
      * @return DataImportCustomer
      */
-    public function setCustomerId($customer_id)
+    public function setOrderId($order_id)
     {
-        $this->customer_id = $customer_id;
+        $this->order_id = $order_id;
 
         return $this;
     }
@@ -108,9 +108,9 @@ class DataImportCustomer extends \Eccube\Entity\AbstractEntity
      *
      * @return integer
      */
-    public function getCustomerId()
+    public function getOrderId()
     {
-        return $this->customer_id;
+        return $this->order_id;
     }
 
     /**
@@ -119,9 +119,9 @@ class DataImportCustomer extends \Eccube\Entity\AbstractEntity
      * @param \Eccube\Entity\Customer $Customer
      * @return DataImportCustomer
      */
-    public function setCustomer($Customer)
+    public function setOrder($Order)
     {
-        $this->Customer = $Customer;
+        $this->Order = $Order;
 
         return $this;
     }
@@ -131,9 +131,9 @@ class DataImportCustomer extends \Eccube\Entity\AbstractEntity
      *
      * @return \Eccube\Entity\Customer
      */
-    public function getCustomer()
+    public function getOrder()
     {
-        return $this->Customer;
+        return $this->Order;
     }
 
     /**
