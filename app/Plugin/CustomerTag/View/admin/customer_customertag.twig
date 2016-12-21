@@ -1,0 +1,33 @@
+{#
+ This file is part of EC-CUBE
+
+ Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
+ http://www.lockon.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+<div class="box accordion form-horizontal">
+    <div class="box-header toggle">
+        <h3 class="box-title">会員情報タグ設定<svg class="cb cb-angle-down icon_down"> <use xlink:href="#cb-angle-down" /></svg></h3>
+    </div><!-- /.box-header -->
+    <div class="box-body accpanel">
+        {{ form_row(form.customertag) }}
+        {{ form_row(form.customertag_url) }}
+        {{ form_row(form._token) }}
+    </div>
+    <div id="detail_tag_box" class="form-group">
+        {{ form_label(form.Tag) }}
+        <div class="col-sm-9 col-lg-10">
+            <div class="accordion marT05">
+                <a id="detail_tags_box__toggle" class="toggle with-icon"><svg class="cb cb-plus icon_plus"> <use xlink:href="#cb-plus" /></svg>{{ 'Tag'|trans }}を選択</a>
+                <div id="detail_tags_box__list" class="accpanel padT08">
+                    {{ form_widget(form.Tag) }}
+                    {{ form_errors(form.Tag) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+

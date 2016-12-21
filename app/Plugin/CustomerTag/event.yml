@@ -1,0 +1,7 @@
+eccube.event.render.admin_customer_new.before:
+    - [onRenderAdminCustomerNewBefore, NORMAL]
+eccube.event.render.admin_customer_edit.before:
+    - [onRenderAdminCustomerEditBefore, NORMAL]
+eccube.event.controller.admin_customer_edit.after:
+    - [onAdminCustomerEditAfter, NORMAL]
+

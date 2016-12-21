@@ -1,0 +1,113 @@
+{#
+ This file is part of EC-CUBE
+
+ Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
+ http://www.lockon.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+{% extends 'default_frame.twig' %}
+
+{% set menus = ['product', 'customertag'] %}
+
+{% block title %}会員管理{% endblock %}
+{% block sub_title %}会員情報タグ管理{% endblock %}
+
+{% block javascript %}
+    <script src="{{ app.config.admin_urlpath }}/assets/js/vendor/jquery.ui/jquery.ui.core.min.js"></script>
+    <script src="{{ app.config.admin_urlpath }}/assets/js/vendor/jquery.ui/jquery.ui.widget.min.js"></script>
+    <script src="{{ app.config.admin_urlpath }}/assets/js/vendor/jquery.ui/jquery.ui.mouse.min.js"></script>
+    <script src="{{ app.config.admin_urlpath }}/assets/js/vendor/jquery.ui/jquery.ui.sortable.min.js"></script>
+    <script>
+        function changeAction(action) {
+            document.form1.action = action;
+        }
+    </script>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-9">
+            <div class="box">
+                <div class="box-header">
+                    <div class="box-title box-title-category">
+                        <a href="{{ url('admin_customertag') }}">会員情報タグ</a>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="form-inline">
+                        <form role="form" class="form-horizontal" name="form1" id="form1" method="post">
+                            {{ form_widget(form._token) }}
+                            {{ form_widget(form.name, {attr: {placeholder: 'タグ名を入力'}}) }}
+                            {{ form_widget(form.id) }}
+                            <button class="btn btn-default btn-sm" type="submit" onclick="document.form1.submit(); return false;">会員情報タグ作成</button>
+                        </form>
+                    </div>
+                </div><!-- /.box-header -->
+
+                {% if CustomerTags|length > 0 %}
+                    <div class="box-body no-padding no-border">
+                        <div class="sortable_list">
+                            <div class="tableish">
+
+                                {% for CustomerTag in CustomerTags %}
+
+                                <div class="item_box tr" data-rank="{{ CustomerTag.rank }}" data-customertag-id="{{ CustomerTag.id }}">
+                                    <div class="item_pattern td">
+                                        <a href="{{ url('admin_customertag',  { id : CustomerTag.id }) }}">{{ CustomerTag.name }}</a>
+                                    </div>
+                                    <div class="icon_edit td">
+                                        <div class="dropdown">
+                                            <a class="dropdown-toggle" data-toggle="dropdown"><svg class="cb cb-ellipsis-h"> <use xlink:href="#cb-ellipsis-h" /></svg></a>
+                                            <ul class="dropdown-menu dropdown-menu-right">
+                                                {% if CustomerTag.id != TargetCustomerTag.id %}
+                                                    <li><a href="{{ url('admin_customertag', {id: CustomerTag.id}) }}">編集</a></li>
+                                                {% else %}
+                                                    <li><a>編集中</a></li>
+                                                {% endif %}
+                                                    {% set delete_action = url('admin_customertag_delete', {id: CustomerTag.id}) %}
+                                                    <li>
+                                                        <a href="?" onclick="changeAction('{{ delete_action }}'); document.form1.submit(); return false;">
+                                                            削除
+                                                        </a>
+                                                    </li>
+
+                                                {% if loop.first == false %}
+                                                    {% set up_action = url('admin_customertag_up', {id: CustomerTag.id}) %}
+                                                    <li>
+                                                        <a href="?" onclick="changeAction('{{ up_action }}'); document.form1.submit(); return false;">
+                                                            上へ
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if loop.last == false %}
+                                                    {% set down_action = url('admin_customertag_down', {id: CustomerTag.id}) %}
+                                                    <li>
+                                                        <a href="?" onclick="changeAction('{{ down_action }}'); document.form1.submit(); return false;">
+                                                            下へ
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div><!-- /.item_box -->
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                    </div><!-- /.box-body -->
+            {% else %}
+                <div class="box-body no-padding">
+                    <div class="data-empty"><svg class="cb cb-inbox"> <use xlink:href="#cb-inbox" /></svg><p>データはありません</p></div>
+                </div><!-- /.box-body -->
+            {% endif %}
+            <!-- ▲ データがある時 ▲ -->
+
+            </div><!-- /.box -->
+        </div><!-- /.col -->
+
+    </div>
+{% endblock %}
