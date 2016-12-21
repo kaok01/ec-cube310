@@ -12,13 +12,13 @@ namespace Plugin\DataImport\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
-use Plugin\DataImport\Entity\DataImportCustomer;
+use Plugin\DataImport\Entity\DataImportOrder;
 
 /**
  * Class DataImportCustomerRepository
  * @package Plugin\DataImport\Repository
  */
-class DataImportCustomerRepository extends EntityRepository
+class DataImportOrderRepository extends EntityRepository
 {
     /**
      * 保有ポイントの保存
@@ -27,23 +27,22 @@ class DataImportCustomerRepository extends EntityRepository
      * @return bool|DataImportCustomer
      * @throws NoResultException
      */
-    public function saveDataImport($dataimport, $customer)
+    public function saveDataImport($dataimport, $order)
     {
         // 引数判定
-        if ((!isset($dataimport) && $dataimport != 0) || empty($customer)) {
+        if ((!isset($dataimport) && $dataimport != 0) || empty($order)) {
             return false;
         }
 
-        $DataImportCustomer = new DataImportCustomer();
-        $DataImportCustomer->setPlgDataImportCurrent((integer)$dataimport);
-        $DataImportCustomer->setCustomer($customer);
+        $DataImportOrder = new DataImportOrder();
+        $DataImportOrder->setPlgDataImportCurrent((integer)$dataimport);
+        $DataImportOrder->setOrder($order);
 
         $em = $this->getEntityManager();
-        $em->persist($DataImportCustomer);
-        $em->flush($DataImportCustomer);
+        $em->persist($DataImportOrder);
+        $em->flush($DataImportOrder);
 
-        return $DataImportCustomer;
+        return $DataImportOrder;
     }
-
 
 }

@@ -190,7 +190,7 @@ class DataImportServiceProvider implements ServiceProviderInterface
         }));
         $app['config'] = $app->share($app->extend('config', function ($config) {
             $addNavi['id'] = "admin_dataimport_order_infotopcsv_import";
-            $addNavi['name'] = "インフォトップCSV取込み（開発用）";
+            $addNavi['name'] = "CSV取込み（開発用）";
             $addNavi['url'] = "admin_dataimport_order_infotopcsv_import";
 
             $nav = $config['nav'];

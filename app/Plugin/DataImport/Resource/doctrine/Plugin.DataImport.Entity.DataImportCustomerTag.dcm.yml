@@ -1,9 +1,9 @@
-Plugin\DataImport\Entity\DataImportOrder:
+Plugin\DataImport\Entity\DataImportCustomerTag:
     type: entity
-    table: plg_dataimport_order
-    repositoryClass: Plugin\DataImport\Repository\DataImportOrderRepository
+    table: plg_dataimport_customertag
+    repositoryClass: Plugin\DataImport\Repository\DataImportCustomerTagRepository
     id:
-        plg_dataimport_order_id:
+        plg_dataimport_customertag_id:
             type: integer
             nullable: false
             unsigned: false
@@ -11,11 +11,11 @@ Plugin\DataImport\Entity\DataImportOrder:
             generator:
                 strategy: AUTO
     fields:
-        plg_dataimport_current:
+        customertag_id:
             type: integer
             nullable: false
             unsigned: false
-        order_id:
+        customer_id:
             type: integer
             nullable: false
             unsigned: false
@@ -26,10 +26,15 @@ Plugin\DataImport\Entity\DataImportOrder:
             type: datetime
             nullable: false
     manyToOne:
-        Order:
-            targetEntity: Eccube\Entity\Order
+        CustomerTag:
+            targetEntity: Plugin\DataImport\Entity\CustomerTag
             joinColumn:
-                name: order_id
-                referencedColumnName: order_id
+                name: customertag_id
+                referencedColumnName: customertag_id
+        Customer:
+            targetEntity: Eccube\Entity\Customer
+            joinColumn:
+                name: customer_id
+                referencedColumnName: customer_id
     lifecycleCallbacks:
         loadClassMetadata: {  }

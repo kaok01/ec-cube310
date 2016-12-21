@@ -25,25 +25,34 @@ class Version20151215144009 extends AbstractMigration
         $this->tables = array(
             'plg_dataimport',
             'plg_dataimport_customer',
+            'plg_dataimport_order',
             'plg_dataimport_info',
             'plg_dataimport_product_rate',
             'plg_dataimport_snapshot',
+            'plg_dataimport_customertag',
+            'plg_dataimport_mtb_customertag',
         );
 
         $this->entities = array(
             'Plugin\DataImport\Entity\DataImport',
             'Plugin\DataImport\Entity\DataImportCustomer',
+            'Plugin\DataImport\Entity\DataImportOrder',
             'Plugin\DataImport\Entity\DataImportInfo',
             'Plugin\DataImport\Entity\DataImportProductRate',
             'Plugin\DataImport\Entity\DataImportSnapshot',
+            'Plugin\DataImport\Entity\DataImportCustomerTag',
+            'Plugin\DataImport\Entity\CustomerTag',
         );
 
         $this->sequences = array(
             'plg_dataimport_plg_dataimport_id_seq',
             'plg_dataimport_customer_plg_dataimport_customer_id_seq',
+            'plg_dataimport_customer_plg_dataimport_order_id_seq',
             'plg_dataimport_info_plg_dataimport_info_id_seq',
             'plg_dataimport_product_rate_plg_dataimport_product_rate_id_seq',
             'plg_dataimport_snapshot_plg_dataimport_snapshot_id_seq',
+            'plg_dataimport_customertag_plg_dataimport_customertag_id_seq',
+            'plg_dataimport_mtb_customertag_customertag_id_seq',
         );
     }
 

@@ -18,7 +18,7 @@ use Plugin\DataImport\Entity\DataImportCustomer;
  * Class DataImportCustomerRepository
  * @package Plugin\DataImport\Repository
  */
-class DataImportCustomerRepository extends EntityRepository
+class DataImportCustomerTagRepository extends EntityRepository
 {
     /**
      * 保有ポイントの保存
@@ -27,22 +27,25 @@ class DataImportCustomerRepository extends EntityRepository
      * @return bool|DataImportCustomer
      * @throws NoResultException
      */
-    public function saveDataImport($dataimport, $customer)
+    public function saveDataImport($customer, $customertag)
     {
         // 引数判定
-        if ((!isset($dataimport) && $dataimport != 0) || empty($customer)) {
+        if ((!isset($customer) && $customer != 0) || empty($customer)) {
+            return false;
+        }
+        if ((!isset($customertag) && $customertag != 0) || empty($customertag)) {
             return false;
         }
 
-        $DataImportCustomer = new DataImportCustomer();
-        $DataImportCustomer->setPlgDataImportCurrent((integer)$dataimport);
-        $DataImportCustomer->setCustomer($customer);
+        $DataImportCustomerTag = new DataImportCustomerTag();
+        $DataImportCustomerTag->setCustomer($customer);
+        $DataImportCustomerTag->setCustomerTag($customertag);
 
         $em = $this->getEntityManager();
-        $em->persist($DataImportCustomer);
-        $em->flush($DataImportCustomer);
+        $em->persist($DataImportCustomerTag);
+        $em->flush($DataImportCustomerTag);
 
-        return $DataImportCustomer;
+        return $DataImportCustomerTag;
     }
 
 
