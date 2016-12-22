@@ -27,6 +27,7 @@ class CustomerTag
 
     public function onRenderAdminCustomerNewBefore(FilterResponseEvent $event)
     {
+        return;
         $app = $this->app;
         if (!$this->app->isGranted('ROLE_ADMIN')) {
             return;
@@ -83,6 +84,7 @@ class CustomerTag
 
     public function onRenderAdminCustomerEditBefore(FilterResponseEvent $event)
     {
+        return;
         $app = $this->app;
         if (!$app->isGranted('ROLE_ADMIN')) {
             return;
@@ -101,6 +103,8 @@ class CustomerTag
 
     public function onAdminCustomerEditAfter()
     {
+        return;
+
         $app = $this->app;
         if (!$app->isGranted('ROLE_ADMIN')) {
             return;
@@ -208,6 +212,8 @@ class CustomerTag
 
     public function onRenderCustomersDetailBefore(FilterResponseEvent $event)
     {
+        return;
+        
         $app = $this->app;
         $request = $event->getRequest();
         $response = $event->getResponse();
