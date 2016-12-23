@@ -46,7 +46,7 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
 
 
     private $orderTwig = 'DataImport/Resource/template/admin/Order/csv_order.twig';
-
+    private $app;
 
 
     /**
@@ -54,6 +54,7 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
      */
     public function csvOrder(Application $app, Request $request)
     {
+        $this->app = $app;
 //dump($request);die();
         $form = $app['form.factory']->createBuilder('admin_csv_import')->getForm();
 
@@ -187,7 +188,7 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                         $refproductid = $row['連携商品ID'];
                         if($refproductid){
                             $targets = $app['config']
-                                    ['DataImport']
+                                    ['DataImport']['const']
                                         ['extention']
                                             ['order']
                                                 ['productmaps'];
@@ -232,7 +233,24 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                             return $this->render($app, $form, $headers, $this->orderTwig);
 
                         }
+                        $orderdt = $row['受注日'];
+                        if($orderdt){
 
+                            $Orderdt = new \Datetime($orderdt);
+                            if($Orderdt){
+                                $TargetOrder->setOrderDate($Orderdt);
+
+                            }else{
+
+                                $this->addErrors(($data->key() + 1) . '行目の受注日が設定されていません。');
+                                return $this->render($app, $form, $headers, $this->orderTwig);
+                            }
+
+                        }else{
+                            $this->addErrors(($data->key() + 1) . '行目の受注日が設定されていません');
+                            return $this->render($app, $form, $headers, $this->orderTwig);
+
+                        }
                         $productclass = null;
 
                         foreach($TargetProduct->getProductClasses() as $pc){
@@ -240,12 +258,14 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
 
                         }
 
+                        $TaxRule = $app['eccube.repository.tax_rule']->getByRule();
 
                         $detail = new \Eccube\Entity\OrderDetail();
                         $detail->setOrder($TargetOrder)
                             ->setProduct($TargetProduct)
                             ->setProductClass($productclass)
                             ->setQuantity(1)
+                            ->setTaxRate($TaxRule->getTaxRate())
                             ->setPriceIncTax($productclass->getPrice01IncTax()
                                         ?$productclass->getPrice02IncTax()
                                         :$productclass->getPrice01IncTax()
@@ -259,6 +279,26 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                         $TargetOrder->setCustomer($TargetCustomer[0]);
 
                         $TargetOrder->setTotal($TargetOrder->getTotalPrice());
+
+
+                        $TargetOrder
+                            ->setName01($TargetCustomer[0]->getName01())
+                            ->setName02($TargetCustomer[0]->getName02())
+                            ->setKana01($TargetCustomer[0]->getKana01())
+                            ->setKana02($TargetCustomer[0]->getKana02())
+                            ->setZip01($TargetCustomer[0]->getZip01())
+                            ->setZip02($TargetCustomer[0]->getZip02())
+                            ->setPref(is_null($TargetCustomer[0]->getPref()) ? null : $TargetCustomer[0]->getPref())
+                            ->setAddr01($TargetCustomer[0]->getAddr01())
+                            ->setAddr02($TargetCustomer[0]->getAddr02())
+                            ->setEmail($TargetCustomer[0]->getEmail())
+                            ->setTel01($TargetCustomer[0]->getTel01())
+                            ->setTel02($TargetCustomer[0]->getTel02())
+                            ->setTel03($TargetCustomer[0]->getTel03())
+                            ->setFax01($TargetCustomer[0]->getFax01())
+                            ->setFax02($TargetCustomer[0]->getFax02())
+                            ->setFax03($TargetCustomer[0]->getFax03())
+                            ->setCompanyName($TargetCustomer[0]->getCompanyName());
 
 
 
@@ -277,19 +317,39 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
 
                         // $BaseInfo = $app['eccube.repository.base_info']->get();
 
-                        // // お支払い方法の更新
-                        // $TargetOrder->setPaymentMethod($TargetOrder->getPayment()->getMethod());
+                        // お支払い方法の更新
+                        $TargetOrder->setPaymentMethod($TargetOrder->getPayment()->getMethod());
 
-                        // // 配送業者・お届け時間の更新
-                        // $Shippings = $TargetOrder->getShippings();
-                        // foreach ($Shippings as $Shipping) {
-                        //     $Shipping->setShippingDeliveryName($Shipping->getDelivery()->getName());
-                        //     if (!is_null($Shipping->getDeliveryTime())) {
-                        //         $Shipping->setShippingDeliveryTime($Shipping->getDeliveryTime()->getDeliveryTime());
-                        //     } else {
-                        //         $Shipping->setShippingDeliveryTime(null);
-                        //     }
-                        // }
+                        // 配送業者・お届け時間の更新
+                        $Shippings = $TargetOrder->getShippings();
+                        foreach ($Shippings as $Shipping) {
+                            $Shipping->setShippingDeliveryName($Shipping->getDelivery()->getName());
+                            if (!is_null($Shipping->getDeliveryTime())) {
+                                $Shipping->setShippingDeliveryTime($Shipping->getDeliveryTime()->getDeliveryTime());
+                            } else {
+                                $Shipping->setShippingDeliveryTime(null);
+                            }
+
+                            $Shipping
+                                ->setName01($TargetCustomer[0]->getName01())
+                                ->setName02($TargetCustomer[0]->getName02())
+                                ->setKana01($TargetCustomer[0]->getKana01())
+                                ->setKana02($TargetCustomer[0]->getKana02())
+                                ->setZip01($TargetCustomer[0]->getZip01())
+                                ->setZip02($TargetCustomer[0]->getZip02())
+                                ->setPref(is_null($TargetCustomer[0]->getPref()) ? null : $TargetCustomer[0]->getPref())
+                                ->setAddr01($TargetCustomer[0]->getAddr01())
+                                ->setAddr02($TargetCustomer[0]->getAddr02())
+                                ->setTel01($TargetCustomer[0]->getTel01())
+                                ->setTel02($TargetCustomer[0]->getTel02())
+                                ->setTel03($TargetCustomer[0]->getTel03())
+                                ->setFax01($TargetCustomer[0]->getFax01())
+                                ->setFax02($TargetCustomer[0]->getFax02())
+                                ->setFax03($TargetCustomer[0]->getFax03())
+                                ->setCompanyName($TargetCustomer[0]->getCompanyName());
+
+
+                        }
 
 
                         // 受注日/発送日/入金日の更新.
@@ -303,63 +363,63 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                         // }
 
 
-                        // if ($BaseInfo->getOptionMultipleShipping() == Constant::ENABLED) {
-                        //     foreach ($TargetOrder->getOrderDetails() as $OrderDetail) {
-                        //         /** @var $OrderDetail \Eccube\Entity\OrderDetail */
-                        //         $OrderDetail->setOrder($TargetOrder);
-                        //     }
+                        if ($BaseInfo->getOptionMultipleShipping() == Constant::ENABLED) {
+                            foreach ($TargetOrder->getOrderDetails() as $OrderDetail) {
+                                /** @var $OrderDetail \Eccube\Entity\OrderDetail */
+                                $OrderDetail->setOrder($TargetOrder);
+                            }
 
-                        //     /** @var \Eccube\Entity\Shipping $Shipping */
-                        //     foreach ($Shippings as $Shipping) {
-                        //         $shipmentItems = $Shipping->getShipmentItems();
-                        //         /** @var \Eccube\Entity\ShipmentItem $ShipmentItem */
-                        //         foreach ($shipmentItems as $ShipmentItem) {
-                        //             $ShipmentItem->setOrder($TargetOrder);
-                        //             $ShipmentItem->setShipping($Shipping);
-                        //             $app['orm.em']->persist($ShipmentItem);
-                        //         }
-                        //         $Shipping->setOrder($TargetOrder);
-                        //         $app['orm.em']->persist($Shipping);
-                        //     }
-                        // } else {
+                            /** @var \Eccube\Entity\Shipping $Shipping */
+                            foreach ($Shippings as $Shipping) {
+                                $shipmentItems = $Shipping->getShipmentItems();
+                                /** @var \Eccube\Entity\ShipmentItem $ShipmentItem */
+                                foreach ($shipmentItems as $ShipmentItem) {
+                                    $ShipmentItem->setOrder($TargetOrder);
+                                    $ShipmentItem->setShipping($Shipping);
+                                    $app['orm.em']->persist($ShipmentItem);
+                                }
+                                $Shipping->setOrder($TargetOrder);
+                                $app['orm.em']->persist($Shipping);
+                            }
+                        } else {
 
-                        //     $NewShipmentItems = new ArrayCollection();
+                            $NewShipmentItems = new ArrayCollection();
 
-                        //     foreach ($TargetOrder->getOrderDetails() as $OrderDetail) {
-                        //         /** @var $OrderDetail \Eccube\Entity\OrderDetail */
-                        //         $OrderDetail->setOrder($TargetOrder);
+                            foreach ($TargetOrder->getOrderDetails() as $OrderDetail) {
+                                /** @var $OrderDetail \Eccube\Entity\OrderDetail */
+                                $OrderDetail->setOrder($TargetOrder);
 
-                        //         $NewShipmentItem = new ShipmentItem();
-                        //         $NewShipmentItem
-                        //             ->setProduct($OrderDetail->getProduct())
-                        //             ->setProductClass($OrderDetail->getProductClass())
-                        //             ->setProductName($OrderDetail->getProduct()->getName())
-                        //             ->setProductCode($OrderDetail->getProductClass()->getCode())
-                        //             ->setClassCategoryName1($OrderDetail->getClassCategoryName1())
-                        //             ->setClassCategoryName2($OrderDetail->getClassCategoryName2())
-                        //             ->setClassName1($OrderDetail->getClassName1())
-                        //             ->setClassName2($OrderDetail->getClassName2())
-                        //             ->setPrice($OrderDetail->getPrice())
-                        //             ->setQuantity($OrderDetail->getQuantity())
-                        //             ->setOrder($TargetOrder);
-                        //         $NewShipmentItems[] = $NewShipmentItem;
+                                $NewShipmentItem = new ShipmentItem();
+                                $NewShipmentItem
+                                    ->setProduct($OrderDetail->getProduct())
+                                    ->setProductClass($OrderDetail->getProductClass())
+                                    ->setProductName($OrderDetail->getProduct()->getName())
+                                    ->setProductCode($OrderDetail->getProductClass()->getCode())
+                                    ->setClassCategoryName1($OrderDetail->getClassCategoryName1())
+                                    ->setClassCategoryName2($OrderDetail->getClassCategoryName2())
+                                    ->setClassName1($OrderDetail->getClassName1())
+                                    ->setClassName2($OrderDetail->getClassName2())
+                                    ->setPrice($OrderDetail->getPrice())
+                                    ->setQuantity($OrderDetail->getQuantity())
+                                    ->setOrder($TargetOrder);
+                                $NewShipmentItems[] = $NewShipmentItem;
 
-                        //     }
-                        //     // 配送商品の更新. delete/insert.
-                        //     $Shippings = $TargetOrder->getShippings();
-                        //     foreach ($Shippings as $Shipping) {
-                        //         $ShipmentItems = $Shipping->getShipmentItems();
-                        //         foreach ($ShipmentItems as $ShipmentItem) {
-                        //             $app['orm.em']->remove($ShipmentItem);
-                        //         }
-                        //         $ShipmentItems->clear();
-                        //         foreach ($NewShipmentItems as $NewShipmentItem) {
-                        //             $NewShipmentItem->setShipping($Shipping);
-                        //             $ShipmentItems->add($NewShipmentItem);
-                        //         }
-                        //     }
-                        // }
-
+                            }
+                            // 配送商品の更新. delete/insert.
+                            $Shippings = $TargetOrder->getShippings();
+                            foreach ($Shippings as $Shipping) {
+                                $ShipmentItems = $Shipping->getShipmentItems();
+                                foreach ($ShipmentItems as $ShipmentItem) {
+                                    $app['orm.em']->remove($ShipmentItem);
+                                }
+                                $ShipmentItems->clear();
+                                foreach ($NewShipmentItems as $NewShipmentItem) {
+                                    $NewShipmentItem->setShipping($Shipping);
+                                    $ShipmentItems->add($NewShipmentItem);
+                                }
+                            }
+                        }
+dump($TargetOrder);
                         $app['orm.em']->persist($TargetOrder);
                         $app['orm.em']->flush();
 
@@ -680,12 +740,24 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
     protected function newOrder()
     {
         $Order = new \Eccube\Entity\Order();
-        $OrderStatus = new \Eccube\Entity\Master\OrderStatus();
-        $OrderStatus->setId(5);
-        $Order->setOrderStatus($OrderStatus);
+        $OrderStatus = $this->app['eccube.repository.master.order_status']
+        ->find($this->app['config']['DataImport']['const']['settingdata']['order']['defaultorderstatus']);
 
+        //new \Eccube\Entity\Master\OrderStatus();
+        //$OrderStatus->setId(5);
+        $Order->setOrderStatus($OrderStatus);
+        $Payment = $this->app['eccube.repository.payment']->find($this->app['config']['DataImport']['const']['settingdata']['order']['defaultpayment']);
+        $Order->setPayment($Payment);
+
+
+        $Order->setCreateDate(new \Datetime('now'));
+        $Order->setUpdateDate(new \Datetime('now'));
         $Shipping = new \Eccube\Entity\Shipping();
+
+        $Delivery = $this->app['eccube.repository.delivery']->find($this->app['config']['DataImport']['const']['settingdata']['order']['defaultdelivery']);
+
         $Shipping->setDelFlg(0);
+        $Shipping->setDelivery($Delivery);
         $Order->addShipping($Shipping);
         $Shipping->setOrder($Order);
 
@@ -828,7 +900,7 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                 $TargetOrder->setPaymentDate($dateTime);
             }
             // 受注日時
-            $TargetOrder->setOrderDate($dateTime);
+            //$TargetOrder->setOrderDate($dateTime);
         }
     }
 
