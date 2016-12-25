@@ -76,6 +76,14 @@ class CustomerTagServiceProvider implements ServiceProviderInterface
 
             return $translator;
         }));
+        /**
+         * 
+         */
+        $app['eccube.plugin.customertag.service'] = $app->share(
+            function () use ($app) {
+                return new \Plugin\CustomerTag\Service\CustomerTagService($app);
+            }
+        );
 
         // メニュー登録
         $app['config'] = $app->share($app->extend('config', function ($config) {
