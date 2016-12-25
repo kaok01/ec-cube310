@@ -57,10 +57,5 @@ Plugin\DataImport\Entity\DataImport:
             joinColumn:
                 name: plg_dataimport_info_id
                 referencedColumnName: plg_dataimport_info_id
-        DataImportProductRate:
-            targetEntity: Plugin\DataImport\Entity\DataImportProductRate
-            joinColumn:
-                name: plg_dataimport_product_rate_id
-                referencedColumnName: plg_dataimport_product_rate_id
     lifecycleCallbacks:
         loadClassMetadata: {  }

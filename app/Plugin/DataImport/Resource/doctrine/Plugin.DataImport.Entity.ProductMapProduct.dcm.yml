@@ -1,24 +1,20 @@
-Plugin\DataImport\Entity\DataImportProductRate:
+Plugin\DataImport\Entity\ProductMapProduct:
     type: entity
-    table: plg_dataimport_product_rate
-    repositoryClass: Plugin\DataImport\Repository\DataImportProductRateRepository
+    table: plg_dataimport_productmap
+    repositoryClass: Plugin\DataImport\Repository\ProductMapProductRepository
     id:
-        plg_dataimport_product_rate_id:
+        id:
             type: integer
             nullable: false
             unsigned: false
             id: true
+            column: productmap_product_id
             generator:
                 strategy: AUTO
     fields:
-        product_id:
-            type: integer
-            nullable: false
-            unsigned: false
-        plg_dataimport_product_rate:
-            type: integer
+        refid:
+            type: text
             nullable: true
-            unsigned: false
         create_date:
             type: datetime
             nullable: false
@@ -27,9 +23,10 @@ Plugin\DataImport\Entity\DataImportProductRate:
             nullable: false
     manyToOne:
         Product:
-            targetEntity: \Eccube\Entity\Product
+            targetEntity: Eccube\Entity\Product
+            inversedBy: ProductMapProduct
             joinColumn:
                 name: product_id
                 referencedColumnName: product_id
-    lifecycleCallbacks:
-        loadClassMetadata: {  }
+    lifecycleCallbacks: {  }
+    

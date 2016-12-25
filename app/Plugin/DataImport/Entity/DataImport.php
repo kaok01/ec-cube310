@@ -56,10 +56,6 @@ class DataImport extends \Eccube\Entity\AbstractEntity
      */
     private $plg_dataimport_action_name;
     /**
-     * @var \Plugin\DataImport\Entity\DataImportProductRate
-     */
-    private $DataImportProductRate;
-    /**
      * @var \Plugin\DataImport\Entity\DataImportInfo
      */
     private $DataImportInfo;
@@ -277,29 +273,6 @@ class DataImport extends \Eccube\Entity\AbstractEntity
     public function getPlgDataImportActionName()
     {
         return $this->plg_dataimport_action_name;
-    }
-
-    /**
-     * Set DataImportProductRate
-     *
-     * @param \Plugin\DataImport\Entity\DataImportProductRate
-     * @return DataImport
-     */
-    public function setDataImportProductRate($DataImportProductRate)
-    {
-        $this->DataImportProductRate = $DataImportProductRate;
-
-        return $this;
-    }
-
-    /**
-     * Get DataImportProductRate
-     *
-     * @return \Plugin\DataImport\Entity\DataImportProductRate
-     */
-    public function getDataImportProductRate()
-    {
-        return $this->DataImportProductRate;
     }
 
     /**

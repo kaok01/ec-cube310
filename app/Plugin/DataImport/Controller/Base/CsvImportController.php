@@ -230,19 +230,19 @@ class CsvImportController
             'メルマガ受信' => 'mailmaga_flg',
             'ショップ用メモ欄' => 'note',
             '削除フラグ' => 'del_flg',
-            '会員情報タグ０１' => 'tag01',
-            '会員情報タグ０２' => 'tag02',
-            '会員情報タグ０３' => 'tag03',
-            '会員情報タグ０４' => 'tag04',
-            '会員情報タグ０５' => 'tag05',
-            '会員情報タグ０６' => 'tag06',
-            '会員情報タグ０７' => 'tag07',
-            '会員情報タグ０８' => 'tag08',
-            '会員情報タグ０９' => 'tag09',
-            '会員情報タグ１０' => 'tag10'
+            '会員情報タグ' => 'tags'
         );
     }
-
+    /**
+     * 会員情報タグCSVヘッダー定義
+     */
+    protected function getCustomerTagCsvHeader()
+    {
+        return array(
+            '会員ID'=>'id',
+            "会員情報タグ"=>"tags"
+        );
+    }
 
     /**
      * 受注登録CSVヘッダー定義

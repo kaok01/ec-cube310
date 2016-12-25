@@ -140,6 +140,11 @@ class DataImportServiceProvider implements ServiceProviderInterface
             'Plugin\DataImport\Controller\Base\CsvImportController::csvTemplate'
         )->bind('admin_dataimport_csv_template');
 
+        $app->match(
+            '/'.$app['config']['admin_route'].'/order/productmap', 
+            'Plugin\DataImport\Controller\Admin\Order\CsvImportController::csvOrder'
+        )->bind('admin_dataimport_order_productmap');
+
 
         /**
          * フォームタイプ登録
@@ -219,13 +224,13 @@ class DataImportServiceProvider implements ServiceProviderInterface
             return $config;
         }));
         $app['config'] = $app->share($app->extend('config', function ($config) {
-            $addNavi['id'] = "admin_dataimport_customer_tag_export";
-            $addNavi['name'] = "会員情報タグ設定";
-            $addNavi['url'] = "admin_dataimport_customer_csv_import";
+            $addNavi['id'] = "admin_dataimport_order_productmap";
+            $addNavi['name'] = "商品ID関連付け";
+            $addNavi['url'] = "admin_dataimport_order_productmap";
 
             $nav = $config['nav'];
             foreach ($nav as $key => $val) {
-                if ("customer" == $val["id"]) {
+                if ("order" == $val["id"]) {
                     $nav[$key]['child'][] = $addNavi;
                 }
             }
@@ -233,33 +238,42 @@ class DataImportServiceProvider implements ServiceProviderInterface
 
             return $config;
         }));
+ 
 
-        /**
-         * ポイント計算処理サービスファクトリー登録
-         */
-        $app['eccube.plugin.dataimport.calculate.helper.factory'] = $app->share(
-            function () use ($app) {
-                return new DataImportCalculateHelper($app);
-            }
-        );
+        if(isset($app['eccube.plugin.customertag.service'])){
 
-        /**
-         * ポイント履歴ヘルパー登録
-         */
-        $app['eccube.plugin.dataimport.history.service'] = $app->share(
-            function () use ($app) {
-                return new DataImportHistoryHelper($app);
-            }
-        );
+            /**
+             * ルーティング登録
+             * 管理画面 > 会員管理管理 > 会員CSV登録
+             */
+            $app->match(
+                '/'.$app['config']['admin_route'].'/customer/customertag_csvimport',
+                'Plugin\DataImport\Controller\Admin\Customer\CustomerTagController::csvCustomerTag'
+            )->bind('admin_dataimport_customertag_csv_import');
 
-        /**
-         * メール送信ヘルパー登録
-         */
-        $app['eccube.plugin.dataimport.mail.helper'] = $app->share(
-            function () use ($app) {
-                return new MailHelper($app);
-            }
-        );
+            $app->match(
+                '/'.$app['config']['admin_route'].'/customer/customertag_csvexport',
+                'Plugin\DataImport\Controller\Admin\Customer\CustomerTagController::export'
+            )->bind('admin_dataimport_customertag_csv_export');
+
+            $app['config'] = $app->share($app->extend('config', function ($config) {
+                $addNavi['id'] = "admin_dataimport_customertag_csv_import";
+                $addNavi['name'] = "会員情報タグCSV登録";
+                $addNavi['url'] = "admin_dataimport_customertag_csv_import";
+
+                $nav = $config['nav'];
+                foreach ($nav as $key => $val) {
+                    if ("customer" == $val["id"]) {
+                        $nav[$key]['child'][] = $addNavi;
+                    }
+                }
+                $config['nav'] = $nav;
+
+                return $config;
+            }));
+        }
+
+
 
         /**
          * メッセージ登録
