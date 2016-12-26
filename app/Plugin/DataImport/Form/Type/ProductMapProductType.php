@@ -81,16 +81,17 @@ class ProductMapProductType extends AbstractType
                 $data = $form->getData();
 
                 $Product = $data['Product'];
+                $refid = $data['refid'];
 
                 if (empty($Product)) {
                     $form['refid']->addError(new FormError('商品を追加してください。'));
                 } else {
-                    $RecommendProduct = $app['eccube.plugin.dataimport.repository.productmap_product']->findBy(array('Product' => $Product));
+                    $RecommendProduct = $app['eccube.plugin.dataimport.repository.productmap_product']->findBy(array('refid' => $refid));
 
                     if ($RecommendProduct) {
                         //check existing Product, except itself
                         if (($RecommendProduct[0]->getId() != $data['id'])) {
-                            $form['refid']->addError(new FormError('既に商品が追加されています。'));
+                            $form['refid']->addError(new FormError('既に商品連携IDが追加されています。'));
                         }
                     }
                 }
@@ -118,6 +119,6 @@ class ProductMapProductType extends AbstractType
      */
     public function getName()
     {
-        return 'admin_productmap';
+        return 'admin_dataimport_productmap';
     }
 }

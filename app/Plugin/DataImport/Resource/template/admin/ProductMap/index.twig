@@ -25,10 +25,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 {% extends 'default_frame.twig' %}
 
-{% set menus = ['content', 'admin_recommend'] %}
+{% set menus = ['order', 'admin_dataimport_productmap_list'] %}
 
-{% block title %}おすすめ商品管理{% endblock %}
-{% block sub_title %}おすすめ商品内容設定{% endblock %}
+{% block title %}取込み商品連携ID管理{% endblock %}
+{% block sub_title %}商品と連携IDの関連付け設定{% endblock %}
 
 {% block stylesheet %}
 <link rel="stylesheet" href="{{ app.config.admin_urlpath }}/assets/css/bootstrap-datetimepicker.min.css">
@@ -56,40 +56,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                 <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>おすすめ商品</th>
-                                    <th>コメント</th>
+                                    <th>ECCUBE上の商品</th>
+                                    <th>取込み商品ID</th>
                                     <th>編集</th>
                                     <th>削除</th>
-                                    <th>並び替え</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {% for RecommendProduct in pagination %}
                                 <tr>
-                                    <td class="recommend_product_id">{{ RecommendProduct.id }}</td>
+                                    <td class="productmap_product_id">{{ RecommendProduct.id }}</td>
                                     <td class="product_id">
                                         {{ RecommendProduct.Product.name }}
                                     </td>
-                                    <td class="comment">{{ RecommendProduct.comment|nl2br }}</td>
-                                    <td><a href="{{ url('admin_recommend_edit', { id : RecommendProduct.id }) }}" >編集</a></td>
-                                    <td><a href="{{ url('admin_recommend_delete', {'id' : RecommendProduct.id}) }}" {{ csrf_token_for_anchor() }} data-method="delete" data-message="おすすめ情報を削除してもよろしいですか？">削除</a></td>
-                                    <td class="icon_edit">
-                                        <div class="dropdown">
-                                            <a class="dropdown-toggle" data-toggle="dropdown"><svg class="cb cb-ellipsis-h"> <use xlink:href="#cb-ellipsis-h" /></svg></a>
-                                            <ul class="dropdown-menu dropdown-menu-right">
-                                            {% if loop.first == false %}
-                                                <li>
-                                                    <a href="{{ url('admin_recommend_rank_up', {id: RecommendProduct.id}) }}"  {{ csrf_token_for_anchor() }} data-method="put" data-confirm="false">上へ</a>
-                                                </li>
-                                            {% endif %}
-                                            {% if loop.last == false %}
-                                                <li>
-                                                    <a href="{{ url('admin_recommend_rank_down', {id: RecommendProduct.id}) }}"  {{ csrf_token_for_anchor() }} data-method="put" data-confirm="false">下へ</a>
-                                                </li>
-                                            {% endif %}
-                                            </ul>
-                                        </div>
-                                    </td>
+                                    <td class="refid">{{ RecommendProduct.refid }}</td>
+                                    <td><a href="{{ url('admin_dataimport_productmap_edit', { id : RecommendProduct.id }) }}" >編集</a></td>
+                                    <td><a href="{{ url('admin_dataimport_productmap_delete', {'id' : RecommendProduct.id}) }}" {{ csrf_token_for_anchor() }} data-method="delete" data-message="おすすめ情報を削除してもよろしいですか？">削除</a></td>
                                </tr>
                                 {% endfor %}
                                 </tbody>
@@ -102,7 +84,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     </div>
 <div class="row">
     <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 text-center btn_area">
-        <a href="{{ url('admin_recommend_new') }}" class="btn btn-primary btn-block btn-lg">おすすめ商品を新規登録</a>
+        <a href="{{ url('admin_dataimport_productmap_new') }}" class="btn btn-primary btn-block btn-lg">取込む商品IDを新規登録</a>
     </div>
 </div>
 </form>

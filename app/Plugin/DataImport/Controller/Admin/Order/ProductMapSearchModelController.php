@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-namespace Plugin\Recommend\Controller;
+namespace Plugin\DataImport\Controller\Admin\Order;
 
 use Eccube\Application;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Eccube\Common\Constant;
 
-class RecommendSearchModelController
+class ProductMapSearchModelController
 {
 
     private $main_title;
@@ -86,7 +86,7 @@ class RecommendSearchModelController
                 $addCartForm = $builder->getForm();
                 $forms[$Product->getId()] = $addCartForm->createView();
             }
-            return $app->render('Recommend/Resource/template/admin/search_product.twig', array(
+            return $app->render('DataImport/Resource/template/admin/ProductMap/search_product.twig', array(
                 'forms' => $forms,
                 'Products' => $Products,
             ));

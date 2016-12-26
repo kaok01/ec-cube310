@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-namespace Plugin\DataImport\Controller;
+namespace Plugin\DataImport\Controller\Admin\Order;
 
 use Eccube\Application;
 use Eccube\Controller\AbstractController;
@@ -56,7 +56,7 @@ class ProductMapController extends AbstractController
 
         $pagination = $app['eccube.plugin.dataimport.repository.productmap_product']->findList();
 
-        return $app->render('Recommend/Resource/template/admin/index.twig', array(
+        return $app->render('DataImport/Resource/template/admin/ProductMap/index.twig', array(
             'pagination' => $pagination,
             'totalItemCount' => count($pagination)
         ));
@@ -72,11 +72,10 @@ class ProductMapController extends AbstractController
      */
     public function create(Application $app, Request $request, $id)
     {
-
-        $builder = $app['form.factory']->createBuilder('admin_recommend');
+        $builder = $app['form.factory']->createBuilder('admin_dataimport_productmap');
         $form = $builder->getForm();
 
-        $service = $app['eccube.plugin.recommend.service.recommend'];
+        $service = $app['eccube.plugin.dataimport.service.productmap'];
 
         $Product = null;
 
@@ -84,7 +83,7 @@ class ProductMapController extends AbstractController
             $form->handleRequest($request);
             $data = $form->getData();
             if ($form->isValid()) {
-                $status = $service->createRecommend($data);
+                $status = $service->createProductMap($data);
 
                 if (!$status) {
                     $app->addError('admin.recommend.notfound', 'admin');
@@ -92,7 +91,7 @@ class ProductMapController extends AbstractController
                     $app->addSuccess('admin.plugin.recommend.regist.success', 'admin');
                 }
 
-                return $app->redirect($app->url('admin_recommend_list'));
+                return $app->redirect($app->url('admin_dataimport_productmap_list'));
             }
 
             if (!is_null($data['Product'])) {
@@ -121,30 +120,30 @@ class ProductMapController extends AbstractController
 
         if (is_null($id) || strlen($id) == 0) {
             $app->addError("admin.recommend.recommend_id.notexists", "admin");
-            return $app->redirect($app->url('admin_recommend_list'));
+            return $app->redirect($app->url('admin_dataimport_productmap_list'));
         }
 
-        $service = $app['eccube.plugin.recommend.service.recommend'];
+        $service = $app['eccube.plugin.dataimport.service.productmap'];
 
         // IDからおすすめ商品情報を取得する
-        $Recommend = $app['eccube.plugin.recommend.repository.recommend_product']->findById($id);
+        $Recommend = $app['eccube.plugin.dataimport.repository.productmap_product']->findById($id);
 
         if (is_null($Recommend)) {
             $app->addError('admin.recommend.notfound', 'admin');
-            return $app->redirect($app->url('admin_recommend_list'));
+            return $app->redirect($app->url('admin_dataimport_productmap_list'));
         }
 
         $Recommend = $Recommend[0];
 
         // formの作成
         $form = $app['form.factory']
-            ->createBuilder('admin_recommend', $Recommend)
+            ->createBuilder('admin_dataimport_productmap', $Recommend)
             ->getForm();
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
             if ($form->isValid()) {
-                $status = $service->updateRecommend($form->getData());
+                $status = $service->updateProductMap($form->getData());
 
                 if (!$status) {
                     $app->addError('admin.recommend.notfound', 'admin');
@@ -152,7 +151,7 @@ class ProductMapController extends AbstractController
                     $app->addSuccess('admin.plugin.recommend.update.success', 'admin');
                 }
 
-                return $app->redirect($app->url('admin_recommend_list'));
+                return $app->redirect($app->url('admin_dataimport_productmap_list'));
             }
         }
 
@@ -183,90 +182,25 @@ class ProductMapController extends AbstractController
         }
         if (is_null($id) || strlen($id) == 0) {
             $app->addError("admin.recommend.recommend_id.notexists", "admin");
-            return $app->redirect($app->url('admin_recommend_list'));
+            return $app->redirect($app->url('admin_dataimport_productmap_list'));
         }
 
 
-        $service = $app['eccube.plugin.recommend.service.recommend'];
+        $service = $app['eccube.plugin.dataimport.service.productmap'];
 
         // おすすめ商品情報を削除する
-        if ($service->deleteRecommend($id)) {
+        if ($service->deleteProductMap($id)) {
             $app->addSuccess('admin.plugin.recommend.delete.success', 'admin');
         } else {
             $app->addError('admin.recommend.notfound', 'admin');
         }
 
-        return $app->redirect($app->url('admin_recommend_list'));
+        return $app->redirect($app->url('admin_dataimport_productmap_list'));
 
     }
 
-    /**
-     * 上へ
-     * @param Application $app
-     * @param Request     $request
-     * @param unknown     $id
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function rankUp(Application $app, Request $request, $id)
-    {
 
-        $this->isTokenValid($app);
 
-        if (is_null($id) || strlen($id) == 0) {
-            $app->addError("admin.recommend.recommend_id.notexists", "admin");
-            return $app->redirect($app->url('admin_recommend_list'));
-        }
-
-        $service = $app['eccube.plugin.recommend.service.recommend'];
-
-        // IDからおすすめ商品情報を取得する
-        $Recommend = $app['eccube.plugin.recommend.repository.recommend_product']->find($id);
-        if (is_null($Recommend)) {
-            $app->addError('admin.recommend.notfound', 'admin');
-            return $app->redirect($app->url('admin_recommend_list'));
-        }
-
-        // ランクアップ
-        $service->rankUp($id);
-
-        $app->addSuccess('admin.plugin.recommend.complete.up', 'admin');
-
-        return $app->redirect($app->url('admin_recommend_list'));
-    }
-
-    /**
-     * 下へ
-     * @param Application $app
-     * @param Request     $request
-     * @param unknown     $id
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function rankDown(Application $app, Request $request, $id)
-    {
-
-        $this->isTokenValid($app);
-
-        if (is_null($id) || strlen($id) == 0) {
-            $app->addError("admin.recommend.recommend_id.notexists", "admin");
-            return $app->redirect($app->url('admin_recommend_list'));
-        }
-
-        $service = $app['eccube.plugin.recommend.service.recommend'];
-
-        // IDからおすすめ商品情報を取得する
-        $Recommend = $app['eccube.plugin.recommend.repository.recommend_product']->find($id);
-        if (is_null($Recommend)) {
-            $app->addError('admin.recommend.notfound', 'admin');
-            return $app->redirect($app->url('admin_recommend_list'));
-        }
-
-        // ランクアップ
-        $service->rankDown($id);
-
-        $app->addSuccess('admin.plugin.recommend.complete.down', 'admin');
-
-        return $app->redirect($app->url('admin_recommend_list'));
-    }
 
     /**
      * 編集画面用のrender
@@ -281,7 +215,8 @@ class ProductMapController extends AbstractController
             'searchProductModalForm' => $searchProductModalForm->createView(),
         );
         $viewParameters += $parameters;
-        return $app->render('Recommend/Resource/template/admin/regist.twig', $viewParameters);
+
+        return $app->render('DataImport/Resource/template/admin/ProductMap/regist.twig', $viewParameters);
     }
 
 }

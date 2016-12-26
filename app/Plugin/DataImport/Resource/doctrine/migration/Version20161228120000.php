@@ -48,7 +48,7 @@ class Version20161228120000 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $schema->dropTable('plg_dataimport_productmap');
-        $schema->dropSequence('plg_dataimport_productmap_product_id_seq');
+        $schema->dropSequence('plg_dataimport_productmap_productmap_product_id_seq');
     }
 
     /**

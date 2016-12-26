@@ -145,6 +145,54 @@ class DataImportServiceProvider implements ServiceProviderInterface
             'Plugin\DataImport\Controller\Admin\Order\CsvImportController::csvOrder'
         )->bind('admin_dataimport_order_productmap');
 
+        // 商品関連付け情報テーブルリポジトリ
+        $app['eccube.plugin.dataimport.repository.productmap_product'] = $app->share(function () use ($app) {
+            return $app['orm.em']->getRepository('Plugin\DataImport\Entity\ProductMapProduct');
+        });
+
+        // 商品関連付けの一覧
+        $app->match('/' . $app["config"]["admin_route"] . '/dataimport/productmap/list', '\Plugin\DataImport\Controller\Admin\Order\ProductMapController::index')
+            ->value('id', null)->assert('id', '\d+|')
+            ->bind('admin_dataimport_productmap_list');
+
+        // 商品関連付けの新規先
+        $app->match('/' . $app["config"]["admin_route"] . '/dataimport/productmap/new', '\Plugin\DataImport\Controller\Admin\Order\ProductMapController::create')
+            ->value('id', null)->assert('id', '\d+|')
+            ->bind('admin_dataimport_productmap_new');
+
+        // 商品関連付けの新規作成・編集確定
+        $app->match('/' . $app["config"]["admin_route"] . '/dataimport/productmap/commit', '\Plugin\DataImport\Controller\Admin\Order\ProductMapController::commit')
+        ->value('id', null)->assert('id', '\d+|')
+        ->bind('admin_dataimport_productmap_commit');
+
+        // 商品関連付けの編集
+        $app->match('/' . $app["config"]["admin_route"] . '/dataimport/productmap/edit/{id}', '\Plugin\DataImport\Controller\Admin\Order\ProductMapController::edit')
+            ->value('id', null)->assert('id', '\d+|')
+            ->bind('admin_dataimport_productmap_edit');
+
+        // 商品関連付けの削除
+        $app->match('/' . $app["config"]["admin_route"] . '/dataimport/productmap/delete/{id}', '\Plugin\DataImport\Controller\Admin\Order\ProductMapController::delete')
+        ->value('id', null)->assert('id', '\d+|')
+        ->bind('admin_dataimport_productmap_delete');
+
+
+        // 商品検索画面表示
+        $app->post('/' . $app["config"]["admin_route"] . '/dataimport/search/product', '\Plugin\DataImport\Controller\Admin\Order\ProductMapSearchModelController::searchProduct')
+            ->bind('admin_dataimport_search_product');
+
+
+
+        // サービスの登録
+        $app['eccube.plugin.dataimport.service.productmap'] = $app->share(function () use ($app) {
+            return new \Plugin\DataImport\Service\ProductMapService($app);
+        });
+
+
+
+        // Service
+        //$app['eccube.recommend.service.recommend'] = $app->share(function () use ($app) {
+        //    return new \Plugin\Recommend\Service\RecommendService($app);
+        //});
 
         /**
          * フォームタイプ登録
@@ -152,6 +200,7 @@ class DataImportServiceProvider implements ServiceProviderInterface
         $app['form.types'] = $app->share($app->extend('form.types', function ($types) use ($app) {
             $types[] = new \Plugin\DataImport\Form\Type\DataImportInfoType($app);
             $types[] = new \Plugin\DataImport\Form\Type\DataImportUseType($app);
+            $types[] = new \Plugin\DataImport\Form\Type\ProductMapProductType($app);
             return $types;
         })
         );
@@ -224,9 +273,9 @@ class DataImportServiceProvider implements ServiceProviderInterface
             return $config;
         }));
         $app['config'] = $app->share($app->extend('config', function ($config) {
-            $addNavi['id'] = "admin_dataimport_order_productmap";
+            $addNavi['id'] = "admin_dataimport_productmap_list";
             $addNavi['name'] = "商品ID関連付け";
-            $addNavi['url'] = "admin_dataimport_order_productmap";
+            $addNavi['url'] = "admin_dataimport_productmap_list";
 
             $nav = $config['nav'];
             foreach ($nav as $key => $val) {

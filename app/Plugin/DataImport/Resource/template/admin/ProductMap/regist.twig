@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #}
 {% extends 'default_frame.twig' %}
 
-{% set menus = ['content', 'admin_recommend'] %}
+{% set menus = ['order', 'admin_dataimport_productmap_list'] %}
 
-{% block title %}おすすめ商品管理{% endblock %}
-{% block sub_title %}おすすめ商品内容設定{% endblock %}
+{% block title %}取込み商品連携ID管理{% endblock %}
+{% block sub_title %}商品と連携IDの関連付け設定{% endblock %}
 
 {% form_theme form 'Form/bootstrap_3_horizontal_layout.html.twig' %}
 {% form_theme searchProductModalForm 'Form/bootstrap_3_horizontal_layout.html.twig' %}
@@ -48,7 +48,7 @@ $(function() {
                 'id' : $('#admin_search_product_id').val(),
                 'category_id' : $('#admin_search_product_category_id').val()
             },
-            url: '{{ url('admin_recommend_search_product') }}',
+            url: '{{ url('admin_dataimport_search_product') }}',
             success: function(data) {
                 // モーダルに結果を書き出し.
                 $('#searchProductModalList').html(data);
@@ -80,7 +80,7 @@ var setModeAndSubmit = function(mode, keyname, keyid) {
         <div class="col-md-9">
             <div class="box accordion">
                 <div class="box-header toggle active">
-                    <h3 class="box-title">おすすめ商品情報<svg class="cb cb-angle-down icon_down"> <use xlink:href="#cb-angle-down" /></svg></h3>
+                    <h3 class="box-title">取込み商品連携ID<svg class="cb cb-angle-down icon_down"> <use xlink:href="#cb-angle-down" /></svg></h3>
                 </div><!-- /.box-header -->
                 <div class="box-body accpanel" style="display: block;">
                     <div class="order_list form-horizontal">
@@ -108,10 +108,10 @@ var setModeAndSubmit = function(mode, keyname, keyid) {
                         </div>
                         {# コメント #}
                         <div class="form-group">
-                            {{ form_label(form.comment) }}
+                            {{ form_label(form.refid) }}
                             <div class="col-sm-9 col-lg-10">
-                                {{ form_widget(form.comment) }}
-                                {{ form_errors(form.comment) }}
+                                {{ form_widget(form.refid) }}
+                                {{ form_errors(form.refid) }}
                             </div>
                         </div>
                     </div>
@@ -121,7 +121,7 @@ var setModeAndSubmit = function(mode, keyname, keyid) {
                 <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 text-center btn_area">
                     <button class="btn btn-primary btn-block btn-lg" onclick="return setModeAndSubmit('commit');">登録</button>
                     {% if form.id is not null %}
-                        <p><a href="{{ url('admin_recommend_list') }}">戻る</a></p>
+                        <p><a href="{{ url('admin_dataimport_productmap_list') }}">戻る</a></p>
                     {% endif %}
                 </div>
             </div>

@@ -124,7 +124,7 @@ class ProductMapService
 	protected function newProductMap($data) {
 		$dateTime = new \DateTime();
 
-		$rank = $this->app['eccube.plugin.dataimport.repository.productmap_product']->getMaxRank();
+		//$rank = $this->app['eccube.plugin.dataimport.repository.productmap_product']->getMaxRank();
 
 		$Recommend = new \Plugin\DataImport\Entity\ProductMapProduct();
 		$Recommend->setRefId($data['refid']);
@@ -146,118 +146,6 @@ class ProductMapService
         }
     }
 
-    // テンプレートに商品の情報を渡す
-	public function getProductParam($product_list){
-		$app = $this->app;
-		$value_repository = $app['orm.em']->getRepository('\Plugin\PlgExpandProductColumns\Entity\PlgExpandProductColumnsValue');
-		$column_repository = $app['orm.em']->getRepository('\Plugin\PlgExpandProductColumns\Entity\PlgExpandProductColumns');
-		$maker_repository = $app['eccube.plugin.maker.repository.product_maker'];
-
-		$__ex_product_list = array();
-		$__ex_product_list_maker = array();
-		foreach ($product_list as $Product) {
-			$__ex_product_list[$Product['Product']->getId()] = $this->getProductExt($Product['Product']->getId(), $value_repository, $column_repository);
-			if(!is_null($maker_repository->find($Product['Product']->getId()))){
-				$__ex_product_list_maker[$Product['Product']->getId()]['name'] = $maker_repository->find($Product['Product']->getId())->getMaker()->getName();
-				$__ex_product_list_maker[$Product['Product']->getId()]['url'] = $maker_repository->find($Product['Product']->getId())->getMakerUrl();
-			}
-		}
-
-		return array(
-			'__EX_PRODUCT_LIST' => $__ex_product_list,
-			'__EX_PRODUCT_LIST_MAKER' => $__ex_product_list_maker,
-			);
-	}
-
-
-	// Plugin\PlgExpandProductColumns\Event.php からコピペ
-	private function getProductExt($id, $value_repository, $column_repository)
-	{
-		$product_ex = array();
-		$columns = $column_repository->findAll();
-
-		/** @var \Plugin\PlgExpandProductColumns\Entity\PlgExpandProductColumns $column */
-		foreach ($columns as $column) {
-			$value = $value_repository->findOneBy(array(
-				'columnId' => $column->getColumnId(),
-				'productId' => $id));
-			/**
-			 * 配列系の値の場合、配列にしてから渡す
-			 */
-			switch ($column->getColumnType()) {
-				case EX_TYPE_IMAGE :
-				case EX_TYPE_CHECKBOX :
-					if (empty($value)) {
-						$value = '';
-					} else {
-						$value = explode(',', $value->getValue());
-					}
-					break;
-				default :
-					$value = empty($value) ? '' : $value->getValue();
-			}
-			$valuetext = '';
-			$valset = explode("\r\n",$column->getColumnSetting());
-			//dump($valset);
-			$vss = array();
-			foreach($valset as $vs){
-				if(!empty($vs)){
-
-					$vs =  explode(':',$vs);
-					if(isset($vs[0])){
-					$vss[$vs[0]] = $vs[1];
-					}
-				}
-			}
-			//dump($vss);
-			
-
-			switch ($column->getColumnType()) {
-				case EX_TYPE_CHECKBOX :
-					if (empty($value)) {
-						$valuetext = '';
-					} else {
-						foreach($value as $v){
-							$valuetext[] = $vss[$v];
-						}
-					}
-					break;
-
-				case EX_TYPE_SELECT :
-				case EX_TYPE_RADIO :
-					if (empty($value)) {
-						$valuetext = '';
-					} else {
-						$valuetext = $vss[$value];
-					}
-					break;
-				default :
-					$valuetext = $value;
-			}
-
-			$product_st[$column->getColumnName()] = array(
-				'id' => $column->getColumnId(),
-				'name' => $column->getColumnName(),
-				'value' => $value
-				,'valuetext'=> $valuetext
-			);
-
-			$product_ex[$column->getColumnId()] = array(
-				'id' => $column->getColumnId(),
-				'name' => $column->getColumnName(),
-				'value' => $value
-				,'valuetext'=> $valuetext
-			);
-		}
-		ksort($product_st);
-		$product_ex=array();
-		foreach($product_st as $ex){
-			$product_ex[$ex['id']] = $ex;
-		}
-
-
-		return $product_ex;
-	}
 
 
 }
