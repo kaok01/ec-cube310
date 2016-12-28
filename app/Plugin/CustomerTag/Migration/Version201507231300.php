@@ -125,6 +125,10 @@ class Version201507231300 extends AbstractMigration
     protected function createPlgCustomerCustomerTag(Schema $schema)
     {
         $table = $schema->createTable("plg_customer_customertag");
+        $table->addColumn('customer_customertag_id', 'integer', array(
+            'autoincrement' => true,
+        ));
+
         $table->addColumn('customer_id', 'integer', array(
             'notnull' => true,
         ));
@@ -133,25 +137,12 @@ class Version201507231300 extends AbstractMigration
             'notnull' => true,
         ));
 
-        $table->addColumn('customertag_url', 'text', array());
-
-        $table->addColumn('del_flg', 'smallint', array(
-            'notnull' => true,
-            'unsigned' => false,
-            'default' => 0,
-        ));
-
         $table->addColumn('create_date', 'datetime', array(
             'notnull' => true,
             'unsigned' => false,
         ));
 
-        $table->addColumn('update_date', 'datetime', array(
-            'notnull' => true,
-            'unsigned' => false,
-        ));
-
-        $table->setPrimaryKey(array('customer_id','customertag_id'));
+        $table->setPrimaryKey(array('customer_customertag_id'));
     }
 
     function getCustomerTagCode()

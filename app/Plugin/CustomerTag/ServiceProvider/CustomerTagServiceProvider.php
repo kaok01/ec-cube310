@@ -24,7 +24,6 @@ class CustomerTagServiceProvider implements ServiceProviderInterface
             return $app['orm.em']->getRepository('Plugin\CustomerTag\Entity\CustomerTagPlugin');
         });
 
-        // メーカーテーブル用リポジトリ
         $app['eccube.plugin.customertag.repository.customertag'] = $app->share(function () use ($app) {
             return $app['orm.em']->getRepository('Plugin\CustomerTag\Entity\CustomerTag');
         });
@@ -88,7 +87,7 @@ class CustomerTagServiceProvider implements ServiceProviderInterface
         // メニュー登録
         $app['config'] = $app->share($app->extend('config', function ($config) {
             $addNavi['id'] = "customertag";
-            $addNavi['name'] = "会員情報タグ管理";
+            $addNavi['name'] = "会員情報タグマスター";
             $addNavi['url'] = "admin_customertag";
 
             $nav = $config['nav'];

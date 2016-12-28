@@ -29,6 +29,9 @@ class CustomerCustomerTag extends \Eccube\Entity\AbstractEntity
     private $create_date;
     private $update_date;
     private $CustomerTag;
+    private $Customer;
+    //private $customer_id;
+    //private $customertag_id;
 
     public function __construct()
     {
@@ -44,29 +47,50 @@ class CustomerCustomerTag extends \Eccube\Entity\AbstractEntity
     {
         return $this->id;
     }
+    // public function setCustomerId($cid)
+    // {
+    //     $this->customer_id = $cid;
+    //     return $this;
+    // }
 
-    public function setCustomerTagUrl($customertag_url)
-    {
-        $this->customertag_url = $customertag_url;
-        return $this;
-    }
+    // public function getCustomerId()
+    // {
+    //     return $this->customer_id;
+    // }
+    // public function setCustomerTagId($customertag_id)
+    // {
+    //     $this->customertag_id = $customertag_id;
+    //     return $this;
+    // }
 
-    public function getCustomerTagUrl()
-    {
-        return $this->customertag_url;
-    }
+    // public function getCustomerTagId()
+    // {
+    //     return $this->customertag_id;
+    // }
 
-    public function setDelFlg($delFlg)
-    {
-        $this->del_flg = $delFlg;
 
-        return $this;
-    }
+    // public function setCustomerTagUrl($customertag_url)
+    // {
+    //     $this->customertag_url = $customertag_url;
+    //     return $this;
+    // }
 
-    public function getDelFlg()
-    {
-        return $this->del_flg;
-    }
+    // public function getCustomerTagUrl()
+    // {
+    //     return $this->customertag_url;
+    // }
+
+    // public function setDelFlg($delFlg)
+    // {
+    //     $this->del_flg = $delFlg;
+
+    //     return $this;
+    // }
+
+    // public function getDelFlg()
+    // {
+    //     return $this->del_flg;
+    // }
 
     public function setCreateDate($createDate)
     {
@@ -80,17 +104,17 @@ class CustomerCustomerTag extends \Eccube\Entity\AbstractEntity
         return $this->create_date;
     }
 
-    public function setUpdateDate($updateDate)
-    {
-        $this->update_date = $updateDate;
+    // public function setUpdateDate($updateDate)
+    // {
+    //     $this->update_date = $updateDate;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getUpdateDate()
-    {
-        return $this->update_date;
-    }
+    // public function getUpdateDate()
+    // {
+    //     return $this->update_date;
+    // }
     
     public function setCustomerTag(CustomerTag $customertag)
     {
@@ -106,6 +130,21 @@ class CustomerCustomerTag extends \Eccube\Entity\AbstractEntity
         }
 
         return $this->CustomerTag;
+    }
+    public function setCustomer(\Eccube\Entity\Customer $customer)
+    {
+        $this->Customer = $customer;
+
+        return $this;
+    }
+
+    public function getCustomer()
+    {
+        if (EntityUtil::isEmpty($this->Customer)) {
+            return null;
+        }
+
+        return $this->Customer;
     }
 
 }

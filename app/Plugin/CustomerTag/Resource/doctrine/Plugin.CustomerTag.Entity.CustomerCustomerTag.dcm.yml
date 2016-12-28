@@ -3,43 +3,31 @@ Plugin\CustomerTag\Entity\CustomerCustomerTag:
     table: plg_customer_customertag
     repositoryClass: Plugin\CustomerTag\Repository\CustomerCustomerTagRepository
     id:
-        customer_id:
+        id:
             type: integer
             nullable: false
             unsigned: false
             id: true
-        customertag_id:
-            type: integer
-            nullable: false
-            unsigned: false
-            id: true
+            column: customer_customertag_id
+            generator:
+                strategy: AUTO
     fields:
-        customertag_url:
-            type: text
-            nullable: true
-        del_flg:
-            type: smallint
-            nullable: false
-            unsigned: false
-            options:
-                default: '0'
         create_date:
             type: datetime
             nullable: false
-        update_date:
-            type: datetime
-            nullable: false
-    ManyToOne:
+    manyToOne:
         Customer:
             targetEntity: Eccube\Entity\Customer
+            inversedBy: CustomerTag
             joinColumn:
                 name: customer_id
                 referencedColumnName: customer_id
-
+                nullable: false
         CustomerTag:
             targetEntity: Plugin\CustomerTag\Entity\CustomerTag
+            inversedBy: CustomerCustomerTag
             joinColumn:
                 name: customertag_id
                 referencedColumnName: customertag_id
-
+                nullable: false
     lifecycleCallbacks: {  }

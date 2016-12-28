@@ -43,11 +43,13 @@ class PluginManager extends AbstractPluginManager
 
     public function enable($config, $app)
     {
+        $this->migrationSchema($app, __DIR__ . '/Migration', $config['code']);
 
     }
 
     public function disable($config, $app)
     {
+        $this->migrationSchema($app, __DIR__ . '/Migration', $config['code'], 0);
 
     }
 
