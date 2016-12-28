@@ -123,7 +123,12 @@ dump('a');
                                  // 編集用にデフォルトパスワードをセット
                                 $previous_password = $Customer->getPassword();
                                 $Customer->setPassword($app['config']['default_password']);
-                               
+                                $CustomerAddress = $app['orm.em']
+                                    ->getRepository('Eccube\Entity\CustomerAddress')
+                                    ->findBy(array('Customer'=>$Customer,'del_flg'=>0));
+                                if($CustomerAddress){
+                                    $CustomerAddress = $CustomerAddress[0];
+                                }                               
                             } else {
                                 $this->addErrors(($data->key() + 1) . '行目の会員IDが存在しません。');
                                 return $this->render($app, $form, $headers, $this->customerTwig);
@@ -405,7 +410,7 @@ dump('ab');
                         $this->em->persist($Customer);
 
                         $this->em->flush($Customer);
-
+dump($CustomerAddress);
                         $CustomerAddress->setName01($Customer->getName01())
                             ->setName02($Customer->getName02())
                             ->setKana01($Customer->getKana01())
@@ -429,6 +434,15 @@ dump('ab');
                         $this->em->persist($CustomerAddress);
 
                         //会員タグ
+                        $key= '会員情報タグ';
+
+                        $ctag = Str::trimAll($row[$key]);
+                        if(!$app['eccube.plugin.customertag.service']->createCustomerTagsByCsv($Customer,$ctag)){
+                            $this->addErrors(($data->key() + 1) . "行目の{$key}の形式が正しくありません。");
+                            return $this->render($app, $form, $headers, $this->customertagTwig);
+
+                        }
+
                         //メルマガフラグ
                         //
 

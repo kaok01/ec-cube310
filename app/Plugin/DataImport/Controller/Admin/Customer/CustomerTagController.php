@@ -52,7 +52,7 @@ class CustomerTagController extends \Plugin\DataImport\Controller\Base\CsvImport
     {
         $form = $app['form.factory']->createBuilder('admin_csv_import')->getForm();
 
-        $headers = $this->getCustomerCsvHeader();
+        $headers = $this->getCustomerTagCsvHeader();
 
         if ('POST' === $request->getMethod()) {
 
@@ -69,24 +69,23 @@ class CustomerTagController extends \Plugin\DataImport\Controller\Base\CsvImport
                     $data = $this->getImportData($app, $formFile);
                     if ($data === false) {
                         $this->addErrors('CSVのフォーマットが一致しません。');
-                        return $this->render($app, $form, $headers, $this->customerTwig);
+                        return $this->render($app, $form, $headers, $this->customertagTwig);
                     }
 
                     $keys = array_keys($headers);
                     $columnHeaders = $data->getColumnHeaders();
                     if ($keys !== $columnHeaders) {
                         $this->addErrors('CSVのフォーマットが一致しません。');
-                        return $this->render($app, $form, $headers, $this->customerTwig);
+                        return $this->render($app, $form, $headers, $this->customertagTwig);
                     }
 
                     $size = count($data);
                     if ($size < 1) {
                         $this->addErrors('CSVデータが存在しません。');
-                        return $this->render($app, $form, $headers, $this->customerTwig);
+                        return $this->render($app, $form, $headers, $this->customertagTwig);
                     }
 
                     $headerSize = count($keys);
-dump($data);//die();
                     $this->em = $app['orm.em'];
                     $this->em->getConfiguration()->setSQLLogger(null);
 
@@ -96,14 +95,12 @@ dump($data);//die();
 
                     // CSVファイルの登録処理
                     foreach ($data as $row) {
-
                         if ($headerSize != count($row)) {
                             $this->addErrors(($data->key() + 1) . "行目のCSVフォーマットが一致しません。");
                             return $this->render($app, $form, $headers, $this->customertagTwig);
                         }
 
                         $id = $row['会員ID'];
-dump('a');
                         if ($id == '') {
                             $this->addErrors(($data->key() + 1) . '行目の会員IDが存在しません。');
                             return $this->render($app, $form, $headers, $this->customertagTwig);
@@ -131,7 +128,7 @@ dump('a');
                             $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
                             return $this->render($app, $form, $headers, $this->customertagTwig);
                         } else {
-                            if(!$app['eccube.plugin.customertag.service']->createCustomerTag($Customer,$row[$key])){
+                            if(!$app['eccube.plugin.customertag.service']->createCustomerTagsByCsv($Customer,$row[$key])){
                                 $this->addErrors(($data->key() + 1) . "行目の{$key}の形式が正しくありません。");
                                 return $this->render($app, $form, $headers, $this->customertagTwig);
 
@@ -186,8 +183,12 @@ dump('a');
         $response = new StreamedResponse();
 
         $headers = $this->getCustomerTagCsvHeader();
+        if(isset($app['eccube.plugin.customertag.service'])){
+            $data = $app['eccube.plugin.customertag.service']->getCustomerTagAll();
 
-        $data = $app['eccube.plugin.customertag.service']->getCustomerTagAll();
+        }else{
+            $data = array();
+        }
 
         $response->setCallback(function () use ($app, $request, $headers,$data) {
             // ヘッダ行の出力
@@ -200,7 +201,12 @@ dump('a');
             fputcsv($fp, $row, $app['config']['csv_export_separator']);
 
             foreach($data as $rowdt){
-                fputcsv($fp, $rowdt, $app['config']['csv_export_separator']);
+                $row = array();
+                foreach ($rowdt as $key => $value) {
+                    $row[] = mb_convert_encoding($value, $app['config']['csv_export_encoding'], 'UTF-8');
+                }
+
+                fputcsv($fp, $row, $app['config']['csv_export_separator']);
 
             }
             fclose($fp);
