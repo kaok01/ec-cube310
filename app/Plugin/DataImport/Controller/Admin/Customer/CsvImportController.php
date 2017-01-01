@@ -445,7 +445,31 @@ dump($CustomerAddress);
 
                         //メルマガフラグ
                         //
+                        if(isset($app['eccube.plugin.mail_magazine.service.mail'])){
+                            $Ms = $app['eccube.plugin.mail_magazine.service.mail'];
+                            if($id==''){
+                                $Ms->saveMailmagaCustomer($Customer->getId(),1);
 
+                            }else{
+                                $key= 'メルマガ受信';
+
+                                $mailmaga = Str::trimAll($row[$key]);
+                                if($mailmaga==""){
+
+                                }else{
+                                    if($mailmaga=="0" or $mailmaga=="1"){
+                                        $Ms->saveMailmagaCustomer($Customer->getId(),$mailmaga);
+
+                                    }else{
+                                        $this->addErrors(($data->key() + 1) . "行目の{$key}の形式が正しくありません。");
+                                        return $this->render($app, $form, $headers, $this->customertagTwig);
+
+                                    }
+
+                                }
+                            }
+
+                        }
 dump($Customer);
 dump($CustomerAddress);
 
