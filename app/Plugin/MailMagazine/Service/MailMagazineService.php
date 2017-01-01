@@ -227,4 +227,28 @@ class MailMagazineService
         return $this->sendMail($mailData);;
     }
 
+
+    /**
+     * メール送付情報を保存する
+     * @param unknown $customerId
+     * @param unknown $mailmagaFlg
+     */
+    public function saveMailmagaCustomer($customerId, $mailmagaFlg)
+    {
+        // メルマガ送付情報を取得する
+        $MailmagaCustomerRepository = $this->app['eccube.plugin.mail_magazine.repository.mail_magazine_mailmaga_customer'];
+        $MailmagaCustomer = $MailmagaCustomerRepository->findOneBy(array('customer_id' => $customerId));
+
+        // メルマガ送付情報がない場合は新規に作成する
+        if (is_null($MailmagaCustomer)) {
+            $MailmagaCustomer = new \Plugin\MailMagazine\Entity\MailmagaCustomer();
+            $MailmagaCustomer->setCustomerId($customerId);
+            $MailmagaCustomer->setDelFlg(Constant::DISABLED);
+            $MailmagaCustomer->setCreateDate(new \DateTime());
+        }
+        $MailmagaCustomer->setMailmagaFlg($mailmagaFlg);
+        $MailmagaCustomer->setUpdateDate(new \DateTime());
+
+        $MailmagaCustomerRepository->save($MailmagaCustomer);
+    }
 }
