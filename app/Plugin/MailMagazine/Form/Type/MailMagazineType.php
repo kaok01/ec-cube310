@@ -179,6 +179,12 @@ class MailMagazineType extends AbstractType
                     new Assert\Length(array('max' => $config['stext_len'])),
                 ),
             ))
+            ->add('customertag', 'customertag', array(
+                'label' => '会員情報タグ',
+                'required' => false,
+                'expanded' => true,
+                'multiple' => true,
+            ))            
             ->add('buy_category', 'category', array(
                 'label' => '商品カテゴリ',
                 'required' => false,

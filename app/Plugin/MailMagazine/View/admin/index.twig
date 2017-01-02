@@ -184,6 +184,12 @@ function fnChangeActionSubmit(action) {
                                             {{ form_widget(searchForm.last_buy_start, {'attr': {'class': 'input_cal'}}) }} ～ {{ form_widget(searchForm.last_buy_end, {'attr': {'class': 'input_cal'}}) }}
                                         </div>
                                     </div>
+                                    <div class="col-xs-6 col-md-4">
+                                        <div class="form-group">
+                                            <label>会員情報タグ</label>
+                                            {{ form_widget(searchForm.customertag) }}
+                                        </div>
+                                    </div>                                    
                                     <div class="col-sm-12">
                                         <p class="text-center"><a href="#" class="search-clear">検索条件をクリア</a></p>
                                     </div>

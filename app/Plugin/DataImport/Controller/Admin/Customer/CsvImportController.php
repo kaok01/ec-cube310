@@ -86,7 +86,7 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                     }
 
                     $headerSize = count($keys);
-dump($data);//die();
+
                     $this->em = $app['orm.em'];
                     $this->em->getConfiguration()->setSQLLogger(null);
 
@@ -103,7 +103,7 @@ dump($data);//die();
                         }
 
                         $id = $row['会員ID'];
-dump('a');
+
                         if ($id == '') {
                             $Customer = $app['eccube.repository.customer']->newCustomer();
                             $CustomerAddress = new \Eccube\Entity\CustomerAddress();
@@ -358,7 +358,7 @@ dump('a');
                             }
                         }
 
-dump('ab');
+
                         $key= 'パスワード';
                         if (Str::isBlank($row[$key])) {
                             //
@@ -410,7 +410,7 @@ dump('ab');
                         $this->em->persist($Customer);
 
                         $this->em->flush($Customer);
-dump($CustomerAddress);
+
                         $CustomerAddress->setName01($Customer->getName01())
                             ->setName02($Customer->getName02())
                             ->setKana01($Customer->getKana01())
@@ -470,8 +470,7 @@ dump($CustomerAddress);
                             }
 
                         }
-dump($Customer);
-dump($CustomerAddress);
+
 
                         if ($this->hasErrors()) {
                             return $this->render($app, $form, $headers, $this->customerTwig);
