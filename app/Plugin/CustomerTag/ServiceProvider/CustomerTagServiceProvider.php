@@ -57,6 +57,10 @@ class CustomerTagServiceProvider implements ServiceProviderInterface
             $types[] = new \Plugin\CustomerTag\Form\Type\CustomerTagType($app);
             return $types;
         }));
+        $app['form.types'] = $app->share($app->extend('form.types', function ($types) use ($app) {
+            $types[] = new \Plugin\CustomerTag\Form\Type\Master\CustomerTagType($app);
+            return $types;
+        }));
 
         // Form Extension
         $app['form.type.extensions'] = $app->share($app->extend('form.type.extensions', function ($extensions) use ($app) {

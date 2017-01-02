@@ -60,7 +60,6 @@ class CustomerTag
                 $CustomerTags = $this->app['eccube.plugin.customertag.repository.customertag']->findAll();
 
                 $CustomerTag = $form->get('customertag')->getData();
-                $customertagUrl = $form->get('customertag_url')->getData();
 
                 if (count($CustomerTags) > 0 && !empty($CustomerTag)) {
 
@@ -68,7 +67,6 @@ class CustomerTag
 
                     $CustomerCustomerTag
                         ->setId($id)
-                        ->setCustomerTagUrl($customertagUrl)
                         ->setDelFlg(Constant::DISABLED)
                         ->setCustomerTag($CustomerTag);
 

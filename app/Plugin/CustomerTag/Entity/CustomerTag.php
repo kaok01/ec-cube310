@@ -13,6 +13,13 @@ namespace Plugin\CustomerTag\Entity;
 
 class CustomerTag extends \Eccube\Entity\AbstractEntity
 {
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getName();
+    }    
 
     /**
      * @var integer
