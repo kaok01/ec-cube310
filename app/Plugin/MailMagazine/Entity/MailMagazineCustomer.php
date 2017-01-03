@@ -263,6 +263,9 @@ class MailMagazineCustomer extends \Eccube\Entity\AbstractEntity implements User
 	 */
 	private $Orders;
 
+	private $CustomerTags;
+
+
 	/**
 	 * Constructor
 	 */
@@ -271,6 +274,7 @@ class MailMagazineCustomer extends \Eccube\Entity\AbstractEntity implements User
 		$this->CustomerFavoriteProducts = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->CustomerAddresses = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->Orders = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->CustomerTags =  new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	/**
@@ -1223,4 +1227,38 @@ class MailMagazineCustomer extends \Eccube\Entity\AbstractEntity implements User
 
 		return $this;
 	}
+
+	/**
+	 * Add Orders
+	 *
+	 * @param  Plugin\CustomerTag\Entity\CustomerCustomerTag
+	 * @return Customer
+	 */
+	public function addCustomerTag(\Plugin\CustomerTag\Entity\CustomerCustomerTag $ctag)
+	{
+		$this->CustomerTags[] = $ctag;
+
+		return $this;
+	}
+
+	/**
+	 * Remove Orders
+	 *
+	 * @param \Plugin\CustomerTag\Entity\CustomerTag
+	 */
+	public function removeCustomerTag(\Plugin\CustomerTag\Entity\CustomerCustomerTag $ctag)
+	{
+		$this->CustomerTags->removeElement($ctag);
+	}
+
+	/**
+	 * Get Orders
+	 *
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getCustomerTags()
+	{
+		return $this->CustomerTags;
+	}
+
 }

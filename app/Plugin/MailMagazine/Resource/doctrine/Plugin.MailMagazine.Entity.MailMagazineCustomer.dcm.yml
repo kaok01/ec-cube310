@@ -159,4 +159,7 @@ Plugin\MailMagazine\Entity\MailMagazineCustomer:
         Orders:
             targetEntity: Eccube\Entity\Order
             mappedBy: Customer
+        CustomerTags:
+            targetEntity: Plugin\CustomerTag\Entity\CustomerCustomerTag
+            mappedBy: Customer
     lifecycleCallbacks: {  }

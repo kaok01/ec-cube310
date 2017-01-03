@@ -155,6 +155,7 @@ class MailMagazineCustomerRepository extends EntityRepository implements UserPro
             ->select('c')
             ->andWhere('c.del_flg = 0');
 
+
         // メルマガを受け取るカスタマーのみに絞る
         if (count($mailmagaCustomerIds) > 0) {
             // メルマガ送付カスタマーがいれば対象カスタマーのみ対象とする
@@ -198,6 +199,23 @@ class MailMagazineCustomerRepository extends EntityRepository implements UserPro
                 ->andWhere($qb->expr()->in('c.Sex', ':sexs'))
                 ->setParameter('sexs', $sexs);
         }
+        // customertag
+        if(isset($this->app['eccube.plugin.customertag.service'])){
+    dump($searchData);
+
+            if (!empty($searchData['customertag']) && count($searchData['customertag']) > 0) {
+                $ctag = array();
+                foreach ($searchData['customertag'] as $lctag) {
+                    $ctag[] = $lctag->getId();
+                }
+
+                $qb
+                    ->innerjoin('c.CustomerTags','ct')
+                    ->andWhere($qb->expr()->in('ct.CustomerTag', ':ctag'))
+                    ->setParameter('ctag', $ctag);
+            }
+        }
+
 
         // birth_month
         if (!empty($searchData['birth_month']) && $searchData['birth_month']) {
@@ -334,6 +352,22 @@ class MailMagazineCustomerRepository extends EntityRepository implements UserPro
                 ->leftJoin('o.OrderDetails', 'od')
                 ->andWhere('od.product_name LIKE :buy_product_name OR od.product_code LIKE :buy_product_name')
                 ->setParameter('buy_product_name', '%' . $searchData['buy_product_code'] . '%');
+        }
+
+        // buy_product_name、buy_product_code
+        if (!empty($searchData['nobuy_product_code']) && $searchData['nobuy_product_code']) {
+            $qb2 = $this->createQueryBuilder('c2')
+                ->select('c2.id')
+                ->leftJoin('c2.Orders', 'o2')
+                ->leftJoin('o2.OrderDetails', 'od2')
+                ->andWhere('od2.product_name LIKE :nobuy_product_name OR od2.product_code LIKE :nobuy_product_name');
+
+            $qb
+                ->andWhere(
+                    $qb->expr()->notIn('c.id', $qb2->getDQL())
+                    )
+                ->setParameter('nobuy_product_name', '%' . $searchData['nobuy_product_code'] . '%');
+
         }
 
         // Order By

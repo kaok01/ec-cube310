@@ -179,6 +179,106 @@ class MailMagazineType extends AbstractType
                     new Assert\Length(array('max' => $config['stext_len'])),
                 ),
             ))
+            ->add('buy_product_name1', 'text', array(
+                'label' => '購入商品名',
+                'required' => false,
+                'constraints' => array(
+                    new Assert\Length(array('max' => $config['stext_len'])),
+                ),
+            ))
+            ->add('buy_product_code1', 'text', array(
+                'label' => '購入商品コード',
+                'required' => false,
+                'constraints' => array(
+                    new Assert\Length(array('max' => $config['stext_len'])),
+                ),
+            ))
+            ->add('buy_product_name2', 'text', array(
+                'label' => '購入商品名',
+                'required' => false,
+                'constraints' => array(
+                    new Assert\Length(array('max' => $config['stext_len'])),
+                ),
+            ))
+            ->add('buy_product_code2', 'text', array(
+                'label' => '購入商品コード',
+                'required' => false,
+                'constraints' => array(
+                    new Assert\Length(array('max' => $config['stext_len'])),
+                ),
+            ))
+            ->add('buy_product_name3', 'text', array(
+                'label' => '購入商品名',
+                'required' => false,
+                'constraints' => array(
+                    new Assert\Length(array('max' => $config['stext_len'])),
+                ),
+            ))
+            ->add('buy_product_code3', 'text', array(
+                'label' => '購入商品コード',
+                'required' => false,
+                'constraints' => array(
+                    new Assert\Length(array('max' => $config['stext_len'])),
+                ),
+            ))
+
+            ->add('nobuy_product_name', 'text', array(
+                'label' => '未購入商品名',
+                'required' => false,
+                'constraints' => array(
+                    new Assert\Length(array('max' => $config['stext_len'])),
+                ),
+            ))
+            ->add('nobuy_product_code', 'text', array(
+                'label' => 'aa購入商品コード',
+                'required' => false,
+                'constraints' => array(
+                    new Assert\Length(array('max' => $config['stext_len'])),
+                ),
+            ))
+            ->add('nobuy_product_name1', 'text', array(
+                'label' => '未購入商品名',
+                'required' => false,
+                'constraints' => array(
+                    new Assert\Length(array('max' => $config['stext_len'])),
+                ),
+            ))
+            ->add('nobuy_product_code1', 'text', array(
+                'label' => 'aa購入商品コード',
+                'required' => false,
+                'constraints' => array(
+                    new Assert\Length(array('max' => $config['stext_len'])),
+                ),
+            ))
+            ->add('nobuy_product_name2', 'text', array(
+                'label' => '未購入商品名',
+                'required' => false,
+                'constraints' => array(
+                    new Assert\Length(array('max' => $config['stext_len'])),
+                ),
+            ))
+            ->add('nobuy_product_code2', 'text', array(
+                'label' => 'aa購入商品コード',
+                'required' => false,
+                'constraints' => array(
+                    new Assert\Length(array('max' => $config['stext_len'])),
+                ),
+            ))
+            ->add('nobuy_product_name3', 'text', array(
+                'label' => '未購入商品名',
+                'required' => false,
+                'constraints' => array(
+                    new Assert\Length(array('max' => $config['stext_len'])),
+                ),
+            ))
+            ->add('nobuy_product_code3', 'text', array(
+                'label' => 'aa購入商品コード',
+                'required' => false,
+                'constraints' => array(
+                    new Assert\Length(array('max' => $config['stext_len'])),
+                ),
+            ))
+
             ->add('customertag', 'customertag', array(
                 'label' => '会員情報タグ',
                 'required' => false,
