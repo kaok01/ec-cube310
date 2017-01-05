@@ -22,7 +22,44 @@
 {% form_theme form 'Form/bootstrap_3_horizontal_layout.html.twig' %}
 
 {% block javascript %}
+<script src="{{ app.config.admin_urlpath }}/assets/js/vendor/moment.min.js"></script>
+<script src="{{ app.config.admin_urlpath }}/assets/js/vendor/moment-ja.js"></script>
+<script src="{{ app.config.admin_urlpath }}/assets/js/vendor/bootstrap-datetimepicker.min.js"></script>
     <script>
+$(function() {
+
+    var inputDate = document.createElement('input');
+    inputDate.setAttribute('type', 'date');
+    if (inputDate.type !== 'date') {
+        $('input[id$=_date_start]').datetimepicker({
+            locale: 'ja',
+            format: 'YYYY-MM-DD',
+            useCurrent: false,
+            showTodayButton: true
+        });
+
+        $('input[id$=_date_end]').datetimepicker({
+            locale: 'ja',
+            format: 'YYYY-MM-DD',
+            useCurrent: false,
+            showTodayButton: true
+        });
+
+    $('#admin_search_customer_birth_start').datetimepicker({
+            locale: 'ja',
+            format: 'YYYY-MM-DD',
+            useCurrent: false,
+            showTodayButton: true
+        });
+
+    $('#admin_search_customer_birth_end').datetimepicker({
+            locale: 'ja',
+            format: 'YYYY-MM-DD',
+            useCurrent: false,
+            showTodayButton: true
+        });
+});
+
         function changeAction(action) {
             document.form1.action = action;
             document.form1.submit();
@@ -40,21 +77,30 @@
             <div class="col-md-9">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">メールテンプレート編集確認</h3>
+                        <h3 class="box-title">スケジュール配信設定</h3>
                     </div><!-- /.box-header -->
+
+                    <div class="row">
+
+                        <div id="search_box_main__body_inner" class="col-sm-12 col-lg-10 col-lg-offset-1 search">
+                        <div class="col-xs-6 col-md-4">
+                            <div id="search_box_main__customer_status" class="form-group">
+                            <label>配信間隔</label>
+                            {{ form_widget(scheduleForm.send_week) }}
+                            </div>
+                        </div>
+                        <div id="search_box_main__birth" class="col-xs-12 col-sm-12 col-md-6">
+                        <label>配信期間</label>
+                        <div class="form-group range">
+                        {{ form_widget(scheduleForm.send_start, {'attr': {'class': 'input_cal'}}) }} ～ {{ form_widget(scheduleForm.send_end, {'attr': {'class': 'input_cal'}}) }}
+                        </div>
+                        </div> 
+
+                        </div>
+                    </div>
+
+
                     <div class="box-body">
-                        <table class="table table-striped">
-                            <tbody>
-                                <tr>
-                                    <th style="width: 20%;">Subject</th>
-                                    <td>{{ subject_itm }}</td>
-                                </tr>
-                                <tr>
-                                    <th>本文</th>
-                                    <td><xmp>{{ body_itm }}</xmp></td>
-                                </td>
-                            </tbody>
-                        </table>
                         <div style="display: none">
                             {{ form_rest(form) }}
                         </div>
@@ -70,28 +116,13 @@
                         <div class="box-body">
                             <div class="row text-center">
                                 <div class="col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
-                                    <button class="btn btn-primary btn-block btn-lg" onclick="changeAction('{{ url('admin_mail_magazine_commit') }}'); return false;">配信する</button>
+                                    <button class="btn btn-primary btn-block btn-lg" onclick="changeAction('{{ url('admin_mail_magazine_commit_schedule') }}'); return false;">スケジュール配信する</button>
                                 </div>
                             </div>
                         </div><!-- /.box-body -->
                     </div><!-- /.box -->
                 </div>
             </div><!-- /.col -->
-            {# 配信するボタン #}
-            <div class="col-md-3" id="aside_column">
-                <div class="col_inner">
-                    <div class="box no-header">
-                        <div class="box-body">
-                            <div class="row text-center">
-                                <div class="col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
-                                    <button class="btn btn-primary btn-block btn-lg" onclick="changeAction('{{ url('admin_mail_magazine_confirm_schedule') }}/' + document.form1.mail_magazine_template.value); return false;">配信スケジュールを設定</button>
-                                </div>
-                            </div>
-                        </div><!-- /.box-body -->
-                    </div><!-- /.box -->
-                </div>
-            </div><!-- /.col -->
-
             {# テンプレート設定画面へ戻るボタン #}
             <div class="col-md-3" id="aside_column">
                 <div class="col_inner">
@@ -99,7 +130,7 @@
                         <div class="box-body">
                             <div class="row text-center">
                                 <div class="col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
-                                    <button class="btn btn-primary btn-block btn-lg" onclick="changeAction('{{ url('admin_mail_magazine_select') }}/{{id}}'); return false;">テンプレート設定画面へ戻る</button>
+                                    <button class="btn btn-primary btn-block btn-lg" onclick="changeAction('{{ url('admin_mail_magazine_confirm') }}/{{id}}'); return false;">テンプレート設定画面へ戻る</button>
                                 </div>
                             </div>
                         </div><!-- /.box-body -->

@@ -185,6 +185,71 @@ class MailMagazineController
                 'id' => $id,
         ));
     }
+    /**
+     * 確認画面の表示
+     * RequestがPOST以外の場合はBadRequestHttpExceptionを発生させる
+     * @param Application $app
+     * @param Request $request
+     * @param string $id
+     */
+    public function confirm_schedule(Application $app, Request $request, $id = null) {
+
+        // POSTでない場合は終了する
+        if ('POST' !== $request->getMethod()) {
+            throw new BadRequestHttpException();
+        }
+
+        // Formの作成
+        //$builder = $app['form.factory']->createBuilder('mail_magazine', null);
+        $builder = $app['form.factory']->createBuilder('mail_magazine', null);
+        $schedulebuilder = $app['form.factory']->createBuilder('mail_magazine_schedule', null);
+/*
+        // ------------------------------------------------
+        // メルマガテンプレート用にvalidationを付与するため
+        // 項目を削除、追加する
+        // ------------------------------------------------
+        // Subject
+        $builder->remove('subject');
+        $builder->add('subject', 'text', array(
+                'label' => 'Subject',
+                'required' => true,
+                'constraints' => array(
+                        new NotBlank()
+                )
+        ));
+
+        // 本文
+        $builder->remove('body');
+        $builder->add('body', 'textarea', array(
+                'label' => '本文',
+                'required' => true,
+                'constraints' => array(
+                        new NotBlank()
+                )
+        ));
+*/
+        $scheduleform = $schedulebuilder->getForm();
+        $scheduleform->handleRequest($request);
+
+        $form = $builder->getForm();
+        $form->handleRequest($request);
+
+        // Formのデータを取得する
+        $formData = $form->getData();
+
+
+
+        // validationを実行する
+
+
+        return $app->render('MailMagazine/View/admin/confirm_schedule.twig', array(
+                'form' => $form->createView(),
+                'scheduleForm' => $scheduleform->createView(),
+                //'subject_itm' => $form['subject']->getData(),
+                //'body_itm' => $form['body']->getData(),
+                'id' => $id,
+        ));
+    }
 
     /**
      * 配信処理
@@ -235,6 +300,54 @@ class MailMagazineController
         return $app->redirect($app->url('admin_mail_magazine_history'));
     }
 
+    /**
+     * 配信処理
+     * 配信終了後配信履歴に遷移する
+     * RequestがPOST以外の場合はBadRequestHttpExceptionを発生させる
+     * @param Application $app
+     * @param Request $request
+     * @param string $id
+     */
+    public function commit_schedule(Application $app, Request $request, $id = null) {
+
+        // POSTでない場合は終了する
+        if ('POST' !== $request->getMethod()) {
+            throw new BadRequestHttpException();
+        }
+
+        // Formを取得する
+        $form = $app['form.factory']
+            ->createBuilder('mail_magazine', null)
+            ->getForm();
+        $form->handleRequest($request);
+        $data = $form->getData();
+
+        // 送信対象者をdtb_customerから取得する
+        if (!$form->isValid()) {
+            throw new BadRequestHttpException();
+        }
+
+        // サービスの取得
+        $service = $app['eccube.plugin.mail_magazine.service.mail'];
+
+        // 配信履歴を登録する
+        $sendId = $service->createMailMagazineHistory($data);
+        if(is_null($sendId)) {
+            $app->addError('admin.mailmagazine.send.regist.failure', 'admin');
+        } else {
+
+            // 登録した配信履歴からメールを送信する
+            $service->sendrMailMagazine($sendId);
+
+            // 送信完了メールを送信する
+            $service->sendMailMagazineCompleateReportMail();
+            $app->addSuccess('admin.mailmagazine.send.complete', 'admin');
+        }
+
+
+        // 配信管理画面に遷移する
+        return $app->redirect($app->url('admin_mail_magazine_history'));
+    }
 
     /**
     *

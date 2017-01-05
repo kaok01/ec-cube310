@@ -76,10 +76,21 @@ class MailMagazineServiceProvider implements ServiceProviderInterface
             ->value('id', null)->assert('id', '\d+|')
             ->bind('admin_mail_magazine_confirm');
 
+        $app->match('/' . $app["config"]["admin_route"] . '/mail/confirm_schedule/{id}', '\\Plugin\\MailMagazine\\Controller\\MailMagazineController::confirm_schedule')
+            ->value('id', null)->assert('id', '\d+|')
+            ->bind('admin_mail_magazine_confirm_schedule');
+
+
+
         // 配信内容配信
         $app->match('/' . $app["config"]["admin_route"] . '/mail/commit', '\\Plugin\\MailMagazine\\Controller\\MailMagazineController::commit')
             ->value('id', null)->assert('id', '\d+|')
             ->bind('admin_mail_magazine_commit');
+
+        // 配信内容配信
+        $app->match('/' . $app["config"]["admin_route"] . '/mail/commit', '\\Plugin\\MailMagazine\\Controller\\MailMagazineController::commit_schedule')
+            ->value('id', null)->assert('id', '\d+|')
+            ->bind('admin_mail_magazine_commit_schedule');
 
         // ===========================================
         // テンプレート設定
@@ -144,6 +155,9 @@ class MailMagazineServiceProvider implements ServiceProviderInterface
 
                 // 配信内容設定
                 $types[] = new \Plugin\MailMagazine\Form\Type\MailMagazineType($app);
+                $types[] = new \Plugin\MailMagazine\Form\Type\MailMagazineProductType($app);
+
+                $types[] = new \Plugin\MailMagazine\Form\Type\MailMagazineScheduleType($app);
             return $types;
         }));
 

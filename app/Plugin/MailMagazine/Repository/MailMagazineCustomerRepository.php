@@ -148,6 +148,7 @@ class MailMagazineCustomerRepository extends EntityRepository implements UserPro
      */
     public function getQueryBuilderBySearchData($searchData)
     {
+dump($searchData);
         // メルマガを受け取るカスタマーのIDを取得する
         $mailmagaCustomerIds = $this->getMailmagaCustomerIds();
 
@@ -201,7 +202,6 @@ class MailMagazineCustomerRepository extends EntityRepository implements UserPro
         }
         // customertag
         if(isset($this->app['eccube.plugin.customertag.service'])){
-    dump($searchData);
 
             if (!empty($searchData['customertag']) && count($searchData['customertag']) > 0) {
                 $ctag = array();

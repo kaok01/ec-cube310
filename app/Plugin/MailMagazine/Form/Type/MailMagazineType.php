@@ -53,7 +53,7 @@ class MailMagazineType extends AbstractType
                 'constraints' => array(
                     new Assert\Length(array('max' => $config['stext_len'])),
                 ),
-            ))
+            ))            
             ->add('pref', 'pref', array(
                 'label' => '都道府県',
                 'required' => false,
@@ -285,6 +285,18 @@ class MailMagazineType extends AbstractType
                 'expanded' => true,
                 'multiple' => true,
             ))            
+            ->add('buy_mailmagazine_product1', 'mailmagazine_product', array(
+                'label' => '購入した商品',
+                'required' => false,
+                'expanded' => false,
+                'multiple' => true,
+            ))        
+            ->add('nobuy_mailmagazine_product1', 'mailmagazine_product', array(
+                'label' => '未購入の商品',
+                'required' => false,
+                'expanded' => false,
+                'multiple' => true,
+            ))        
             ->add('buy_category', 'category', array(
                 'label' => '商品カテゴリ',
                 'required' => false,
