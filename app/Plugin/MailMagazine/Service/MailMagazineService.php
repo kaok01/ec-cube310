@@ -210,6 +210,74 @@ class MailMagazineService
     }
 
     /**
+     * Send mailmagazine.
+     * メールマガジンを送信する.
+     *
+     * @param unknown $sendId
+     */
+    public function createReservedsendMailMagazine($sendId,$scheduledata)
+    {
+        // 最後に送信したメール本文をクリアする
+        $this->lastSendMailBody = "";
+
+        // send_historyを取得する
+        $sendHistory = $this->app[self::REPOSITORY_SEND_HISTORY]->find($sendId);
+
+        if(is_null($sendHistory)) {
+            // 削除されている場合は終了する
+            return false;
+        }
+        // send_customerを取得する
+        $sendCustomerList = $this->app[self::REPOSITORY_SEND_CUSTOMER]->getSendCustomerByNotSuccess($sendId);
+
+        // 配信済数を取得する
+        $compleateCount = $sendHistory->getCompleteCount();
+
+        // 取得したメルマガ配信者分メールを送信する
+        foreach ($sendCustomerList as $sendCustomer) {
+            // メール送信
+            $name = trim($sendCustomer->getName());
+            $body = preg_replace('/{name}/', $name, $sendHistory->getBody());
+            // 送信した本文を保持する
+            $this->lastSendMailBody = $body;
+            $mailData = array(
+                    'email' => $sendCustomer->getEmail(),
+                    'subject' => preg_replace('/{name}/', $name, $sendHistory->getSubject()),
+                    'body' => $body
+            );
+            try {
+                $sendResult = $this->sendMail($mailData);
+            } catch(\Exception $e) {
+                $sendResult = false;
+            }
+
+            if(!$sendResult) {
+                // メール送信失敗時
+                $sendFlag = self::SEND_FLAG_FAILURE;
+            } else {
+                // メール送信成功時
+                $sendFlag = self::SEND_FLAG_SUCCESS;
+                $compleateCount++;
+            }
+
+            // 履歴更新
+            $sendCustomer->setSendFlag($sendFlag);
+            try {
+                $this->app[self::REPOSITORY_SEND_CUSTOMER]->updateSendCustomer($sendCustomer);
+            }catch(\Exception $e) {
+                throw $e;
+            }
+        }
+
+        // 送信結果情報を更新する
+        $sendHistory->setEndDate(new \DateTime());
+        $sendHistory->setCompleteCount($compleateCount);
+        $this->app[self::REPOSITORY_SEND_HISTORY]->updateSendHistory($sendHistory);
+
+        return true;
+    }
+
+    /**
      * 送信完了報告メールを送信する
      *
      * @return number

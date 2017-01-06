@@ -8,3 +8,5 @@ admin.mailmagazine.send.regist.failure: 配信履歴の登録に失敗しまし�
 
 admin.mailmagazine.history.datanotfound: 配信履歴が存在しません。
 admin.mailmagazine.history.delete.sucesss: 配信履歴を削除しました。
+
+admin.mailmagazine.reservedsend.regist: スケジュール配信を登録しました。

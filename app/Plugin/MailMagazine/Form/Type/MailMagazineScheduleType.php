@@ -69,6 +69,11 @@ class MailMagazineScheduleType extends AbstractType
                 'format' => 'yyyy-MM-dd',
                 'empty_value' => array('year' => '----', 'month' => '--', 'day' => '--'),
             ))
+            ->add('checksend_flg', 'boolean', array(
+                'label' => '繰返し送信',
+                'required' => true,
+                'expanded' => true,
+            ))        
            ->addEventSubscriber(new \Eccube\Event\FormEventSubscriber());
         ;
     }

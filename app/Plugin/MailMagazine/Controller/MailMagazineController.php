@@ -322,6 +322,13 @@ class MailMagazineController
         $form->handleRequest($request);
         $data = $form->getData();
 
+
+        $scheduleform = $app['form.factory']
+                    ->createBuilder('mail_magazine_schedule', null)
+                    ->getForm();
+        $scheduleform->handleRequest($request);
+        $scheduledata = $scheduleform->getData();
+
         // 送信対象者をdtb_customerから取得する
         if (!$form->isValid()) {
             throw new BadRequestHttpException();
@@ -336,12 +343,10 @@ class MailMagazineController
             $app->addError('admin.mailmagazine.send.regist.failure', 'admin');
         } else {
 
-            // 登録した配信履歴からメールを送信する
-            $service->sendrMailMagazine($sendId);
+            // 登録した配信履歴に関連付けてスケジュール配信を記録する
+            $service->createReservedsendMailMagazine($sendId,$scheduledata);
 
-            // 送信完了メールを送信する
-            $service->sendMailMagazineCompleateReportMail();
-            $app->addSuccess('admin.mailmagazine.send.complete', 'admin');
+            $app->addSuccess('admin.mailmagazine.reservedsend.regist', 'admin');
         }
 
 
