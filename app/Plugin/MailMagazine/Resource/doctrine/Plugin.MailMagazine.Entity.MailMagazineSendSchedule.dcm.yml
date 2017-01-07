@@ -1,0 +1,62 @@
+Plugin\MailMagazine\Entity\MailMagazineSendSchedule:
+    type: entity
+    table: plg_send_schedule
+    repositoryClass: Plugin\MailMagazine\Repository\MailMagazineSendScheduleRepository
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            id: true
+            column: schedule_id
+            generator:
+                strategy: AUTO
+    fields:
+        schedule_name:
+            type: text
+            nullable: true
+        send_week:
+            type: text
+            nullable: true
+        send_start:
+            type: datetime
+            nullable: true
+        send_end:
+            type: datetime
+            nullable: true
+        sendrepeat_flg:
+            type: integer
+            nullable: true
+            unsigned: false
+            options:
+                default: '0'
+        enable_flg:
+            type: integer
+            nullable: true
+            unsigned: false
+            options:
+                default: '1'
+        del_flg:
+            type: smallint
+            nullable: false
+            unsigned: false
+            options:
+                default: '0'
+        create_date:
+            type: datetime
+            nullable: false
+        update_date:
+            type: datetime
+            nullable: false
+    manyToOne:
+        Creator:
+            targetEntity: Eccube\Entity\Member
+            joinColumn:
+                name: creator_id
+                referencedColumnName: member_id
+        SendHistory:
+            targetEntity: Plugin\MailMagazine\Entity\MailMagazineSendHistory
+            joinColumn:
+                name: send_id
+                referencedColumnName: send_id
+    lifecycleCallbacks: {  }

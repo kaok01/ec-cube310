@@ -329,11 +329,20 @@ class MailMagazineController
         $scheduleform->handleRequest($request);
         $scheduledata = $scheduleform->getData();
 
+
+
         // 送信対象者をdtb_customerから取得する
         if (!$form->isValid()) {
             throw new BadRequestHttpException();
         }
 
+        // 送信対象者をdtb_customerから取得する
+        if (!$scheduleform->isValid()) {
+            throw new BadRequestHttpException();
+        }
+dump($data);
+dump($scheduledata);
+die();
         // サービスの取得
         $service = $app['eccube.plugin.mail_magazine.service.mail'];
 

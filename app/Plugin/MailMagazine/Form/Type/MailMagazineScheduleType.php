@@ -43,6 +43,7 @@ class MailMagazineScheduleType extends AbstractType
                 'label' => '配信スケジュール名',
                 'required' => true,
                 'constraints' => array(
+                    new Assert\NotBlank(),
                     new Assert\Length(array('max' => $config['stext_len'])),
                 ),
             ))        
@@ -69,10 +70,14 @@ class MailMagazineScheduleType extends AbstractType
                 'format' => 'yyyy-MM-dd',
                 'empty_value' => array('year' => '----', 'month' => '--', 'day' => '--'),
             ))
-            ->add('checksend_flg', 'boolean', array(
+            ->add('checksend_flg', 'checkbox', array(
                 'label' => '繰返し送信',
-                'required' => true,
-                'expanded' => true,
+                'required' => false,
+                'trim' => true,
+                'value' => 0,
+                'constraints' => array(
+                    new Assert\NotBlank(),
+                ),
             ))        
            ->addEventSubscriber(new \Eccube\Event\FormEventSubscriber());
         ;

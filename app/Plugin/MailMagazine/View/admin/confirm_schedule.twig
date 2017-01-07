@@ -45,19 +45,20 @@ $(function() {
             showTodayButton: true
         });
 
-    $('#admin_search_customer_birth_start').datetimepicker({
+    $('#admin_search_customer_send_start').datetimepicker({
             locale: 'ja',
             format: 'YYYY-MM-DD',
             useCurrent: false,
             showTodayButton: true
         });
 
-    $('#admin_search_customer_birth_end').datetimepicker({
+    $('#admin_search_customer_send_end').datetimepicker({
             locale: 'ja',
             format: 'YYYY-MM-DD',
             useCurrent: false,
             showTodayButton: true
         });
+    }
 });
 
         function changeAction(action) {
@@ -82,17 +83,35 @@ $(function() {
 
                     <div class="row">
 
+
                         <div id="search_box_main__body_inner" class="col-sm-12 col-lg-10 col-lg-offset-1 search">
+
+                        <div id="search_box_main__birth" class="col-xs-12 col-sm-12 col-md-6">
+                        <label>スケジュール名</label>
+                        <div class="form-group">
+                        {{ form_widget(scheduleForm.schedule_name) }}
+                        </div>
+                        </div> 
+                                                
                         <div class="col-xs-6 col-md-4">
                             <div id="search_box_main__customer_status" class="form-group">
                             <label>配信間隔</label>
                             {{ form_widget(scheduleForm.send_week) }}
                             </div>
                         </div>
+
+
                         <div id="search_box_main__birth" class="col-xs-12 col-sm-12 col-md-6">
                         <label>配信期間</label>
                         <div class="form-group range">
                         {{ form_widget(scheduleForm.send_start, {'attr': {'class': 'input_cal'}}) }} ～ {{ form_widget(scheduleForm.send_end, {'attr': {'class': 'input_cal'}}) }}
+                        </div>
+                        </div> 
+
+                        <div id="search_box_main__birth" class="col-xs-12 col-sm-12 col-md-6">
+                        <label>繰返し送信する</label>
+                        <div class="form-group range">
+                        {{ form_widget(scheduleForm.checksend_flg) }}
                         </div>
                         </div> 
 

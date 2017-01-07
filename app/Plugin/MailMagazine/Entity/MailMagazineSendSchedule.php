@@ -25,42 +25,32 @@ class MailMagazineSendSchedule extends \Eccube\Entity\AbstractEntity
     /**
     * @var integer
     */
-    private $mail_method;
+    private $schedule_name;
 
     /**
     * @var string
     */
-    private $subject;
-
-    /**
-    * @var string
-    */
-    private $body;
-
-    /**
-    * @var integer
-    */
-    private $send_count;
-
-    /**
-    * @var integer
-    */
-    private $complete_count;
+    private $send_week;
 
     /**
     * @var \DateTime
     */
-    private $start_date;
+    private $send_start;
 
     /**
     * @var \DateTime
     */
-    private $end_date;
+    private $send_end;
 
     /**
-    * @var string
+    * @var integer
     */
-    private $search_data;
+    private $sendrepeat_flg;
+
+    /**
+    * @var integer
+    */
+    private $enable_flg;
 
     /**
     * @var integer
@@ -83,6 +73,21 @@ class MailMagazineSendSchedule extends \Eccube\Entity\AbstractEntity
     private $Creator;
 
     /**
+    * @var \Plugin\MailMagazine\Entity\MailMagazineSendHistory
+    */
+    private $SendHistory;
+    /**
+    * Get id
+    *
+    * @return integer
+    */
+    public function setId($id)
+    {
+        $this->id=$id;
+        return $this;
+    }
+
+    /**
     * Get id
     *
     * @return integer
@@ -92,208 +97,70 @@ class MailMagazineSendSchedule extends \Eccube\Entity\AbstractEntity
         return $this->id;
     }
 
-    /**
-    * Set mail_method
-    *
-    * @param  integer     $mailMethod
-    * @return SendHistory
-    */
-    public function setMailMethod($mailMethod)
-    {
-        $this->mail_method = $mailMethod;
 
+    public function setScheduleName($v)
+    {
+        $this->schedule_name=$v;
         return $this;
     }
-
-    /**
-    * Get mail_method
-    *
-    * @return integer
-    */
-    public function getMailMethod()
+    public function getScheduleName()
     {
-        return $this->mail_method;
+        return $this->schedule_name;
     }
 
-    /**
-    * Set subject
-    *
-    * @param  string      $subject
-    * @return SendHistory
-    */
-    public function setSubject($subject)
+    public function setSendWeek($v)
     {
-        $this->subject = $subject;
-
+        $this->send_week=$v;
         return $this;
     }
-
-    /**
-    * Get subject
-    *
-    * @return string
-    */
-    public function getSubject()
+    public function getSendWeek()
     {
-        return $this->subject;
+        return $this->send_week;
     }
 
-    /**
-    * Set body
-    *
-    * @param  string      $body
-    * @return SendHistory
-    */
-    public function setBody($body)
+    public function setSendStart($v)
     {
-        $this->body = $body;
-
+        $this->send_start=$v;
         return $this;
     }
-
-    /**
-    * Get body
-    *
-    * @return string
-    */
-    public function getBody()
+    public function getSendStart()
     {
-        return $this->body;
+        return $this->send_start;
     }
-
-    /**
-    * Set send_count
-    *
-    * @param  integer     $sendCount
-    * @return SendHistory
-    */
-    public function setSendCount($sendCount)
+    public function setSendEnd($v)
     {
-        $this->send_count = $sendCount;
-
+        $this->send_end=$v;
         return $this;
     }
-
-    /**
-    * Get send_count
-    *
-    * @return integer
-    */
-    public function getSendCount()
+    public function getSendEnd()
     {
-        return $this->send_count;
+        return $this->send_end;
     }
-
-    /**
-    * Set complete_count
-    *
-    * @param  integer     $completeCount
-    * @return SendHistory
-    */
-    public function setCompleteCount($completeCount)
+    public function setSendRepeatFlg($v)
     {
-        $this->complete_count = $completeCount;
-
+        $this->sendrepeat_flg=$v;
         return $this;
     }
-
-    /**
-    * Get complete_count
-    *
-    * @return integer
-    */
-    public function getCompleteCount()
+    public function getSendRepeatFlg()
     {
-        return $this->complete_count;
+        return $this->sendrepeat_flg;
     }
 
-    /**
-    * Set start_date
-    *
-    * @param  \DateTime   $startDate
-    * @return SendHistory
-    */
-    public function setStartDate($startDate)
+    public function setEnableFlg($v)
     {
-        $this->start_date = $startDate;
-
+        $this->enable_flg=$v;
         return $this;
     }
-
-    /**
-    * Get start_date
-    *
-    * @return \DateTime
-    */
-    public function getStartDate()
+    public function getEnableFlg()
     {
-        return $this->start_date;
+        return $this->enable_flg;
     }
 
-    /**
-    * Set end_date
-    *
-    * @param  \DateTime   $endDate
-    * @return SendHistory
-    */
-    public function setEndDate($endDate)
+    public function setDelFlg($v)
     {
-        $this->end_date = $endDate;
-
+        $this->del_flg=$v;
         return $this;
     }
-
-    /**
-    * Get end_date
-    *
-    * @return \DateTime
-    */
-    public function getEndDate()
-    {
-        return $this->end_date;
-    }
-
-    /**
-    * Set search_data
-    *
-    * @param  string      $searchData
-    * @return SendHistory
-    */
-    public function setSearchData($searchData)
-    {
-        $this->search_data = $searchData;
-
-        return $this;
-    }
-
-    /**
-    * Get search_data
-    *
-    * @return string
-    */
-    public function getSearchData()
-    {
-        return $this->search_data;
-    }
-
-    /**
-    * Set del_flg
-    *
-    * @param  integer     $delFlg
-    * @return SendHistory
-    */
-    public function setDelFlg($delFlg)
-    {
-        $this->del_flg = $delFlg;
-
-        return $this;
-    }
-
-    /**
-    * Get del_flg
-    *
-    * @return integer
-    */
     public function getDelFlg()
     {
         return $this->del_flg;
@@ -367,4 +234,27 @@ class MailMagazineSendSchedule extends \Eccube\Entity\AbstractEntity
     {
         return $this->Creator;
     }
+
+    /**
+    * Set Creator
+    *
+    * @param  \Eccube\Entity\Member $creator
+    * @return SendHistory
+    */
+    public function setSendHistory(\Plugin\MailMagazine\Entity\MailMagazineSendHistory $sendhistory = null)
+    {
+        $this->SendHistory = $sendhistory;
+
+        return $this;
+    }
+
+    /**
+    * Get Creator
+    *
+    * @return \Eccube\Entity\Member
+    */
+    public function getSendHistory()
+    {
+        return $this->SendHistory;
+    }    
 }
