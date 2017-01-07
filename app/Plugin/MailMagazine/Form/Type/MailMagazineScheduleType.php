@@ -70,11 +70,20 @@ class MailMagazineScheduleType extends AbstractType
                 'format' => 'yyyy-MM-dd',
                 'empty_value' => array('year' => '----', 'month' => '--', 'day' => '--'),
             ))
-            ->add('checksend_flg', 'checkbox', array(
+            ->add('sendrepeat_flg', 'checkbox', array(
                 'label' => '繰返し送信',
                 'required' => false,
                 'trim' => true,
                 'value' => 0,
+                'constraints' => array(
+                    new Assert\NotBlank(),
+                ),
+            ))        
+            ->add('enable_flg', 'checkbox', array(
+                'label' => '有効・無効',
+                'required' => false,
+                'trim' => true,
+                'value' => 1,
                 'constraints' => array(
                     new Assert\NotBlank(),
                 ),

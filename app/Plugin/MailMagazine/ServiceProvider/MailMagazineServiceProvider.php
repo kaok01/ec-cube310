@@ -34,6 +34,11 @@ class MailMagazineServiceProvider implements ServiceProviderInterface
             return $app['orm.em']->getRepository('Plugin\MailMagazine\Entity\MailMagazineSendHistory');
         });
 
+        // スケジュール配信用リポジトリ
+        $app['eccube.plugin.mail_magazine.repository.mail_magazine_schedule'] = $app->share(function () use ($app) {
+            return $app['orm.em']->getRepository('Plugin\MailMagazine\Entity\MailMagazineSendSchedule');
+        });
+
         // EC-CUBE本体よりコピー
         // Customer用リポジトリ
         $app['eccube.plugin.mail_magazine.repository.mail_magazine_customer'] = $app->share(function () use ($app) {
@@ -42,6 +47,10 @@ class MailMagazineServiceProvider implements ServiceProviderInterface
         // SendHistory用リポジトリ
         $app['eccube.plugin.mail_magazine.repository.mail_magazine_send_history'] = $app->share(function () use ($app) {
             return $app['orm.em']->getRepository('Plugin\MailMagazine\Entity\MailMagazineSendHistory');
+        });
+        // SendSchedule用リポジトリ
+        $app['eccube.plugin.mail_magazine.repository.mail_magazine_send_schedule'] = $app->share(function () use ($app) {
+            return $app['orm.em']->getRepository('Plugin\MailMagazine\Entity\MailMagazineSendSchedule');
         });
         // SendCustomer用リポジトリ
         $app['eccube.plugin.mail_magazine.repository.mail_magazine_send_customer'] = $app->share(function () use ($app) {
@@ -147,6 +156,24 @@ class MailMagazineServiceProvider implements ServiceProviderInterface
             ->value('id', null)->assert('id', '\d+|')
             ->bind('admin_mail_magazine_history_delete');
 
+        // ===========================================
+        // スケジュール配信
+        // ===========================================
+        // スケジュール配信一覧
+        $app->match('/' . $app["config"]["admin_route"] . '/mail/schedule', '\\Plugin\\MailMagazine\\Controller\\MailMagazineScheduleController::index')
+            ->value('id', null)->assert('id', '\d+|')
+            ->bind('admin_mail_magazine_schedule');
+
+        // スケジュール配信編集
+        $app->match('/' . $app["config"]["admin_route"] . '/mail/schedule/{id}/edit', '\\Plugin\\MailMagazine\\Controller\\MailMagazineScheduleController::edit')
+            ->value('id', null)->assert('id', '\d+|')
+            ->bind('admin_mail_magazine_schedule_edit');
+
+        // スケジュール配信削除
+        $app->match('/' . $app["config"]["admin_route"] . '/mail/schedule/{id}/delete', '\\Plugin\\MailMagazine\\Controller\\MailMagazineScheduleController::delete')
+            ->value('id', null)->assert('id', '\d+|')
+            ->bind('admin_mail_magazine_history_delete');
+
         // 型登録
         $app['form.types'] = $app->share($app->extend('form.types', function ($types) use ($app) {
                 // テンプレート設定
@@ -203,9 +230,9 @@ class MailMagazineServiceProvider implements ServiceProviderInterface
                         'url' => "admin_mail_magazine",
                     ),
                     array(
-                        'id' => "mailmagazine",
+                        'id' => "mailmagazine_schedule",
                         'name' => "スケジュール配信管理",
-                        'url' => "admin_mail_magazine",
+                        'url' => "admin_mail_magazine_schedule",
                     ),
                     array(
                         'id' => "mailmagazine_template",

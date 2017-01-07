@@ -22,6 +22,8 @@ class MailMagazineService
     const REPOSITORY_SEND_HISTORY = 'eccube.plugin.mail_magazine.repository.mail_magazine_send_history';
     const REPOSITORY_SEND_CUSTOMER = 'eccube.plugin.mail_magazine.repository.mail_magazine_send_customer';
 
+    const REPOSITORY_SEND_SCHEDULE = 'eccube.plugin.mail_magazine.repository.mail_magazine_send_schedule';
+
     // send_flagの定数
     /** メール送信成功 */
     const SEND_FLAG_SUCCESS = 1;
@@ -217,9 +219,7 @@ class MailMagazineService
      */
     public function createReservedsendMailMagazine($sendId,$scheduledata)
     {
-        // 最後に送信したメール本文をクリアする
-        $this->lastSendMailBody = "";
-
+dump($scheduledata);
         // send_historyを取得する
         $sendHistory = $this->app[self::REPOSITORY_SEND_HISTORY]->find($sendId);
 
@@ -227,52 +227,25 @@ class MailMagazineService
             // 削除されている場合は終了する
             return false;
         }
-        // send_customerを取得する
-        $sendCustomerList = $this->app[self::REPOSITORY_SEND_CUSTOMER]->getSendCustomerByNotSuccess($sendId);
+        $SendSchedule = new \Plugin\MailMagazine\Entity\MailMagazineSendSchedule();
 
-        // 配信済数を取得する
-        $compleateCount = $sendHistory->getCompleteCount();
-
-        // 取得したメルマガ配信者分メールを送信する
-        foreach ($sendCustomerList as $sendCustomer) {
-            // メール送信
-            $name = trim($sendCustomer->getName());
-            $body = preg_replace('/{name}/', $name, $sendHistory->getBody());
-            // 送信した本文を保持する
-            $this->lastSendMailBody = $body;
-            $mailData = array(
-                    'email' => $sendCustomer->getEmail(),
-                    'subject' => preg_replace('/{name}/', $name, $sendHistory->getSubject()),
-                    'body' => $body
-            );
-            try {
-                $sendResult = $this->sendMail($mailData);
-            } catch(\Exception $e) {
-                $sendResult = false;
-            }
-
-            if(!$sendResult) {
-                // メール送信失敗時
-                $sendFlag = self::SEND_FLAG_FAILURE;
-            } else {
-                // メール送信成功時
-                $sendFlag = self::SEND_FLAG_SUCCESS;
-                $compleateCount++;
-            }
-
-            // 履歴更新
-            $sendCustomer->setSendFlag($sendFlag);
-            try {
-                $this->app[self::REPOSITORY_SEND_CUSTOMER]->updateSendCustomer($sendCustomer);
-            }catch(\Exception $e) {
-                throw $e;
-            }
-        }
+        $currentDatetime = new \DateTime();
 
         // 送信結果情報を更新する
-        $sendHistory->setEndDate(new \DateTime());
-        $sendHistory->setCompleteCount($compleateCount);
-        $this->app[self::REPOSITORY_SEND_HISTORY]->updateSendHistory($sendHistory);
+        $SendSchedule
+            ->setScheduleName($scheduledata['schedule_name'])
+            ->setSendStart($scheduledata['send_start'])
+            ->setSendEnd($scheduledata['send_end'])
+            ->setScheduleName($scheduledata['schedule_name'])
+            ->setSendHistory($sendHistory)
+            ->setSendRepeatFlg($scheduledata['sendrepeat_flg'])
+            ->setDelFlg(0)
+            ->setEnableFlg($scheduledata['enable_flg'])
+            ->setCreateDate($currentDatetime)
+            ->setUpdateDate($currentDatetime)
+        ;
+
+        $this->app[self::REPOSITORY_SEND_SCHEDULE]->createSendSchedule($SendSchedule);
 
         return true;
     }

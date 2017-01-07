@@ -127,6 +127,8 @@ class MailMagazineController
      * @param string $id
      */
     public function confirm(Application $app, Request $request, $id = null) {
+dump($id);
+dump($request);
 
         // POSTでない場合は終了する
         if ('POST' !== $request->getMethod()) {
@@ -193,6 +195,8 @@ class MailMagazineController
      * @param string $id
      */
     public function confirm_schedule(Application $app, Request $request, $id = null) {
+dump($id);
+dump($request);
 
         // POSTでない場合は終了する
         if ('POST' !== $request->getMethod()) {
@@ -230,6 +234,12 @@ class MailMagazineController
 */
         $scheduleform = $schedulebuilder->getForm();
         $scheduleform->handleRequest($request);
+        $scheduleform->setData(array('enable_flg'=>true));
+        $formScheduleData = $scheduleform->getData();
+dump($formScheduleData);
+        //$formScheduleData['enable_flg'] = 1;
+        //->setEnableFlg(1);
+        //$scheduleform->setData($formScheduleData);
 
         $form = $builder->getForm();
         $form->handleRequest($request);
@@ -260,7 +270,9 @@ class MailMagazineController
      * @param string $id
      */
     public function commit(Application $app, Request $request, $id = null) {
-
+dump($id);
+dump($request);
+die();
         // POSTでない場合は終了する
         if ('POST' !== $request->getMethod()) {
             throw new BadRequestHttpException();
@@ -309,7 +321,9 @@ class MailMagazineController
      * @param string $id
      */
     public function commit_schedule(Application $app, Request $request, $id = null) {
-
+dump($id);
+dump($request);
+//die();
         // POSTでない場合は終了する
         if ('POST' !== $request->getMethod()) {
             throw new BadRequestHttpException();
@@ -330,19 +344,20 @@ class MailMagazineController
         $scheduledata = $scheduleform->getData();
 
 
+dump($data);
+dump($scheduledata);
 
         // 送信対象者をdtb_customerから取得する
         if (!$form->isValid()) {
-            throw new BadRequestHttpException();
+            //throw new BadRequestHttpException();
         }
 
         // 送信対象者をdtb_customerから取得する
         if (!$scheduleform->isValid()) {
-            throw new BadRequestHttpException();
+            //throw new BadRequestHttpException();
         }
-dump($data);
-dump($scheduledata);
-die();
+dump($form);
+dump($scheduleform);
         // サービスの取得
         $service = $app['eccube.plugin.mail_magazine.service.mail'];
 
@@ -357,6 +372,7 @@ die();
 
             $app->addSuccess('admin.mailmagazine.reservedsend.regist', 'admin');
         }
+die();
 
 
         // 配信管理画面に遷移する

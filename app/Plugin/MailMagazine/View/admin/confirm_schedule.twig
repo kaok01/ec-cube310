@@ -74,6 +74,7 @@ $(function() {
     <div class="row" id="aside_wrap">
         <form name="form1" role="form" class="form-horizontal" id="form1" method="post" action="">
             {{ form_widget(form._token) }}
+            {{ form_widget(scheduleForm._token) }}
 
             <div class="col-md-9">
                 <div class="box">
@@ -111,10 +112,10 @@ $(function() {
                         <div id="search_box_main__birth" class="col-xs-12 col-sm-12 col-md-6">
                         <label>繰返し送信する</label>
                         <div class="form-group range">
-                        {{ form_widget(scheduleForm.checksend_flg) }}
+                        {{ form_widget(scheduleForm.sendrepeat_flg) }}
                         </div>
                         </div> 
-
+                        {{ form_widget(scheduleForm.enable_flg, { attr: { class : 'hidden' } } ) }}
                         </div>
                     </div>
 
