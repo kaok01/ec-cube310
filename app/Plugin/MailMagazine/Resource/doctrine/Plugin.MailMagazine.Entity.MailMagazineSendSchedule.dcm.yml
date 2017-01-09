@@ -18,6 +18,9 @@ Plugin\MailMagazine\Entity\MailMagazineSendSchedule:
         send_week:
             type: text
             nullable: true
+        send_time:
+            type: datetime
+            nullable: true
         send_start:
             type: datetime
             nullable: true

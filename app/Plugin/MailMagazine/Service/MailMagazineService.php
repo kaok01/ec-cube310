@@ -234,6 +234,7 @@ dump($scheduledata);
         // 送信結果情報を更新する
         $SendSchedule
             ->setScheduleName($scheduledata['schedule_name'])
+            ->setSendTime($scheduledata['send_time'])
             ->setSendStart($scheduledata['send_start'])
             ->setSendEnd($scheduledata['send_end'])
             ->setScheduleName($scheduledata['schedule_name'])
@@ -245,8 +246,10 @@ dump($scheduledata);
             ->setUpdateDate($currentDatetime)
         ;
 
-        $this->app[self::REPOSITORY_SEND_SCHEDULE]->createSendSchedule($SendSchedule);
-
+        $status = $this->app[self::REPOSITORY_SEND_SCHEDULE]->createSendSchedule($SendSchedule);
+        if(!$status) {
+            return null;
+        }
         return true;
     }
 

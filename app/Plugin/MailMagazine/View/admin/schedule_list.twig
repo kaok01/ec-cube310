@@ -55,6 +55,7 @@ function changeAction(action) {
                                             <th>スケジュール名</th>
                                             <th>配信開始</th>
                                             <th>配信終了</th>
+                                            <th>配信時刻（24h)</th>
                                             <th>配信間隔</th>
                                             <th>有効・無効</th>
                                             <th>繰返し配信</th>
@@ -65,13 +66,14 @@ function changeAction(action) {
                                     <tbody>
                                         {% for SendSchedule in pagination %}
                                         <tr>
-                                            <td class="">{{ SendSchedule.schedule_name }}</td>
+                                            <td class=""><a href="?" onclick="changeAction('{{ url('admin_mail_magazine_history', { id: SendSchedule.SendHistory.id }) }}'); return false;">{{ SendSchedule.schedule_name }}</a></td>
                                             <td class="">{{ SendSchedule.send_start|date("Y/m/d") }}</td>
                                             <td class="">
                                                 {% if SendSchedule.send_end is not null %}
                                                     {{ SendSchedule.send_end|date("Y/m/d") }}
                                                 {% endif %}
                                             </td>
+                                            <td class="">{{ SendSchedule.send_time|date("H:i") }}</td>
                                             <td class="">{{ SendSchedule.send_week}}</td>
                                             <td class="">{{ SendSchedule.enable_flg}}</td>
                                             <td class="">{{ SendSchedule.sendrepeat_flg}}</td>

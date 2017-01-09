@@ -35,6 +35,11 @@ class MailMagazineSendSchedule extends \Eccube\Entity\AbstractEntity
     /**
     * @var \DateTime
     */
+    private $send_time;
+
+    /**
+    * @var \DateTime
+    */
     private $send_start;
 
     /**
@@ -108,6 +113,15 @@ class MailMagazineSendSchedule extends \Eccube\Entity\AbstractEntity
         return $this->send_week;
     }
 
+    public function setSendTime($v)
+    {
+        $this->send_time=$v;
+        return $this;
+    }
+    public function getSendTime()
+    {
+        return $this->send_time;
+    }
     public function setSendStart($v)
     {
         $this->send_start=$v;

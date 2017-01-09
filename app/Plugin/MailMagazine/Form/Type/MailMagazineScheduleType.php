@@ -54,6 +54,14 @@ class MailMagazineScheduleType extends AbstractType
                 'expanded' => true,
                 'multiple' => true
             ))        
+            ->add('send_time', 'time', array(
+                'label' => '配信時間',
+                'required' => true,
+                'input' => 'datetime',
+                'widget' => 'single_text',
+                //'format' => 'H:i',
+                //'empty_value' => array('year' => '----', 'month' => '--', 'day' => '--'),
+            ))
             ->add('send_start', 'birthday', array(
                 'label' => '配信開始日',
                 'required' => true,
