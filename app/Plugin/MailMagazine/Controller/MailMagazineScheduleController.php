@@ -39,12 +39,29 @@ class MailMagazineScheduleController
     public function index(Application $app, Request $request)
     {
         $pagination = null;
+        $searchForm = $app['form.factory']
+            ->createBuilder()
+            ->getForm();
+        $searchForm->handleRequest($request);
+        $searchData = $searchForm->getData();
 
-        $SendScheduleRepo = $app['eccube.plugin.mail_magazine.repository.mail_magazine_schedule'];
-        $SendSchedule = $SendScheduleRepo->findAll();
-dump($SendSchedule);
+        $pageNo = $request->get('page_no');
+
+        $qb = $app['orm.em']->createQueryBuilder();
+        $qb->select("d")
+            ->from("\Plugin\MailMagazine\Entity\MailMagazineSendSchedule", "d")
+            ->where("d.del_flg = :delFlg")
+            ->setParameter('delFlg', Constant::DISABLED)
+            ->orderBy("d.send_start", "DESC");
+
+        $pagination = $app['paginator']()->paginate(
+                $qb,
+                empty($pageNo) ? 1 : $pageNo,
+                empty($searchData['pagemax']) ? 10 : $searchData['pagemax']->getId()
+        );
+dump($pagination);
         return $app->render('MailMagazine/View/admin/schedule_list.twig', array(
-            'pagination' => $SendSchedule,
+            'pagination' => $pagination
         ));
     }
 

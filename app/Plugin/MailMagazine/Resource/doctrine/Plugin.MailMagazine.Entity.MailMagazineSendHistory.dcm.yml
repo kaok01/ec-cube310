@@ -59,4 +59,10 @@ Plugin\MailMagazine\Entity\MailMagazineSendHistory:
             joinColumn:
                 name: creator_id
                 referencedColumnName: member_id
+    manyToOne:
+        Schedule:
+            targetEntity: Plugin\MailMagazine\Entity\MailMagazineSendSchedule
+            joinColumn:
+                name: send_id
+                referencedColumnName: send_id
     lifecycleCallbacks: {  }

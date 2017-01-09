@@ -137,7 +137,7 @@ class MailMagazineServiceProvider implements ServiceProviderInterface
         // 配信履歴
         // ===========================================
         // 配信履歴一覧
-        $app->match('/' . $app["config"]["admin_route"] . '/mail/history', '\\Plugin\\MailMagazine\\Controller\\MailMagazineHistoryController::index')
+        $app->match('/' . $app["config"]["admin_route"] . '/mail/history/{id}', '\\Plugin\\MailMagazine\\Controller\\MailMagazineHistoryController::index')
             ->value('id', null)->assert('id', '\d+|')
             ->bind('admin_mail_magazine_history');
 
@@ -172,7 +172,7 @@ class MailMagazineServiceProvider implements ServiceProviderInterface
         // スケジュール配信削除
         $app->match('/' . $app["config"]["admin_route"] . '/mail/schedule/{id}/delete', '\\Plugin\\MailMagazine\\Controller\\MailMagazineScheduleController::delete')
             ->value('id', null)->assert('id', '\d+|')
-            ->bind('admin_mail_magazine_history_delete');
+            ->bind('admin_mail_magazine_schedule_delete');
 
         // 型登録
         $app['form.types'] = $app->share($app->extend('form.types', function ($types) use ($app) {

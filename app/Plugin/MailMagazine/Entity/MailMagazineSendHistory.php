@@ -81,6 +81,10 @@ class MailMagazineSendHistory extends \Eccube\Entity\AbstractEntity
     * @var \Eccube\Entity\Member
     */
     private $Creator;
+    /**
+    */
+    private $Schedule;
+
 
     /**
     * Get id
@@ -367,4 +371,26 @@ class MailMagazineSendHistory extends \Eccube\Entity\AbstractEntity
     {
         return $this->Creator;
     }
+    /**
+    * Set Creator
+    *
+    * @param  \Eccube\Entity\Member $creator
+    * @return SendHistory
+    */
+    public function setSchedule(\Plugin\MailMagazine\Entity\MailMagazineSendSchedule $schedule = null)
+    {
+        $this->Schedule = $schedule;
+
+        return $this;
+    }
+
+    /**
+    * Get Creator
+    *
+    * @return \Eccube\Entity\Member
+    */
+    public function getSchedule()
+    {
+        return $this->Schedule;
+    }    
 }

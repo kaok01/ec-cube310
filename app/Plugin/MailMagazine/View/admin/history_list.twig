@@ -52,6 +52,7 @@ function changeAction(action) {
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
+                                            <th>配信Id</th>
                                             <th>配信開始時刻</th>
                                             <th>配信終了時刻</th>
                                             <th>Subject</th>
@@ -68,6 +69,7 @@ function changeAction(action) {
                                     <tbody>
                                         {% for SendHistory in pagination %}
                                         <tr>
+                                            <td class="">{{ SendHistory.id }}</td>
                                             <td class="">{{ SendHistory.start_date|date("Y/m/d H:i") }}</td>
                                             <td class="">
                                                 {% if SendHistory.end_date is not null %}

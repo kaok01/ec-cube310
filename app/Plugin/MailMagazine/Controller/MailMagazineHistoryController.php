@@ -29,8 +29,9 @@ class MailMagazineHistoryController
     /**
      * 配信履歴一覧
      */
-    public function index(Application $app, Request $request)
+    public function index(Application $app, Request $request,$id=null)
     {
+dump($id);
         // dtb_send_historyからdel_flg = 0のデータを抽出
         // リストをView変数に突っ込む
         $pagination = null;
@@ -43,18 +44,30 @@ class MailMagazineHistoryController
         $pageNo = $request->get('page_no');
 
         $qb = $app['orm.em']->createQueryBuilder();
-        $qb->select("d")
-            ->from("\Plugin\MailMagazine\Entity\MailMagazineSendHistory", "d")
-            ->where("d.del_flg = :delFlg")
-            ->setParameter('delFlg', Constant::DISABLED)
-            ->orderBy("d.start_date", "DESC");
+        if(is_null($id)){
+            $qb->select("d")
+                ->from("\Plugin\MailMagazine\Entity\MailMagazineSendHistory", "d")
+                ->where("d.del_flg = :delFlg")
+                ->setParameter('delFlg', Constant::DISABLED)
+                ->orderBy("d.start_date", "DESC");
+
+        }else{
+            $qb->select("d")
+                ->from("\Plugin\MailMagazine\Entity\MailMagazineSendHistory", "d")
+                ->where("d.del_flg = :delFlg")
+                ->andWhere("d.id = :id")
+                ->setParameter('delFlg', Constant::DISABLED)
+                ->setParameter('id', $id)
+                ->orderBy("d.start_date", "DESC");
+
+        }
 
         $pagination = $app['paginator']()->paginate(
                 $qb,
                 empty($pageNo) ? 1 : $pageNo,
                 empty($searchData['pagemax']) ? 10 : $searchData['pagemax']->getId()
         );
-
+dump($pagination);
         return $app->render('MailMagazine/View/admin/history_list.twig', array(
             'pagination' => $pagination
         ));

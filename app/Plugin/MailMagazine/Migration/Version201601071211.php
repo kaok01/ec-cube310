@@ -27,6 +27,10 @@ class Version201601071211 extends AbstractMigration
     {
 
         $this->createPlgSendSchedule($schema);
+        $table = $schema->getTable('plg_send_schedule');
+        $table->addIndex(
+            array('send_id', 'creator_id')
+        );
 
         // create Sequence MailMagazine Plug-in
         $this->createPlgplgSendScheduleScheduleIdSeq($schema);
