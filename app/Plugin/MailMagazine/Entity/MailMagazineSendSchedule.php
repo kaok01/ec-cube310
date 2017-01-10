@@ -105,12 +105,36 @@ class MailMagazineSendSchedule extends \Eccube\Entity\AbstractEntity
 
     public function setSendWeek($v)
     {
+        /*
+        if(is_array(unserialize(base64_decode($v)))
+            ){
+        $this->send_week=unserialize(base64_decode($v));
+
+        }else{
         $this->send_week=$v;
+
+        }
+        */
+        $this->send_week=$v;
+        
         return $this;
     }
     public function getSendWeek()
     {
+        /*
+        if(is_array(unserialize(base64_decode($this->send_week)))
+            ){
+        return unserialize(base64_decode($this->send_week));
+
+
+        }else{
         return $this->send_week;
+
+        }
+        */
+
+        return $this->send_week;
+
     }
 
     public function setSendTime($v)
@@ -162,6 +186,7 @@ class MailMagazineSendSchedule extends \Eccube\Entity\AbstractEntity
 
     public function setDelFlg($v)
     {
+
         $this->del_flg=$v;
         return $this;
     }

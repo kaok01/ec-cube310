@@ -22,6 +22,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\CallbackTransformer;
 
 class MailMagazineScheduleType extends AbstractType
 {
@@ -95,9 +96,54 @@ class MailMagazineScheduleType extends AbstractType
                 'constraints' => array(
                     new Assert\NotBlank(),
                 ),
-            ))        
-           ->addEventSubscriber(new \Eccube\Event\FormEventSubscriber());
+            ))
+            ->add('id', 'hidden')
+            ->addEventSubscriber(new \Eccube\Event\FormEventSubscriber());
         ;
+
+        $builder->get('sendrepeat_flg')
+            ->addModelTransformer(new CallbackTransformer(
+                function ($outval) {
+                    // transform the string back to an array
+                    return $outval?true:false;
+                },
+                function ($inval) {
+                    // transform the array to a string
+                    return $inval?1:0;
+                }
+            ))
+        ;        
+
+        $builder->get('send_week')
+            ->addModelTransformer(new CallbackTransformer(
+                function ($outval) {
+                    // transform the string back to an array
+                    return $outval?
+                        (
+                            is_array($outval)?$outval:unserialize(base64_decode($outval))
+                            ):null;
+                }
+                ,
+                function ($inval) {
+                    // transform the array to a string
+                    return $inval;
+                }
+                
+            ))
+        ;        
+
+        $builder->get('enable_flg')
+            ->addModelTransformer(new CallbackTransformer(
+                function ($outval) {
+                    // transform the string back to an array
+                    return $outval?true:false;
+                },
+                function ($inval) {
+                    // transform the array to a string
+                    return $inval?1:0;
+                }
+            ))
+        ;        
     }
 
     /**

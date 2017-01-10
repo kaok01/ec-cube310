@@ -6,6 +6,15 @@ service:
     - MailMagazineServiceProvider
 orm.path:
     - /Resource/doctrine
+const:
+  send_week_str:
+   - "日"
+   - "月"
+   - "火"
+   - "水"
+   - "木"
+   - "金"
+   - "土"
 #form:
 #    onSetData:
 #        Form\Type\PaymentFragmentForm

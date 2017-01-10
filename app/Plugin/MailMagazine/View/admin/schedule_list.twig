@@ -66,7 +66,7 @@ function changeAction(action) {
                                     <tbody>
                                         {% for SendSchedule in pagination %}
                                         <tr>
-                                            <td class=""><a href="?" onclick="changeAction('{{ url('admin_mail_magazine_history', { id: SendSchedule.SendHistory.id }) }}'); return false;">{{ SendSchedule.schedule_name }}</a></td>
+                                            <td class=""><a href="?" onclick="changeAction('{{ url('admin_mail_magazine_schedule_edit', { id: SendSchedule.SendHistory.id }) }}'); return false;">{{ SendSchedule.schedule_name }}</a></td>
                                             <td class="">{{ SendSchedule.send_start|date("Y/m/d") }}</td>
                                             <td class="">
                                                 {% if SendSchedule.send_end is not null %}
@@ -74,7 +74,8 @@ function changeAction(action) {
                                                 {% endif %}
                                             </td>
                                             <td class="">{{ SendSchedule.send_time|date("H:i") }}</td>
-                                            <td class="">{{ SendSchedule.send_week}}</td>
+                                            <td class="">{% for wk in SendSchedule.send_week %}{{app.config.MailMagazine.const.send_week_str[wk]}},{% endfor %}
+                                            </td>
                                             <td class="">{{ SendSchedule.enable_flg}}</td>
                                             <td class="">{{ SendSchedule.sendrepeat_flg}}</td>
 

@@ -55,4 +55,60 @@ class MailMagazineSendScheduleRepository extends EntityRepository
     {
         return $this->createSendSchedule($sendSchedule);
     }
+
+
+    /**
+    * logical delete.
+    * @param  \Plugin\MailMagazine\Entity\MailMagazineSendSchedule $MailMagazineSendSchedule
+    * @return bool
+    */
+    public function delete(\Plugin\MailMagazine\Entity\MailMagazineSendSchedule $MailMagazineSendSchedule)
+    {
+        $em = $this->getEntityManager();
+        $em->getConnection()->beginTransaction();
+        try {
+            // 削除フラグをONにして更新
+            $MailMagazineSendSchedule->setDelFlg(Constant::ENABLED);
+            $em->persist($MailMagazineSendSchedule);
+            $em->flush();
+
+            $em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $em->getConnection()->rollback();
+            throw $e;
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+    * 更新を行う.
+    * @param \Plugin\MailMagazine\Entity\MailMagazineSendSchedule $MailMagazineSendSchedule
+    * @return boolean
+    */
+    public function update(\Plugin\MailMagazine\Entity\MailMagazineSendSchedule $MailMagazineSendSchedule) {
+        $em = $this->getEntityManager();
+        $em->getConnection()->beginTransaction();
+        try {
+            if(is_array($MailMagazineSendSchedule->getSendWeek())){
+                $v=$MailMagazineSendSchedule->getSendWeek();
+                $v = base64_encode(serialize($v));
+                $MailMagazineSendSchedule->setSendWeek($v);
+
+            }
+            $em->persist($MailMagazineSendSchedule);
+            $em->flush();
+
+            $em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $em->getConnection()->rollback();
+            throw $e;
+
+            return false;
+        }
+
+        return true;
+
+    }    
 }

@@ -1,0 +1,126 @@
+{#
+ This file is part of EC-CUBE
+
+ Copyright(c) 2000-2015 LOCKON CO.,LTD. All Rights Reserved.
+ http://www.lockon.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+{% extends 'default_frame.twig' %}
+
+{% set menus = ['mailmagazine', 'mailmagazine_schedule'] %}
+
+{% block title %}メルマガ管理{% endblock %}
+{% block sub_title %}スケジュール配信管理{% endblock %}
+
+{% block javascript %}
+    <script src="{{ app.config.admin_urlpath }}/assets/js/vendor/jquery.ui/jquery.ui.core.min.js"></script>
+    <script src="{{ app.config.admin_urlpath }}/assets/js/vendor/jquery.ui/jquery.ui.widget.min.js"></script>
+    <script src="{{ app.config.admin_urlpath }}/assets/js/vendor/jquery.ui/jquery.ui.mouse.min.js"></script>
+    <script src="{{ app.config.admin_urlpath }}/assets/js/vendor/jquery.ui/jquery.ui.sortable.min.js"></script>
+
+<script>
+function fnDelete(action) {
+    if (confirm('このスケジュール配信を削除しても宜しいですか？')) {
+        document.form1.action = action;
+        document.form1.submit();
+    }
+}
+function changeAction(action) {
+    document.form1.action = action;
+    document.form1.submit();
+}
+</script>
+{% endblock %}
+
+{% form_theme form 'Form/bootstrap_3_horizontal_layout.html.twig' %}
+
+{% block main %}
+    <form role="form" name="content_page_form" id="content_page_form" method="post"
+          action="{{ url('admin_mail_magazine_schedule_commit') }}">
+        {{ form_widget(form._token) }}
+        {{ form_widget(form.id) }}
+        <div class="row" id="aside_wrap">
+            <div class="col-md-9">
+                <div class="box form-horizontal">
+                    <div class="box-header">
+                        <h3 class="box-title">スケジュール配信設定編集</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+
+                        <div class="form-group">
+                            {{ form_label(form.schedule_name) }}
+                            <div class="col-sm-9 col-lg-10">
+                                {{ form_widget(form.schedule_name) }}
+                                {{ form_errors(form.schedule_name) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.enable_flg) }}
+                            <div class="col-sm-9 col-lg-10">
+                                {{ form_widget(form.enable_flg) }}
+                                {{ form_errors(form.enable_flg) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.send_time) }}
+                            <div class="col-sm-9 col-lg-10">
+                                {{ form_widget(form.send_time) }}
+                                {{ form_errors(form.send_time) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.send_start) }}
+                            <div class="col-sm-9 col-lg-10">
+                                {{ form_widget(form.send_start) }}
+                                {{ form_errors(form.send_start) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.send_end) }}
+                            <div class="col-sm-9 col-lg-10">
+                                {{ form_widget(form.send_end) }}
+                                {{ form_errors(form.send_end) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.send_week) }}
+                            <div class="col-sm-9 col-lg-10">
+                                {{ form_widget(form.send_week) }}
+                                {{ form_errors(form.send_week) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.sendrepeat_flg) }}
+                            <div class="col-sm-9 col-lg-10">
+                                {{ form_widget(form.sendrepeat_flg) }}
+                                {{ form_errors(form.sendrepeat_flg) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.col -->
+            <div class="col-md-3">
+                <div class="col_inner" id="aside_column">
+                    <div class="box no-header">
+                        <div class="box-body">
+                            <div class="row text-center">
+                                <div class="col-sm-6 col-sm-offset-3 col-md-12 col-md-offset-0">
+                                    <button class="btn btn-primary btn-block btn-lg"
+                                            onclick="document.content_page_form.submit();">登録
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+            </div>
+            <!-- /.col -->
+        </div>
+    </form>
+{% endblock %}

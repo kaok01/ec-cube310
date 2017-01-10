@@ -362,7 +362,7 @@ dump($scheduleform);
         $service = $app['eccube.plugin.mail_magazine.service.mail'];
 
         // 配信履歴を登録する
-        $sendId = $service->createMailMagazineHistory($data);
+        $sendId = $service->createMailMagazineHistoryNoSend($data);
         if(is_null($sendId)) {
             $app->addError('admin.mailmagazine.send.regist.failure', 'admin');
         } else {
@@ -372,11 +372,10 @@ dump($scheduleform);
 
             $app->addSuccess('admin.mailmagazine.reservedsend.regist', 'admin');
         }
-die();
 
 
         // 配信管理画面に遷移する
-        return $app->redirect($app->url('admin_mail_magazine_history'));
+        return $app->redirect($app->url('admin_mail_magazine_schedule'));
     }
 
     /**

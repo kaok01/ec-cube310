@@ -73,6 +73,11 @@ class MailMagazineService
         return $this->app->mail($message);
     }
 
+    public function createMailMagazineHistoryNoSend($formData){
+        return $this->createMailMagazineHistory($formData,true);
+
+    }
+
     /**
      * 配信履歴を作成する
      *
@@ -81,13 +86,19 @@ class MailMagazineService
      *         エラー時はfalseを返す
      * @throws Exception
      */
-    public function createMailMagazineHistory($formData) {
+    public function createMailMagazineHistory($formData,$nosend = false) {
 
         // メール配信先リストの取得
         $this->app['eccube.plugin.mail_magazine.repository.mail_magazine_customer']->setApplication($this->app);
-        $customerList = $this->app['eccube.plugin.mail_magazine.repository.mail_magazine_customer']
-            ->getCustomerBySearchData($formData);
+        if($nosend){
+            $customerList = array();
 
+        }else{
+            $customerList = $this->app['eccube.plugin.mail_magazine.repository.mail_magazine_customer']
+                ->getCustomerBySearchData($formData);
+
+
+        }
         $currentDatetime = new \DateTime();
 
         // -----------------------------

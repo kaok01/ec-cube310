@@ -191,6 +191,7 @@
                             {% endif %}
                         </td>
                     </tr>
+                    {#
                     <tr>
                         <th style="width: 20%;">購入商品名・コード</th>
                         <td>
@@ -198,6 +199,44 @@
                                 (未指定)
                             {% else %}
                                 {{ search_data.buy_product_code }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    #}
+                    <tr>
+                        <th style="width: 20%;">会員情報タグ</th>
+                        <td>
+                            {% if search_data.customertag|length > 0 %}
+                                {% for customertag in search_data.customertag %}
+                                {{ customertag.name }},
+                                {% endfor %}
+                            {% else %}
+                                (未指定)
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="width: 20%;">購入した商品</th>
+                        <td>
+                            {% if search_data.buy_mailmagazine_product1|length > 0 %}
+                                {% for buy_mailmagazine_product1 in search_data.buy_mailmagazine_product1 %}
+                                {{ buy_mailmagazine_product1.name }},
+                                {% endfor %}
+                            {% else %}
+                                (未指定)
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="width: 20%;">未購入の商品</th>
+                        <td>
+                            {% if search_data.nobuy_mailmagazine_product1|length > 0 %}
+                                {% for nobuy_mailmagazine_product1 in search_data.nobuy_mailmagazine_product1 %}
+                                {{ nobuy_mailmagazine_product1.name }},
+                                {% endfor %}
+                            {% else %}
+                                (未指定)
                             {% endif %}
                         </td>
                     </tr>

@@ -169,6 +169,12 @@ class MailMagazineServiceProvider implements ServiceProviderInterface
             ->value('id', null)->assert('id', '\d+|')
             ->bind('admin_mail_magazine_schedule_edit');
 
+        // テンプレ編集確定
+        $app->match('/' . $app["config"]["admin_route"] . '/mail/schedule/commit', '\\Plugin\\MailMagazine\\Controller\\MailMagazineScheduleController::commit')
+            ->value('id', null)->assert('id', '\d+|')
+            ->bind('admin_mail_magazine_schedule_commit');
+
+
         // スケジュール配信削除
         $app->match('/' . $app["config"]["admin_route"] . '/mail/schedule/{id}/delete', '\\Plugin\\MailMagazine\\Controller\\MailMagazineScheduleController::delete')
             ->value('id', null)->assert('id', '\d+|')

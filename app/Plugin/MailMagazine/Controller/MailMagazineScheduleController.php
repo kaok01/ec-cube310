@@ -60,216 +60,245 @@ class MailMagazineScheduleController
                 empty($searchData['pagemax']) ? 10 : $searchData['pagemax']->getId()
         );
 dump($pagination);
+        foreach($pagination as $item){
+            if(!is_null($item->getSendWeek())){
+                $v = $item->getSendWeek();
+                $item->setSendWeek(unserialize(base64_decode($v)));
+
+            }
+
+        }
         return $app->render('MailMagazine/View/admin/schedule_list.twig', array(
             'pagination' => $pagination
         ));
     }
 
-
     /**
-     * 配信処理
-     * 配信終了後配信履歴に遷移する
-     * RequestがPOST以外の場合はBadRequestHttpExceptionを発生させる
+     * preview画面表示
      * @param Application $app
      * @param Request $request
-     * @param string $id
+     * @param unknown $id
+     * @return void|\Symfony\Component\HttpFoundation\Response
      */
-    public function edit(Application $app, Request $request, $id = null) {
+    public function preview(Application $app, Request $request, $id)
+    {
 
-        // POSTでない場合は終了する
+        // id の存在確認
+        // nullであれば一覧に戻る
+        if(is_null($id) || strlen($id) == 0) {
+            $app->addError('admin.mailmagazine.template.data.illegalaccess', 'admin');
+
+            // メルマガテンプレート一覧へリダイレクト
+            return $app->redirect($app->url('admin_mail_magazine_template'));
+        }
+
+        // パラメータ$idにマッチするデータが存在するか判定
+        // あれば、subject/bodyを取得
+        $template = $app['eccube.plugin.mail_magazine.repository.mail_magazine']->find($id);
+        if(is_null($template)) {
+            // データが存在しない場合はメルマガテンプレート一覧へリダイレクト
+            $app->addError('admin.mailmagazine.template.data.notfound', 'admin');
+
+            return $app->redirect($app->url('admin_mail_magazine_template'));
+        }
+
+        // プレビューページ表示
+        return $app->render('MailMagazine/View/admin/preview.twig', array(
+                'Template' => $template
+        ));
+    }
+
+    /**
+     * メルマガテンプレートを論理削除
+     * @param Application $app
+     * @param Request $request
+     * @param unknown $id
+     */
+    public function delete(Application $app, Request $request, $id)
+    {
+        // POSTかどうか判定
+        // パラメータ$idにマッチするデータが存在するか判定
+        // POSTかつ$idに対応するdtb_mailmagazine_templateのレコードがあれば、del_flg = 1に設定して更新
+        if ('POST' === $request->getMethod()) {
+            // idがからの場合はメルマガテンプレート一覧へリダイレクト
+            if(is_null($id) || strlen($id) == 0) {
+                $app->addError('admin.mailmagazine.schdule.data.illegalaccess', 'admin');
+
+                return $app->redirect($app->url('admin_mail_magazine_schedule'));
+            }
+
+            // メルマガテンプレートを取得する
+            $schedule = $app['eccube.plugin.mail_magazine.repository.mail_magazine_schedule']->find($id);
+
+            if(is_null($schedule)) {
+                // データが存在しない場合はメルマガテンプレート一覧へリダイレクト
+                $app->addError('admin.mailmagazine.schedule.data.notfound', 'admin');
+
+                return $app->redirect($app->url('admin_mail_magazine_schedule'));
+            }
+
+            // メルマガテンプレートを削除する
+            $app['eccube.plugin.mail_magazine.repository.mail_magazine_schedule']->delete($schedule);
+
+        }
+
+        // メルマガテンプレート一覧へリダイレクト
+        return $app->redirect($app->url('admin_mail_magazine_template'));
+    }
+
+    /**
+     * テンプレート編集画面表示
+     * @param Application $app
+     * @param Request $request
+     * @param unknown $id
+     */
+    public function edit(Application $app, Request $request, $id) {
+dump('render');
+
+        // POST以外はエラーにする
         if ('POST' !== $request->getMethod()) {
             throw new BadRequestHttpException();
         }
+dump('render');
+        // id の存在確認
+        // nullであれば一覧に戻る
+        if(is_null($id) || strlen($id) == 0) {
+            $app->addError('admin.mailmagazine.schedule.data.illegalaccess', 'admin');
 
-        // Formを取得する
+            // メルマガテンプレート一覧へリダイレクト
+            return $app->redirect($app->url('admin_mail_magazine_schedule'));
+        }
+
+        // 選択したメルマガテンプレートを検索
+        // 存在しなければメッセージを表示
+        $schedule = $app['eccube.plugin.mail_magazine.repository.mail_magazine_schedule']->find($id);
+dump($schedule);
+
+        if(is_null($schedule)) {
+            // データが存在しない場合はメルマガテンプレート一覧へリダイレクト
+            $app->addError('admin.mailmagazine.schedule.data.notfound', 'admin');
+
+            return $app->redirect($app->url('admin_mail_magazine_schedule'));
+        }
+
+        // formの作成
         $form = $app['form.factory']
-            ->createBuilder('mail_magazine', null)
+            ->createBuilder('mail_magazine_schedule', $schedule)
             ->getForm();
-        $form->handleRequest($request);
-        $data = $form->getData();
+dump('render');
+        return $app->render('MailMagazine/View/admin/schedule_edit.twig', array(
+                'form' => $form->createView()
+        ));
 
-
-        $scheduleform = $app['form.factory']
-                    ->createBuilder('mail_magazine_schedule', null)
-                    ->getForm();
-        $scheduleform->handleRequest($request);
-        $scheduledata = $scheduleform->getData();
-
-
-
-        // 送信対象者をdtb_customerから取得する
-        if (!$form->isValid()) {
-            throw new BadRequestHttpException();
-        }
-
-        // 送信対象者をdtb_customerから取得する
-        if (!$scheduleform->isValid()) {
-            throw new BadRequestHttpException();
-        }
-dump($data);
-dump($scheduledata);
-die();
-        // サービスの取得
-        $service = $app['eccube.plugin.mail_magazine.service.mail'];
-
-        // 配信履歴を登録する
-        $sendId = $service->createMailMagazineHistory($data);
-        if(is_null($sendId)) {
-            $app->addError('admin.mailmagazine.send.regist.failure', 'admin');
-        } else {
-
-            // 登録した配信履歴に関連付けてスケジュール配信を記録する
-            $service->createReservedsendMailMagazine($sendId,$scheduledata);
-
-            $app->addSuccess('admin.mailmagazine.reservedsend.regist', 'admin');
-        }
-
-
-        // 配信管理画面に遷移する
-        return $app->redirect($app->url('admin_mail_magazine_history'));
     }
 
-
     /**
-     * 配信処理
-     * 配信終了後配信履歴に遷移する
-     * RequestがPOST以外の場合はBadRequestHttpExceptionを発生させる
+     * テンプレート編集確定処理
      * @param Application $app
      * @param Request $request
-     * @param string $id
+     * @param unknown $id
      */
-    public function delete(Application $app, Request $request, $id = null) {
+    public function commit(Application $app, Request $request) {
 
-        // POSTでない場合は終了する
-        if ('POST' !== $request->getMethod()) {
-            throw new BadRequestHttpException();
-        }
-
-        // Formを取得する
-        $form = $app['form.factory']
-            ->createBuilder('mail_magazine', null)
-            ->getForm();
+        // Formを取得
+        $builder = $app['form.factory']->createBuilder('mail_magazine_schedule');
+        $form = $builder->getForm();
         $form->handleRequest($request);
         $data = $form->getData();
 
+        if ('POST' === $request->getMethod()) {
 
-        $scheduleform = $app['form.factory']
-                    ->createBuilder('mail_magazine_schedule', null)
-                    ->getForm();
-        $scheduleform->handleRequest($request);
-        $scheduledata = $scheduleform->getData();
+            // 入力項目確認処理を行う.
+            // エラーであれば元の画面を表示する
+            if (!$form->isValid()) {
+                $app->addError("validate error");
+                return $app->render('MailMagazine/View/admin/schedule_edit.twig', array(
+                        'form' => $form->createView()
+                ));
+            }
 
+            if(is_null($data['id'])) {
+                // =============
+                // 登録処理
+                // =============
+                throw new BadRequestHttpException();
 
+            } else {
+                // =============
+                // 更新処理
+                // =============
 
-        // 送信対象者をdtb_customerから取得する
-        if (!$form->isValid()) {
-            throw new BadRequestHttpException();
-        }
+                $id = $data['id'];
+                // id の存在確認
+                // nullであれば一覧に戻る
+                if(!$id) {
+                    $app->addError('admin.mailmagazine.schedule.data.illegalaccess', 'admin');
 
-        // 送信対象者をdtb_customerから取得する
-        if (!$scheduleform->isValid()) {
-            throw new BadRequestHttpException();
-        }
+                    // スケジュール配信一覧へリダイレクト
+                    return $app->redirect($app->url('admin_mail_magazine_schedule'));
+                }
+
+                // スケジュール配信設定を取得する
+                $schedule = $app['eccube.plugin.mail_magazine.repository.mail_magazine_schedule']->find($id);
+
+                // データが存在しない場合はメルマガテンプレート一覧へリダイレクト
+                if(is_null($schedule)) {
+                    $app->addError('admin.mailmagazine.schedule.data.notfound', 'admin');
+
+                    return $app->redirect($app->url('admin_mail_magazine_schedule'));
+                }
 dump($data);
-dump($scheduledata);
-die();
-        // サービスの取得
-        $service = $app['eccube.plugin.mail_magazine.service.mail'];
+                // 更新処理
+                $schedule
+                    ->setScheduleName($data['schedule_name'])
+                    ->setEnableFlg($data['enable_flg'])
+                    ->setSendRepeatFlg($data['sendrepeat_flg'])
+                    ->setSendWeek($data['send_week'])
+                    ->setSendStart($data['send_start'])
+                    ->setSendEnd($data['send_end'])
+                    ->setSendTime($data['send_time'])
+                    ->setUpdateDate(new \Datetime())
+                ;
+dump($schedule);
+//die();
 
-        // 配信履歴を登録する
-        $sendId = $service->createMailMagazineHistory($data);
-        if(is_null($sendId)) {
-            $app->addError('admin.mailmagazine.send.regist.failure', 'admin');
-        } else {
+                $status = $app['eccube.plugin.mail_magazine.repository.mail_magazine_schedule']->update($schedule);
+                if (!$status) {
+                    $app->addError('admin.mailmagazine.schedule.save.failure', 'admin');
+                    return $app->render('MailMagazine/View/admin/schedule_edit.twig', array(
+                        'form' => $form->createView()
+                    ));
+                }
 
-            // 登録した配信履歴に関連付けてスケジュール配信を記録する
-            $service->createReservedsendMailMagazine($sendId,$scheduledata);
+            }
 
-            $app->addSuccess('admin.mailmagazine.reservedsend.regist', 'admin');
+            // 成功時のメッセージを登録する
+            $app->addSuccess('admin.mailmagazine.schedule.save.complete', 'admin');
+
         }
 
+        // スケジュール配信一覧へリダイレクト
+        return $app->redirect($app->url('admin_mail_magazine_schedule'));
 
-        // 配信管理画面に遷移する
-        return $app->redirect($app->url('admin_mail_magazine_history'));
     }
 
     /**
-    *
-    * @param Application $app
-    * @param Request $request
-    * @param unknown $id
-    * @throws NotFoundHttpException
-    * @return \Symfony\Component\HttpFoundation\RedirectResponse
-    */
-    public function up(Application $app, Request $request, $id)
-    {
-        $repos = $app['eccube.plugin.mail_magazine.repository.maker'];
+     * メルマガテンプレート登録画面を表示する
+     * @param Application $app
+     * @param Request $request
+     */
+    public function regist(Application $app, Request $request) {
+        $PageLayout = new \Plugin\MailMagazine\Entity\MailMagazineTemplate();
 
-        $TargetMailMagazine = $repos->find($id);
-        if (!$TargetMailMagazine) {
-            throw new NotFoundHttpException();
-        }
-
+        // formの作成
         $form = $app['form.factory']
-            ->createNamedBuilder('admin_mail_magazine', 'form', null, array(
-                'allow_extra_fields' => true,
-            ))
+            ->createBuilder('mail_magazine_template_edit', $PageLayout)
             ->getForm();
 
-        $status = false;
-        if ($request->getMethod() === 'POST') {
-            $form->handleRequest($request);
-            if ($form->isValid()) {
-                $status = $repos->up($TargetMailMagazine);
-            }
-        }
+        return $app->render('MailMagazine/View/admin/template_edit.twig', array(
+                'form' => $form->createView()
+        ));
 
-        if ($status === true) {
-            $app->addSuccess('admin.maker.down.complete', 'admin');
-        } else {
-            $app->addError('admin.maker.down.error', 'admin');
-        }
-
-        return $app->redirect($app->url('admin_mail_magazine'));
-    }
-
-    /**
-    *
-    * @param Application $app
-    * @param Request $request
-    * @param unknown $id
-    * @throws NotFoundHttpException
-    */
-    public function down(Application $app, Request $request, $id)
-    {
-        $repos = $app['eccube.plugin.mail_magazine.repository.maker'];
-
-        $TargetMailMagazine = $repos->find($id);
-        if (!$TargetMailMagazine) {
-            throw new NotFoundHttpException();
-        }
-
-        $form = $app['form.factory']
-            ->createNamedBuilder('admin_mail_magazine', 'form', null, array(
-                'allow_extra_fields' => true,
-            ))
-            ->getForm();
-
-        $status = false;
-        if ($request->getMethod() === 'POST') {
-            $form->handleRequest($request);
-            if ($form->isValid()) {
-                $status = $repos->down($TargetMailMagazine);
-            }
-        }
-
-        if ($status === true) {
-            $app->addSuccess('admin.mail.down.complete', 'admin');
-        } else {
-            $app->addError('admin.mail.down.error', 'admin');
-        }
-
-        return $app->redirect($app->url('admin_mail_magazine'));
     }
 
 }

@@ -346,6 +346,7 @@ dump($searchData);
         }
 
         // buy_product_name、buy_product_code
+        /*
         if (!empty($searchData['buy_product_code']) && $searchData['buy_product_code']) {
             $qb
                 ->leftJoin('c.Orders', 'o')
@@ -353,8 +354,10 @@ dump($searchData);
                 ->andWhere('od.product_name LIKE :buy_product_name OR od.product_code LIKE :buy_product_name')
                 ->setParameter('buy_product_name', '%' . $searchData['buy_product_code'] . '%');
         }
-
+        */
+        
         // buy_product_name、buy_product_code
+        /*
         if (!empty($searchData['nobuy_product_code']) && $searchData['nobuy_product_code']) {
             $qb2 = $this->createQueryBuilder('c2')
                 ->select('c2.id')
@@ -367,6 +370,46 @@ dump($searchData);
                     $qb->expr()->notIn('c.id', $qb2->getDQL())
                     )
                 ->setParameter('nobuy_product_name', '%' . $searchData['nobuy_product_code'] . '%');
+
+        }
+        */
+        if (!empty($searchData['buy_mailmagazine_product1']) && count($searchData['buy_mailmagazine_product1']) > 0) {
+            $cp1 = array();
+            foreach ($searchData['buy_mailmagazine_product1'] as $lcp1) {
+                $cp1[] = $lcp1->getId();
+            }
+
+            $qb
+                ->leftJoin('c.Orders', 'op1')
+                ->leftJoin('op1.OrderDetails', 'odp1')
+                ->andWhere($qb->expr()->in('odp1.Product', ':cp1'))
+                ->setParameter('cp1',$cp1)
+            ;
+        }
+
+        if (!empty($searchData['nobuy_mailmagazine_product1']) && count($searchData['nobuy_mailmagazine_product1']) > 0) {
+            $cnp1 = array();
+            foreach ($searchData['nobuy_mailmagazine_product1'] as $lcnp1) {
+                $cnp1[] = $lcnp1->getId();
+            }
+
+
+            $qbnp2 = $this->createQueryBuilder('cnp2')
+                ->select('cnp2.id')
+                ->leftJoin('cnp2.Orders', 'odnp2')
+                ->leftJoin('odnp2.OrderDetails', 'oddnp2')
+                ;
+
+            $qbnp2
+                ->andWhere($qbnp2->expr()->in('oddnp2.Product', ':cnp1'))
+                ;
+
+            $qb
+                ->andWhere(
+                    $qb->expr()->notIn('c.id', $qbnp2->getDQL())
+                    )
+                ->setParameter('cnp1',$cnp1)
+                ;
 
         }
 
