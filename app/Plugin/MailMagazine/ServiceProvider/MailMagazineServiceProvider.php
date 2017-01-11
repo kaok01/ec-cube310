@@ -52,6 +52,10 @@ class MailMagazineServiceProvider implements ServiceProviderInterface
         $app['eccube.plugin.mail_magazine.repository.mail_magazine_send_schedule'] = $app->share(function () use ($app) {
             return $app['orm.em']->getRepository('Plugin\MailMagazine\Entity\MailMagazineSendSchedule');
         });
+        // SendScheduleComplete用リポジトリ
+        $app['eccube.plugin.mail_magazine.repository.mail_magazine_send_schedule_complete'] = $app->share(function () use ($app) {
+            return $app['orm.em']->getRepository('Plugin\MailMagazine\Entity\MailMagazineSendScheduleComplete');
+        });
         // SendCustomer用リポジトリ
         $app['eccube.plugin.mail_magazine.repository.mail_magazine_send_customer'] = $app->share(function () use ($app) {
             return $app['orm.em']->getRepository('Plugin\MailMagazine\Entity\MailMagazineSendCustomer');
