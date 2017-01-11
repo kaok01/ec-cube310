@@ -42,6 +42,7 @@ class Version201601071211 extends AbstractMigration
         );
 
         $this->createPlgplgSendScheduleCompleteScheduleCompleteIdSeq($schema);
+
     }
 
     /**

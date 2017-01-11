@@ -1,0 +1,30 @@
+Plugin\MailMagazine\Entity\MailMagazineSendScheduleComplete:
+    type: entity
+    table: plg_send_schedule_complete
+    repositoryClass: Plugin\MailMagazine\Repository\MailMagazineSendScheduleCompleteRepository
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            id: true
+            column: schedule_complete_id
+            generator:
+                strategy: AUTO
+    fields:
+        schedule_date:
+            type: datetime
+            nullable: true
+        create_date:
+            type: datetime
+            nullable: false
+        update_date:
+            type: datetime
+            nullable: false
+    manyToOne:
+        SendHistory:
+            targetEntity: Plugin\MailMagazine\Entity\MailMagazineSendSchedule
+            joinColumn:
+                name: schedule_id
+                referencedColumnName: schedule_id
+    lifecycleCallbacks: {  }
