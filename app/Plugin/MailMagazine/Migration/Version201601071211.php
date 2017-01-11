@@ -34,6 +34,14 @@ class Version201601071211 extends AbstractMigration
 
         // create Sequence MailMagazine Plug-in
         $this->createPlgplgSendScheduleScheduleIdSeq($schema);
+
+        $this->createPlgSendScheduleComplete($schema);
+        $table = $schema->getTable('plg_send_schedule_complete');
+        $table->addIndex(
+            array('schedule_id')
+        );
+
+        $this->createPlgplgSendScheduleCompleteScheduleCompleteIdSeq($schema);
     }
 
     /**
@@ -48,6 +56,50 @@ class Version201601071211 extends AbstractMigration
 
         // drop sequence.
         $schema->dropSequence('plg_send_schedule_schedule_id_seq');
+
+        $schema->dropTable('plg_send_schedule_complete');
+
+        // drop sequence.
+        $schema->dropSequence('plg_send_schedule_complete_schedule_complete_id_seq');
+
+    }
+
+    /**
+     * plg_send_historyテーブルの作成
+     * @param Schema $schema
+     */
+    protected function createPlgSendScheduleComplete(Schema $schema) {
+        $table = $schema->createTable("plg_send_schedule_complete");
+        $table->addColumn('schedule_complete_id', 'integer', array(
+            'notnull' => true,
+            'autoincrement' => true,            
+        ));
+        $table->addColumn('schedule_id', 'integer', array(
+            'notnull' => false,
+        ));
+        $table->addColumn('schedule_date', 'datetime', array(
+            'notnull' => true,
+            'unsigned' => false,
+        ));
+        $table->addColumn('create_date', 'datetime', array(
+            'notnull' => true,
+            'unsigned' => false,
+        ));
+        $table->addColumn('update_date', 'datetime', array(
+            'notnull' => true,
+            'unsigned' => false,
+        ));
+        $table->setPrimaryKey(array('schedule_complete_id'));
+
+
+    }
+
+    /**
+     * plg_send_schedule_schedule_id_seqの作成
+     * @param Schema $schema
+     */
+    protected function createPlgplgSendScheduleCompleteScheduleCompleteIdSeq(Schema $schema) {
+        $seq = $schema->createSequence("plg_send_schedule_complete_schedule_complete_id_seq");
     }
 
     /**
@@ -122,7 +174,6 @@ class Version201601071211 extends AbstractMigration
     protected function createPlgplgSendScheduleScheduleIdSeq(Schema $schema) {
         $seq = $schema->createSequence("plg_send_schedule_schedule_id_seq");
     }
-
 
     function getMailMagazineCode()
     {

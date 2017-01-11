@@ -230,7 +230,6 @@ class MailMagazineService
      */
     public function createReservedsendMailMagazine($sendId,$scheduledata)
     {
-dump($scheduledata);
         // send_historyを取得する
         $sendHistory = $this->app[self::REPOSITORY_SEND_HISTORY]->find($sendId);
 
@@ -305,5 +304,13 @@ dump($scheduledata);
         $MailmagaCustomer->setUpdateDate(new \DateTime());
 
         $MailmagaCustomerRepository->save($MailmagaCustomer);
+    }
+
+    public function ScheduleExec($output=null){
+        if($output){
+            $output->writeln('schedule service exec');
+
+        }
+        return true;
     }
 }
