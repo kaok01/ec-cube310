@@ -17,16 +17,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * フックポイント汎用処理具象クラス
+ * フックデータインポート汎用処理具象クラス
  *  - 拡張元 : 商品登録( 編集 )
- *  - 拡張項目 : 商品毎ポイント付与率( 編集 )
+ *  - 拡張項目 : 商品毎データインポート付与率( 編集 )
  * Class AdminProduct
  * @package Plugin\DataImport\Event\WorkPlace
  */
 class  AdminProduct extends AbstractWorkPlace
 {
     /**
-     * 商品フォームポイント付与率項目追加
+     * 商品フォームデータインポート付与率項目追加
      *
      * @param EventArgs $event
      */
@@ -43,13 +43,13 @@ class  AdminProduct extends AbstractWorkPlace
             );
         }
 
-        // ポイント付与率項目拡張
+        // データインポート付与率項目拡張
         $builder
             ->add(
                 'plg_dataimport_product_rate',
                 'integer',
                 array(
-                    'label' => 'ポイント付与率',
+                    'label' => 'データインポート付与率',
                     'required' => false,
                     'mapped' => false,
                     'data' => $lastDataImportProduct,
@@ -72,7 +72,7 @@ class  AdminProduct extends AbstractWorkPlace
     }
 
     /**
-     * 商品毎ポイント付与率保存
+     * 商品毎データインポート付与率保存
      * @param EventArgs $event
      * @return bool
      */
@@ -83,7 +83,7 @@ class  AdminProduct extends AbstractWorkPlace
         // フォーム情報取得処理
         $form = $event->getArgument('form');
 
-        // ポイント付与率取得
+        // データインポート付与率取得
         $dataimportRate = $form->get('plg_dataimport_product_rate')->getData();
 
         $Product = $event->getArgument('Product');
@@ -104,7 +104,7 @@ class  AdminProduct extends AbstractWorkPlace
             return true;
         }
 
-        // ポイント付与保存処理
+        // データインポート付与保存処理
         $this->app['eccube.plugin.dataimport.repository.dataimportproductrate']->saveDataImportProductRate($dataimportRate, $Product);
 
         $this->app['monolog.dataimport.admin']->addInfo('save end');

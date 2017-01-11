@@ -20,7 +20,7 @@ class DataImportStatusRepositoryTest extends EccubeTestCase
         $customer = $this->createCustomer();
         $order = $this->createOrder($customer);
 
-        // 準備：ポイントステータスの追加
+        // 準備：データインポートステータスの追加
         $this->addStatus($customer, $order);
 
         // 検証
@@ -37,7 +37,7 @@ class DataImportStatusRepositoryTest extends EccubeTestCase
         $addOrderIds = array();
         $customer = $this->createCustomer();
 
-        // 準備：ポイントステータスの追加
+        // 準備：データインポートステータスの追加
         for ($i = 0; $i < 3; $i++) {
             $order = $this->createOrder($customer);
             $this->addStatus($customer, $order);
@@ -110,7 +110,7 @@ class DataImportStatusRepositoryTest extends EccubeTestCase
         $customer = $this->createCustomer();
         $order = $this->createOrder($customer);
 
-        // 準備：ポイントステータスの追加
+        // 準備：データインポートステータスの追加
         $this->addStatus($customer, $order);
         $this->fixStatus($order->getId());
 
@@ -128,7 +128,7 @@ class DataImportStatusRepositoryTest extends EccubeTestCase
         $addOrderIds = array();
         $customer = $this->createCustomer();
 
-        // 準備：ポイントステータスの追加
+        // 準備：データインポートステータスの追加
         for ($i = 0; $i < 3; $i++) {
             $order = $this->createOrder($customer);
             $this->addStatus($customer, $order);
@@ -205,7 +205,7 @@ class DataImportStatusRepositoryTest extends EccubeTestCase
         $customer = $this->createCustomer();
         $order = $this->createOrder($customer);
 
-        // 準備：ポイントステータスの追加
+        // 準備：データインポートステータスの追加
         $this->addStatus($customer, $order);
 
         // 検証
@@ -221,7 +221,7 @@ class DataImportStatusRepositoryTest extends EccubeTestCase
         $customer = $this->createCustomer();
         $order = $this->createOrder($customer);
 
-        // 準備：ポイントステータスの追加
+        // 準備：データインポートステータスの追加
         $this->addStatus($customer, $order);
         $this->fixStatus($order->getId());
 
@@ -234,7 +234,7 @@ class DataImportStatusRepositoryTest extends EccubeTestCase
     }
 
     /**
-     * ポイントステータスのレコードを追加する
+     * データインポートステータスのレコードを追加する
      * @param Customer $customer
      * @param Order $order
      */

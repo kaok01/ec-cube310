@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 /**
- * フックポイント定型処理コンポジションスーパークラス
+ * フックデータインポート定型処理コンポジションスーパークラス
  * Class AbstractWorkPlace
  * @package Plugin\DataImport\Event\WorkPlace
  */

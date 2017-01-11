@@ -15,7 +15,7 @@ use Eccube\Event\EventArgs;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * フックポイント汎用処理具象クラス
+ * フックデータインポート汎用処理具象クラス
  *  - 拡張元 : 商品購入確認
  *  - 拡張項目 : 住所変更、配送業者変更、支払い方法変更時に、合計金額がマイナスになるケースを検知し、ハンドリングを行う
  * Class FrontPayment
@@ -47,7 +47,7 @@ class FrontChangeTotal extends AbstractWorkPlace
 
         // 合計金額マイナス確認
         if ($calculator->calculateTotalDiscountOnChangeConditions()) {
-            $this->app->addError('ポイント利用時の合計金額がマイナスになったため、ポイントの利用をキャンセルしました。', 'front.request');
+            $this->app->addError('データインポート利用時の合計金額がマイナスになったため、データインポートの利用をキャンセルしました。', 'front.request');
         }
 
         $this->app['monolog.dataimport']->addInfo('save end');

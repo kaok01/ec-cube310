@@ -16,7 +16,7 @@ use Eccube\Event\TemplateEvent;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * フックポイント汎用処理具象クラス
+ * フックデータインポート汎用処理具象クラス
  *  - 拡張元 : カート
  *  - 拡張項目 : 画面表示
  * Class FrontCart
@@ -25,14 +25,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 class FrontCart extends AbstractWorkPlace
 {
     /**
-     * カートページにポイント情報を表示
+     * カートページにデータインポート情報を表示
      *
      * @param TemplateEvent $event
      * @return bool
      */
     public function createTwig(TemplateEvent $event)
     {
-        // ポイント情報基本設定を取得
+        // データインポート情報基本設定を取得
         $DataImportInfo = $this->app['eccube.plugin.dataimport.repository.dataimportinfo']->getLastInsertData();
         $dataimportRate = $DataImportInfo->getPlgDataImportConversionRate();
 
@@ -46,9 +46,9 @@ class FrontCart extends AbstractWorkPlace
             $calculator->addEntity('Customer', $Customer);
             $calculator->addEntity('Cart', $parameters['Cart']);
 
-            // 現在の保有ポイント
+            // 現在の保有データインポート
             $currentDataImport = $calculator->getDataImport();
-            // カートの加算ポイント
+            // カートの加算データインポート
             $addDataImport = $calculator->getAddDataImportByCart();
             // getDataImportはnullを返す場合がある.
             $dataimport['current'] = is_null($currentDataImport) ? 0 : $currentDataImport;

@@ -1,9 +1,9 @@
 <p id="detail_description_box__sale_dataimport" class="text-primary">
     {% if dataimport.min != dataimport.max %}
-        加算ポイント：<span>{{ dataimport.min|number_format }}</span><span class="small">pt</span> ～
+        加算データインポート：<span>{{ dataimport.min|number_format }}</span><span class="small">pt</span> ～
         <span>{{ dataimport.max|number_format }}</span><span class="small">pt</span>
     {% else %}
-        加算ポイント：<span>{{ dataimport.max|number_format }}</span><span class="small">pt</span>
+        加算データインポート：<span>{{ dataimport.max|number_format }}</span><span class="small">pt</span>
     {% endif %}
 </p>
 

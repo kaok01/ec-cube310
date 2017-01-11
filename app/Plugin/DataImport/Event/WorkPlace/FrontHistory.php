@@ -15,7 +15,7 @@ use Eccube\Event\TemplateEvent;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * フックポイント汎用処理具象クラス
+ * フックデータインポート汎用処理具象クラス
  *  - 拡張元 : マイページ履歴表示
  *  - 拡張項目 : 画面表示
  * Class FrontHistory
@@ -40,7 +40,7 @@ class FrontHistory extends AbstractWorkPlace
             return false;
         }
 
-        // ポイント計算ヘルパーを取得
+        // データインポート計算ヘルパーを取得
         $calculator = null;
         $calculator = $this->app['eccube.plugin.dataimport.calculate.helper.factory'];
 
@@ -49,7 +49,7 @@ class FrontHistory extends AbstractWorkPlace
             return false;
         }
 
-        // 利用ポイントの取得と設定
+        // 利用データインポートの取得と設定
         $useDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->getLatestUseDataImport($parameters['Order']);
         $useDataImport = abs($useDataImport);
 
@@ -58,24 +58,24 @@ class FrontHistory extends AbstractWorkPlace
         $calculator->addEntity('Customer', $parameters['Order']->getCustomer());
         $calculator->setUseDataImport($useDataImport);
 
-        // 付与ポイント取得
+        // 付与データインポート取得
         $addDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->getLatestAddDataImportByOrder($parameters['Order']);
 
-        // 付与ポイント取得判定
+        // 付与データインポート取得判定
         if (empty($addDataImport)) {
             $addDataImport = 0;
         }
 
-        // ポイント表示用変数作成
+        // データインポート表示用変数作成
         $dataimport = array();
 
         // エラー判定
-        // false が返却された際は、利用ポイント値が保有ポイント値を超えている
+        // false が返却された際は、利用データインポート値が保有データインポート値を超えている
         $dataimport['add'] = $addDataImport;
 
         // Twigデータ内IDをキーに表示項目を追加
-        // ポイント情報表示
-        // false が返却された際は、利用ポイント値が保有ポイント値を超えている
+        // データインポート情報表示
+        // false が返却された際は、利用データインポート値が保有データインポート値を超えている
         $dataimport['use'] = $useDataImport;
         $snippet = $this->app->renderView(
             'DataImport/Resource/template/default/Event/History/dataimport_summary.twig',

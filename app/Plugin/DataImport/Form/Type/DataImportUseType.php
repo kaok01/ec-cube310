@@ -17,7 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * 購入フロー：ポイント利用画面のFormType
+ * 購入フロー：データインポート利用画面のFormType
  *
  * @package Plugin\DataImport\Form\Type
  */
@@ -50,10 +50,10 @@ class DataImportUseType extends AbstractType
                 'plg_use_dataimport',
                 'text',
                 array(
-                    'label' => '利用ポイント',
+                    'label' => '利用データインポート',
                     'required' => false,
                     'attr' => array(
-                        'placeholder' => '使用するポイントを入力 例. 1',
+                        'placeholder' => '使用するデータインポートを入力 例. 1',
                     ),
                     'constraints' => array(
                         new Assert\LessThanOrEqual(
@@ -65,7 +65,7 @@ class DataImportUseType extends AbstractType
                         new Assert\LessThanOrEqual(
                             array(
                                 'value' => $options['currentDataImport'],
-                                'message' => '保有ポイント以内で入力してください。',
+                                'message' => '保有データインポート以内で入力してください。',
                             )
                         ),
                         new Assert\Length(

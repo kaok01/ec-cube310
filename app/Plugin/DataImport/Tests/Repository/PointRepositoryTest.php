@@ -26,19 +26,19 @@ use Plugin\DataImport\Helper\DataImportHistoryHelper\DataImportHistoryHelper;
 class DataImportRepositoryTest extends EccubeTestCase
 {
     /**
-     *  int テストで使用する加算ポイント
+     *  int テストで使用する加算データインポート
      */
     const POINT_VALUE = 37;
     /**
-     *  int テストで使用する手動編集ポイント
+     *  int テストで使用する手動編集データインポート
      */
     const POINT_MANUAL_VALUE = 173;
     /**
-     *  int テストで使用する利用ポイント
+     *  int テストで使用する利用データインポート
      */
     const POINT_USE_VALUE = -7;
     /**
-     *  int テストで使用する仮利用ポイント
+     *  int テストで使用する仮利用データインポート
      */
     const POINT_PRE_USE_VALUE = -17;
 
@@ -56,11 +56,11 @@ class DataImportRepositoryTest extends EccubeTestCase
         $customer = $this->createCustomer();
         $orderIds = array();
 
-        // 準備：加算ポイントの履歴追加
+        // 準備：加算データインポートの履歴追加
         $dataimport = $this->createAddDataImport($customer);
         $orderIds[] = $dataimport->getOrder()->getId();
 
-        // 検証：現在ポイントの計算
+        // 検証：現在データインポートの計算
         $sumDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->calcCurrentDataImport(
             $dataimport->getCustomer()->getId(),
             $orderIds
@@ -75,14 +75,14 @@ class DataImportRepositoryTest extends EccubeTestCase
         $customer = $this->createCustomer();
         $orderIds = array();
 
-        // 準備：加算ポイントの履歴追加
+        // 準備：加算データインポートの履歴追加
         $orderCount = 3;
         for ($i = 0; $i < $orderCount; $i++) {
             $DataImport = $this->createAddDataImport($customer);
             $orderIds[] = $DataImport->getOrder()->getId();
         }
 
-        // 検証：現在ポイントの計算
+        // 検証：現在データインポートの計算
         $sumDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->calcCurrentDataImport(
             $customer->getId(),
             $orderIds
@@ -98,7 +98,7 @@ class DataImportRepositoryTest extends EccubeTestCase
         $no_calc_customer = $this->createCustomer();
         $orderIds = array();
 
-        // 準備：加算ポイント/保有ポイント手動変更の履歴追加
+        // 準備：加算データインポート/保有データインポート手動変更の履歴追加
         $orderIds[] = $this->createAddDataImport($customer)->getOrder()->getId();
         $this->createManualDataImport($customer);
 
@@ -106,7 +106,7 @@ class DataImportRepositoryTest extends EccubeTestCase
         $this->createAddDataImport($no_calc_customer);
         $this->createManualDataImport($no_calc_customer);
 
-        // 検証：現在ポイントの計算
+        // 検証：現在データインポートの計算
         $sumDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->calcCurrentDataImport(
             $customer->getId(),
             $orderIds
@@ -121,12 +121,12 @@ class DataImportRepositoryTest extends EccubeTestCase
         $customer = $this->createCustomer();
         $orderIds = array();
 
-        // 準備：加算ポイント/利用ポイント手動変更の履歴追加
+        // 準備：加算データインポート/利用データインポート手動変更の履歴追加
         $dataimport = $this->createAddDataImport($customer);
         $this->createUseDataImport($customer, $dataimport->getOrder());
         $orderIds[] = $dataimport->getOrder()->getId();
 
-        // 検証：現在ポイントの計算
+        // 検証：現在データインポートの計算
         $sumDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->calcCurrentDataImport(
             $dataimport->getCustomer()->getId(),
             $orderIds
@@ -141,11 +141,11 @@ class DataImportRepositoryTest extends EccubeTestCase
         $customer = $this->createCustomer();
         $orderIds = array();
 
-        // 準備：加算ポイントの履歴追加
+        // 準備：加算データインポートの履歴追加
         $dataimport = $this->createAddDataImport($customer);
         $orderIds[] = $dataimport->getOrder()->getId();
 
-        // 検証：現在の仮ポイントの計算
+        // 検証：現在の仮データインポートの計算
         $sumDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->calcProvisionalAddDataImport(
             $orderIds
         );
@@ -159,14 +159,14 @@ class DataImportRepositoryTest extends EccubeTestCase
         $customer = $this->createCustomer();
         $orderIds = array();
 
-        // 準備：加算ポイントの履歴追加
+        // 準備：加算データインポートの履歴追加
         $orderCount = 3;
         for ($i = 0; $i < $orderCount; $i++) {
             $DataImport = $this->createAddDataImport($customer);
             $orderIds[] = $DataImport->getOrder()->getId();
         }
 
-        // 検証：現在の仮ポイントの計算
+        // 検証：現在の仮データインポートの計算
         $sumDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->calcProvisionalAddDataImport(
             $orderIds
         );
@@ -181,7 +181,7 @@ class DataImportRepositoryTest extends EccubeTestCase
         $no_calc_customer = $this->createCustomer();
         $orderIds = array();
 
-        // 準備：加算ポイント/保有ポイント手動変更の履歴追加
+        // 準備：加算データインポート/保有データインポート手動変更の履歴追加
         $orderIds[] = $this->createAddDataImport($customer)->getOrder()->getId();
         $this->createManualDataImport($customer);
 
@@ -189,7 +189,7 @@ class DataImportRepositoryTest extends EccubeTestCase
         $this->createAddDataImport($no_calc_customer);
         $this->createManualDataImport($no_calc_customer);
 
-        // 検証：現在の仮ポイントの計算
+        // 検証：現在の仮データインポートの計算
         $sumDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->calcProvisionalAddDataImport(
             $orderIds
         );
@@ -203,12 +203,12 @@ class DataImportRepositoryTest extends EccubeTestCase
         $customer = $this->createCustomer();
         $orderIds = array();
 
-        // 準備：加算ポイント/利用ポイント手動変更の履歴追加
+        // 準備：加算データインポート/利用データインポート手動変更の履歴追加
         $dataimport = $this->createAddDataImport($customer);
         $this->createUseDataImport($customer, $dataimport->getOrder());
         $orderIds[] = $dataimport->getOrder()->getId();
 
-        // 検証：現在の仮ポイントの計算
+        // 検証：現在の仮データインポートの計算
         $sumDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->calcProvisionalAddDataImport(
             $orderIds
         );
@@ -222,10 +222,10 @@ class DataImportRepositoryTest extends EccubeTestCase
         $customer = $this->createCustomer();
         $orderIds = array();
 
-        // 準備：保有ポイント手動変更の履歴のみを追加
+        // 準備：保有データインポート手動変更の履歴のみを追加
         $this->createManualDataImport($customer);
 
-        // 検証：現在の保有ポイントの計算
+        // 検証：現在の保有データインポートの計算
         $sumDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->calcCurrentDataImport(
             $customer->getId(),
             $orderIds
@@ -242,7 +242,7 @@ class DataImportRepositoryTest extends EccubeTestCase
 
         $latestValue = 123;
 
-        // 準備：加算ポイント/利用ポイント手動変更の履歴追加
+        // 準備：加算データインポート/利用データインポート手動変更の履歴追加
         $this->createAddDataImport($customer, $order);   // dummy
         $this->createUseDataImport($customer, $order);   // dummy
         $this->createManualDataImport($customer);        // dummy
@@ -251,7 +251,7 @@ class DataImportRepositoryTest extends EccubeTestCase
         $this->createManualDataImport($customer);        // dummy
         $this->createPreUseDataImport($customer, $order);   // dummy
 
-        // 検証：最後に追加した加算ポイントの取得
+        // 検証：最後に追加した加算データインポートの取得
         $value = $this->app['eccube.plugin.dataimport.repository.dataimport']->getLatestAddDataImportByOrder(
             $order
         );
@@ -267,7 +267,7 @@ class DataImportRepositoryTest extends EccubeTestCase
 
         $latestUseValue = 123;
 
-        // 準備：加算ポイント/利用ポイント手動変更の履歴追加
+        // 準備：加算データインポート/利用データインポート手動変更の履歴追加
         $this->createAddDataImport($customer, $order);   // dummy
         $this->createUseDataImport($customer, $order);   // dummy
         $this->createManualDataImport($customer);        // dummy
@@ -276,7 +276,7 @@ class DataImportRepositoryTest extends EccubeTestCase
         $this->createManualDataImport($customer);        // dummy
         $this->createPreUseDataImport($customer, $order);   // dummy
 
-        // 検証：最後に追加した加算ポイントの取得
+        // 検証：最後に追加した加算データインポートの取得
         $value = $this->app['eccube.plugin.dataimport.repository.dataimport']->getLatestUseDataImport(
             $order
         );
@@ -292,7 +292,7 @@ class DataImportRepositoryTest extends EccubeTestCase
 
         $latestPreUseValue = -123;
 
-        // 準備：加算ポイント/利用ポイント手動変更の履歴追加
+        // 準備：加算データインポート/利用データインポート手動変更の履歴追加
         $this->createAddDataImport($customer, $order);   // dummy
         $this->createUseDataImport($customer, $order);   // dummy
         $this->createPreUseDataImport($customer, $order);   // dummy
@@ -302,7 +302,7 @@ class DataImportRepositoryTest extends EccubeTestCase
         $this->createAddDataImport($customer, $order);   // dummy
         $this->createManualDataImport($customer);        // dummy
 
-        // 検証：最後に追加した加算ポイントの取得
+        // 検証：最後に追加した加算データインポートの取得
         $value = $this->app['eccube.plugin.dataimport.repository.dataimport']->getLatestPreUseDataImport(
             $order
         );
@@ -312,7 +312,7 @@ class DataImportRepositoryTest extends EccubeTestCase
     }
 
     /**
-     * 保有ポイント集計、および未確定の加算ポイント集計で、仮利用ポイントが除外できているかどうかを確認する
+     * 保有データインポート集計、および未確定の加算データインポート集計で、仮利用データインポートが除外できているかどうかを確認する
      *
      * https://github.com/EC-CUBE/dataimport-plugin/issues/108
      */
@@ -321,13 +321,13 @@ class DataImportRepositoryTest extends EccubeTestCase
         $customer = $this->createCustomer();
         $order = $this->createOrder($customer);
 
-        // 準備：加算ポイント/利用ポイント手動変更の履歴追加
+        // 準備：加算データインポート/利用データインポート手動変更の履歴追加
         $this->createManualDataImport($customer, 1000);
         $this->createPreUseDataImport($customer, $order, -50);
         $this->createUseDataImport($customer, $order, -50);
         $this->createAddDataImport($customer, $order, 50);
 
-        // 検証：保有ポイント集計で、仮利用ポイントは集計対象がら除外される
+        // 検証：保有データインポート集計で、仮利用データインポートは集計対象がら除外される
         $value = $this->app['eccube.plugin.dataimport.repository.dataimport']->calcCurrentDataImport(
             $customer->getId(),
             array($order->getId())
@@ -337,7 +337,7 @@ class DataImportRepositoryTest extends EccubeTestCase
         $this->actual = $value;
         $this->verify();
 
-        // 検証：未確定の加算ポイント集計で、仮利用ポイントは集計対象がら除外される
+        // 検証：未確定の加算データインポート集計で、仮利用データインポートは集計対象がら除外される
         $value = $this->app['eccube.plugin.dataimport.repository.dataimport']->calcProvisionalAddDataImport(
             array($order->getId())
         );
@@ -348,7 +348,7 @@ class DataImportRepositoryTest extends EccubeTestCase
     }
 
     /**
-     * 加算ポイントの登録
+     * 加算データインポートの登録
      * @param Customer $customer
      * @param Order $order
      * @param int $dataimportValue
@@ -390,7 +390,7 @@ class DataImportRepositoryTest extends EccubeTestCase
     }
 
     /**
-     * 手動編集ポイントの登録
+     * 手動編集データインポートの登録
      * @param Customer $customer
      * @return DataImport
      */
@@ -410,7 +410,7 @@ class DataImportRepositoryTest extends EccubeTestCase
     }
 
     /**
-     * 利用ポイントの登録
+     * 利用データインポートの登録
      * @param Customer $customer
      * @param Order $order
      * @param int $dataimportValue
@@ -432,7 +432,7 @@ class DataImportRepositoryTest extends EccubeTestCase
     }
 
     /**
-     * 仮利用ポイントの登録
+     * 仮利用データインポートの登録
      * @param Customer $customer
      * @param Order $order
      * @param int $dataimportValue

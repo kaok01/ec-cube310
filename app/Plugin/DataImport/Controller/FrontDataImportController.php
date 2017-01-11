@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\Exception as HttpException;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * ポイント設定画面用コントローラー
+ * データインポート設定画面用コントローラー
  * Class FrontDataImportController
  *
  * @package Plugin\DataImport\Controller
@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class FrontDataImportController
 {
     /**
-     * 利用ポイント入力画面
+     * 利用データインポート入力画面
      *
      * @param Application $app
      * @param Request $request
@@ -33,7 +33,7 @@ class FrontDataImportController
      */
     public function useDataImport(Application $app, Request $request)
     {
-        // ログイン済の会員のみポイントを利用できる
+        // ログイン済の会員のみデータインポートを利用できる
         if (!$app->isGranted('ROLE_USER')) {
             throw new HttpException\NotFoundHttpException;
         }
@@ -53,25 +53,25 @@ class FrontDataImportController
             return $app->redirect($app->url('shopping_error'));
         }
 
-        // ポイント換算レートの取得.
+        // データインポート換算レートの取得.
         $DataImportInfo = $app['eccube.plugin.dataimport.repository.dataimportinfo']->getLastInsertData();
         $dataimportRate = $DataImportInfo->getPlgDataImportConversionRate();
 
-        // 保有ポイントの取得.
+        // 保有データインポートの取得.
         $Customer = $app->user();
         $currentDataImport = $app['eccube.plugin.dataimport.repository.dataimportcustomer']->getLastDataImportById($Customer->getId());
 
-        // 利用中のポイントの取得.
+        // 利用中のデータインポートの取得.
         $lastPreUseDataImport = $app['eccube.plugin.dataimport.repository.dataimport']->getLatestPreUseDataImport($Order);
         $lastPreUseDataImport = abs($lastPreUseDataImport); // 画面上では正の値として表示する.
 
         // すべての値引きを除外した合計金額
         $totalPrice = $Order->getTotalPrice() + $Order->getDiscount();
 
-        // ポイントによる値引きを除外した合計金額
+        // データインポートによる値引きを除外した合計金額
         $totalPriceExcludeDataImport = $Order->getTotalPrice() + $lastPreUseDataImport * $dataimportRate;
 
-        // ポイントによる値引きを除外した合計金額を、換算レートで割戻し、利用できるポイントの上限値を取得する.
+        // データインポートによる値引きを除外した合計金額を、換算レートで割戻し、利用できるデータインポートの上限値を取得する.
         $maxUseDataImport = floor($totalPriceExcludeDataImport / $dataimportRate);
 
         $form = $app['form.factory']
@@ -100,7 +100,7 @@ class FrontDataImportController
                 )
             );
 
-            // 利用中のポイントと入力されたポイントに相違があれば保存.
+            // 利用中のデータインポートと入力されたデータインポートに相違があれば保存.
             if ($lastPreUseDataImport != $useDataImport) {
 
                 $calculator = $app['eccube.plugin.dataimport.calculate.helper.factory'];
@@ -136,8 +136,8 @@ class FrontDataImportController
             array(
                 'form' => $form->createView(),  // フォーム
                 'dataimportRate' => $dataimportRate,      // 換算レート
-                'currentDataImport' => $currentDataImport,  // 保有ポイント
-                // 利用ポイント上限. 保有ポイントが小さい場合は保有ポイントを上限値として表示する
+                'currentDataImport' => $currentDataImport,  // 保有データインポート
+                // 利用データインポート上限. 保有データインポートが小さい場合は保有データインポートを上限値として表示する
                 'maxUseDataImport' => ($maxUseDataImport < $currentDataImport) ? $maxUseDataImport : $currentDataImport,
                 'total' => $totalPrice, // すべての値引きを除外した合計金額
             )

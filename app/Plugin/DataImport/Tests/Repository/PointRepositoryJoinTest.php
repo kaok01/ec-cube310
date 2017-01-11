@@ -37,10 +37,10 @@ class DataImportRepositoryJoinTest extends AbstractWebTestCase
         $this->dataimportFixStatus  = (int)$this->app['config']['order_pre_end'];
     }
 
-    // 購入（すぐに確定ポイント）
+    // 購入（すぐに確定データインポート）
     public function testShoppingCompleteWithDataImportFix()
     {
-        // ポイント設定を変更
+        // データインポート設定を変更
         $this->updateDataImportSettings($this->app['config']['order_new']);
 
         // 注文する
@@ -55,10 +55,10 @@ class DataImportRepositoryJoinTest extends AbstractWebTestCase
         $this->assertEquals(0, $this->getProvisionalDataImport($customer));
     }
 
-    // 購入（仮ポイント）
+    // 購入（仮データインポート）
     public function testShoppingCompleteWithoutDataImportFix()
     {
-        // ポイント設定を変更
+        // データインポート設定を変更
         $this->updateDataImportSettings($this->dataimportFixStatus);
 
         // 注文する
@@ -76,7 +76,7 @@ class DataImportRepositoryJoinTest extends AbstractWebTestCase
     // 受注変更（確定ステータスへの変更）
     public function testEditOrderToFixedStatus()
     {
-        // ポイント設定を変更
+        // データインポート設定を変更
         $this->updateDataImportSettings($this->dataimportFixStatus);
 
         // 注文する
@@ -86,11 +86,11 @@ class DataImportRepositoryJoinTest extends AbstractWebTestCase
         // 期待結果の計算
         $expectedDataImport = $this->CalcExpectedDataImport($order);
 
-        // 検証（仮ポイントであること）
+        // 検証（仮データインポートであること）
         $this->assertEquals(0, $this->getCurrentDataImport($customer));
         $this->assertEquals($expectedDataImport, $this->getProvisionalDataImport($customer));
 
-        // ポイント確定する
+        // データインポート確定する
         $this->ChangeOrderToFixStatus($this->dataimportFixStatus, $order, $customer);
 
         // 検証（確定していること）
@@ -101,7 +101,7 @@ class DataImportRepositoryJoinTest extends AbstractWebTestCase
     // 受注変更（未確定ステータスへの変更）
     public function testEditOrderToUnfixedStatus()
     {
-        // ポイント設定を変更
+        // データインポート設定を変更
         $this->updateDataImportSettings($this->dataimportFixStatus);
 
         // 注文する
@@ -111,23 +111,23 @@ class DataImportRepositoryJoinTest extends AbstractWebTestCase
         // 期待結果の計算
         $expectedDataImport = $this->CalcExpectedDataImport($order);
 
-        // 検証（仮ポイントであること）
+        // 検証（仮データインポートであること）
         $this->assertEquals(0, $this->getCurrentDataImport($customer));
         $this->assertEquals($expectedDataImport, $this->getProvisionalDataImport($customer));
 
-        // ポイント確定する
+        // データインポート確定する
         $unfixedStatus = (int)$this->app['config']['order_processing'];
         $this->ChangeOrderToFixStatus($unfixedStatus, $order, $customer);
 
-        // 検証（仮ポイントのままであること）
+        // 検証（仮データインポートのままであること）
         $this->assertEquals(0, $this->getCurrentDataImport($customer));
         $this->assertEquals($expectedDataImport, $this->getProvisionalDataImport($customer));
     }
 
-    // 受注削除（確定ポイントを削除）
+    // 受注削除（確定データインポートを削除）
     public function testDeleteOrderWithFixedDataImport()
     {
-        // ポイント設定を変更
+        // データインポート設定を変更
         $this->updateDataImportSettings($this->app['config']['order_new']);
 
         // 注文する
@@ -137,22 +137,22 @@ class DataImportRepositoryJoinTest extends AbstractWebTestCase
         // 期待結果の計算
         $expectedDataImport = $this->CalcExpectedDataImport($order);
 
-        // 検証（確定ポイントであること）
+        // 検証（確定データインポートであること）
         $this->assertEquals($expectedDataImport, $this->getCurrentDataImport($customer));
         $this->assertEquals(0, $this->getProvisionalDataImport($customer));
 
         // 受注の削除
         $this->deleteOrder($order);
 
-        // 検証（ポイント無くなっていること）
+        // 検証（データインポート無くなっていること）
         $this->assertEquals(0, $this->getCurrentDataImport($customer));
         $this->assertEquals(0, $this->getProvisionalDataImport($customer));
     }
 
-    // 受注削除（仮ポイントを削除）
+    // 受注削除（仮データインポートを削除）
     public function testDeleteOrderWithUnfixedDataImport()
     {
-        // ポイント設定を変更
+        // データインポート設定を変更
         $this->updateDataImportSettings($this->dataimportFixStatus);
 
         // 注文する
@@ -162,14 +162,14 @@ class DataImportRepositoryJoinTest extends AbstractWebTestCase
         // 期待結果の計算
         $expectedDataImport = $this->CalcExpectedDataImport($order);
 
-        // 検証（仮ポイントであること）
+        // 検証（仮データインポートであること）
         $this->assertEquals(0, $this->getCurrentDataImport($customer));
         $this->assertEquals($expectedDataImport, $this->getProvisionalDataImport($customer));
 
         // 受注の削除
         $this->deleteOrder($order);
 
-        // 検証（ポイント無くなっていること）
+        // 検証（データインポート無くなっていること）
         $this->assertEquals(0, $this->getCurrentDataImport($customer));
         $this->assertEquals(0, $this->getProvisionalDataImport($customer));
     }
@@ -177,7 +177,7 @@ class DataImportRepositoryJoinTest extends AbstractWebTestCase
     // 受注登録で受注作成
     public function testCreateOrderByOrderEditWithFixedStatus()
     {
-        // ポイント設定を変更
+        // データインポート設定を変更
         $this->updateDataImportSettings($this->app['config']['order_new']);
         
         // 受注情報を登録する
@@ -185,7 +185,7 @@ class DataImportRepositoryJoinTest extends AbstractWebTestCase
         $order = $this->DoCreateNewOrder($customer);
         //$order = $this->DoOrder($customer);
 
-        // 検証（ポイントステータスのレコードが作成されていること）
+        // 検証（データインポートステータスのレコードが作成されていること）
         // https://github.com/EC-CUBE/dataimport-plugin/issues/44
         $existedStatus = $this->app['eccube.plugin.dataimport.repository.dataimportstatus']->findOneBy(
             array('order_id' => $order->getId())
@@ -197,14 +197,14 @@ class DataImportRepositoryJoinTest extends AbstractWebTestCase
     // 受注登録で受注作成（未確定ステータス）
     public function testCreateOrderByOrderEditWithUnfixedStatus()
     {
-        // ポイント設定を変更
+        // データインポート設定を変更
         $this->updateDataImportSettings($this->dataimportFixStatus);
 
         // 受注情報を登録する
         $customer = $this->createCustomer();
         $order = $this->DoCreateNewOrder($customer);
 
-        // 検証（ポイントステータスのレコードが作成されていること）
+        // 検証（データインポートステータスのレコードが作成されていること）
         // https://github.com/EC-CUBE/dataimport-plugin/issues/44
         $existedStatus = $this->app['eccube.plugin.dataimport.repository.dataimportstatus']->findOneBy(
             array('order_id' => $order->getId())
@@ -214,7 +214,7 @@ class DataImportRepositoryJoinTest extends AbstractWebTestCase
     }
 
     /**
-     * オーダーから加算ポイントを取得する
+     * オーダーから加算データインポートを取得する
      * @param Order $order
      * @return int
      */
@@ -229,7 +229,7 @@ class DataImportRepositoryJoinTest extends AbstractWebTestCase
     }
 
     /**
-     * 仮ポイントの取得
+     * 仮データインポートの取得
      * @return int
      */
     private function getProvisionalDataImport($customer)
@@ -241,7 +241,7 @@ class DataImportRepositoryJoinTest extends AbstractWebTestCase
     }
 
     /**
-     * 確定ポイントの取得
+     * 確定データインポートの取得
      * @param Customer $customer
      * @return int
      */
@@ -258,7 +258,7 @@ class DataImportRepositoryJoinTest extends AbstractWebTestCase
     }
 
     /**
-     * ポイント設定の更新
+     * データインポート設定の更新
      * @param int $status
      * @return DataImportInfo
      */

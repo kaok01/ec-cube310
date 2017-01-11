@@ -72,7 +72,7 @@ class DataImportCalculateHelperTest extends EccubeTestCase
     }
 
     /**
-     * ポイント利用時の加算ポイント減算処理のテスト
+     * データインポート利用時の加算データインポート減算処理のテスト
      */
     public function testGetSubtractionCalculate()
     {
@@ -126,15 +126,15 @@ class DataImportCalculateHelperTest extends EccubeTestCase
         for ($i = 0; $i < $max; $i++)  {
             $data = $testData[$i];
 
-            // 基本ポイント付与率
+            // 基本データインポート付与率
             $DataImportInfo->setPlgBasicDataImportRate($data[0]);
-            // ポイント換算レート
+            // データインポート換算レート
             $DataImportInfo->setPlgDataImportConversionRate($data[1]);
             // 端数計算方法
             $DataImportInfo->setPlgRoundType($data[2]);
-            // 利用ポイント
+            // 利用データインポート
             $this->assertTrue($calculater->setUseDataImport($data[3]));
-            // 加算ポイント
+            // 加算データインポート
             $calculater->setAddDataImport($data[4]);
             // 期待値
             $this->expected = ($data[5]);
@@ -147,12 +147,12 @@ class DataImportCalculateHelperTest extends EccubeTestCase
     {
         $testData = array(
             /**
-             * - 基本ポイント付与率
-             * - ポイント換算レート
+             * - 基本データインポート付与率
+             * - データインポート換算レート
              * - 端数計算方法
-             * - ポイント利用
-             * - ポイント減算方式
-             * - 商品毎ポイント付与率
+             * - データインポート利用
+             * - データインポート減算方式
+             * - 商品毎データインポート付与率
              * - 商品価格
              * - 商品個数
              * - 期待値
@@ -243,21 +243,21 @@ class DataImportCalculateHelperTest extends EccubeTestCase
         $calculater->addEntity('Order', $Order);
 
         foreach ($testData as $i => $data) {
-            // 基本ポイント付与率
+            // 基本データインポート付与率
             $DataImportInfo->setPlgBasicDataImportRate($data[0]);
-            // ポイント換算レート
+            // データインポート換算レート
             $DataImportInfo->setPlgDataImportConversionRate($data[1]);
             // 端数計算方法
             $DataImportInfo->setPlgRoundType($data[2]);
-            // 利用ポイント
+            // 利用データインポート
             $this->assertTrue($calculater->setUseDataImport($data[3]));
-            // ポイント減算方式
+            // データインポート減算方式
             $DataImportInfo->setPlgCalculationType($data[4]);
 
             foreach ($Order->getOrderDetails() as $OrderDetail) {
                 $ProductClass = $OrderDetail->getProductClass();
                 $Product = $ProductClass->getProduct();
-                // 商品ごとポイント付与率
+                // 商品ごとデータインポート付与率
                 $this->app['eccube.plugin.dataimport.repository.dataimportproductrate']->saveDataImportProductRate($data[5], $Product);
                 // 商品価格
                 $ProductClass->setPrice02($data[6]);
@@ -275,9 +275,9 @@ class DataImportCalculateHelperTest extends EccubeTestCase
     {
         $testData = array(
             /**
-             * - 基本ポイント付与率
+             * - 基本データインポート付与率
              * - 端数計算方法
-             * - 商品毎ポイント付与率
+             * - 商品毎データインポート付与率
              * - 商品価格
              * - 商品個数
              * - 期待値
@@ -302,12 +302,12 @@ class DataImportCalculateHelperTest extends EccubeTestCase
         $calculater->addEntity('Cart', $this->app['eccube.service.cart']->getCart());
 
         foreach ($testData as $i => $data) {
-            // 基本ポイント付与率
+            // 基本データインポート付与率
             $DataImportInfo->setPlgBasicDataImportRate($data[0]);
             // 端数計算方法
             $DataImportInfo->setPlgRoundType($data[1]);
 
-            // 商品ごとポイント付与率
+            // 商品ごとデータインポート付与率
             $this->app['eccube.plugin.dataimport.repository.dataimportproductrate']->saveDataImportProductRate($data[2], $Product);
             // 商品価格
             $ProductClass->setPrice02($data[3]);
@@ -345,9 +345,9 @@ class DataImportCalculateHelperTest extends EccubeTestCase
     {
         $testData = array(
             /**
-             * - 基本ポイント付与率
+             * - 基本データインポート付与率
              * - 端数計算方法
-             * - 商品毎ポイント付与率
+             * - 商品毎データインポート付与率
              * - 商品価格(最小)
              * - 商品価格(最大)
              * - 期待値(最小)
@@ -374,12 +374,12 @@ class DataImportCalculateHelperTest extends EccubeTestCase
         for ($i = 0; $i < $max; $i++) {
             $data = $testData[$i];
 
-            // 基本ポイント付与率
+            // 基本データインポート付与率
             $DataImportInfo->setPlgBasicDataImportRate($data[0]);
             // 端数計算方法
             $DataImportInfo->setPlgRoundType($data[1]);
 
-            // 商品ごとポイント付与率
+            // 商品ごとデータインポート付与率
             $this->app['eccube.plugin.dataimport.repository.dataimportproductrate']->saveDataImportProductRate($data[2], $Product);
             // 商品価格
             $ProductClasses[0]->setPrice02($data[3]);
@@ -400,7 +400,7 @@ class DataImportCalculateHelperTest extends EccubeTestCase
     }
 
     /**
-     * ポイントを利用していたが、支払い方法の変更によりマイナスが発生したので、キャンセル処理が行われた
+     * データインポートを利用していたが、支払い方法の変更によりマイナスが発生したので、キャンセル処理が行われた
      */
     public function testCalculateTotalDiscountOnChangeConditions()
     {
@@ -433,12 +433,12 @@ class DataImportCalculateHelperTest extends EccubeTestCase
         $Order->setCharge(0);
         $this->app['orm.em']->flush();
 
-        // ポイントの打ち消しと、値引きの戻しが実行されているはず。
+        // データインポートの打ち消しと、値引きの戻しが実行されているはず。
         $this->expected = true;
         $this->actual = $calculater->calculateTotalDiscountOnChangeConditions();
         $this->verify('支払い金額がマイナスの場合は true');
 
-        // 支払い金額は手数料とポイント利用の値引きがなくなるので1000円になる
+        // 支払い金額は手数料とデータインポート利用の値引きがなくなるので1000円になる
         $this->expected = 1000;
         $this->actual = $Order->getTotalPrice();
         $this->verify('お支払い金額は '.$this->actual.' 円');
@@ -448,21 +448,21 @@ class DataImportCalculateHelperTest extends EccubeTestCase
         $this->actual = $Order->getDiscount();
         $this->verify('値引きは '.$this->actual.' 円');
 
-        // 利用ポイントは打ち消され、0ptになる
+        // 利用データインポートは打ち消され、0ptになる
         $this->expected = 0;
         $this->actual = $this->app['eccube.plugin.dataimport.repository.dataimport']->getLatestPreUseDataImport($Order);
-        $this->verify('利用ポイントは '.$this->actual.' 円');
+        $this->verify('利用データインポートは '.$this->actual.' 円');
     }
 
     /**
-     * 10ポイント利用しようとしたが、お支払い金額がマイナスになっている場合
+     * 10データインポート利用しようとしたが、お支払い金額がマイナスになっている場合
      */
     public function testCalculateTotalDiscountOnChangeConditionsWithUseDataImport()
     {
         $Customer = $this->createCustomer();
         $Order = $this->createOrder($Customer);
 
-        // ポイント利用以外のプラグインで、お支払い金額がマイナスになった場合
+        // データインポート利用以外のプラグインで、お支払い金額がマイナスになった場合
         $totalAmount = $Order->getTotalPrice();
         $this->app['eccube.service.shopping']->setDiscount($Order, $totalAmount + 1); // 支払い金額 + 1円を値引きする
         $this->app['orm.em']->flush();
@@ -472,18 +472,18 @@ class DataImportCalculateHelperTest extends EccubeTestCase
         $calculater->addEntity('Customer', $Customer);
 
         $DataImportInfo = $this->app['eccube.plugin.dataimport.repository.dataimportinfo']->getLastInsertData();
-         // 10ポイント利用する
+         // 10データインポート利用する
         $this->createPreUseDataImport($DataImportInfo, $Customer, $Order, 10);
 
         $this->expected = true;
         $this->actual = $calculater->calculateTotalDiscountOnChangeConditions();
-        $this->verify('ポイント利用以外のプラグインで、お支払い金額がマイナスになった場合は true');
+        $this->verify('データインポート利用以外のプラグインで、お支払い金額がマイナスになった場合は true');
 
         $this->expected = -11;
         $this->actual = $Order->getTotalPrice();
         $this->verify('お支払い金額は '.$this->actual.' 円');
 
-        // 保有ポイントは 0 になっているはず
+        // 保有データインポートは 0 になっているはず
         $orderIds = $this->app['eccube.plugin.dataimport.repository.dataimportstatus']->selectOrderIdsWithFixedByCustomer(
             $Customer->getId()
         );
@@ -493,7 +493,7 @@ class DataImportCalculateHelperTest extends EccubeTestCase
         );
 
         $this->expected = 0;
-        $this->verify('保有ポイントは '.$this->actual);
+        $this->verify('保有データインポートは '.$this->actual);
     }
 
     public function testCalculateTotalDiscountOnChangeConditionsWithAmountPlus()
@@ -501,7 +501,7 @@ class DataImportCalculateHelperTest extends EccubeTestCase
         $Customer = $this->createCustomer();
         $Order = $this->createOrder($Customer);
 
-        // ポイント利用以外のプラグインで、お支払い金額が 0 になった場合
+        // データインポート利用以外のプラグインで、お支払い金額が 0 になった場合
         $totalAmount = $Order->getTotalPrice();
         $this->app['eccube.service.shopping']->setDiscount($Order, $totalAmount); // 支払い金額分を値引きする
         $this->app['orm.em']->flush();
@@ -512,7 +512,7 @@ class DataImportCalculateHelperTest extends EccubeTestCase
 
         $this->expected = false;
         $this->actual = $calculater->calculateTotalDiscountOnChangeConditions();
-        $this->verify('ポイント利用以外のプラグインで、お支払い金額が 0 になった場合は false');
+        $this->verify('データインポート利用以外のプラグインで、お支払い金額が 0 になった場合は false');
 
         $this->expected = 0;
         $this->actual = $Order->getTotalPrice();
@@ -599,12 +599,12 @@ class DataImportCalculateHelperTest extends EccubeTestCase
     {
         $Customer = $this->createCustomer();
         $Order = $this->createOrder($Customer);
-        $Order->setDiscount(90); // ポイント値引き10円 + その他値引き90円
+        $Order->setDiscount(90); // データインポート値引き10円 + その他値引き90円
 
         $calculater = $this->app['eccube.plugin.dataimport.calculate.helper.factory'];
         $calculater->addEntity('Order', $Order);
         $calculater->addEntity('Customer', $Customer);
-        $calculater->setUseDataImport(10); // ポイント利用10pt
+        $calculater->setUseDataImport(10); // データインポート利用10pt
 
         $this->expected = true;
         $this->actual = $calculater->setDiscount(0);
@@ -624,11 +624,11 @@ class DataImportCalculateHelperTest extends EccubeTestCase
         $calculater = $this->app['eccube.plugin.dataimport.calculate.helper.factory'];
         $calculater->addEntity('Order', $Order);
         $calculater->addEntity('Customer', $Customer);
-        $calculater->setUseDataImport(90); // ポイント利用90pt
+        $calculater->setUseDataImport(90); // データインポート利用90pt
 
         $this->expected = true;
         $this->actual = $calculater->setDiscount(0);
-        $this->verify('同一受注の前回利用ポイントは 0');
+        $this->verify('同一受注の前回利用データインポートは 0');
 
         $this->expected = 100;
         $this->actual = $Order->getDiscount();
@@ -636,39 +636,39 @@ class DataImportCalculateHelperTest extends EccubeTestCase
     }
 
     /**
-     * 仮利用ポイントの履歴を含むテストケース
+     * 仮利用データインポートの履歴を含むテストケース
      */
     public function testSetDiscount3()
     {
-        $previousUseDataImport = 100; // 前回入力したポイント100
-        $useDataImport = 10;         // 今回利用ポイント10
+        $previousUseDataImport = 100; // 前回入力したデータインポート100
+        $useDataImport = 10;         // 今回利用データインポート10
         $otherDiscount = 5;     // その他の割引5円
         $Customer = $this->createCustomer();
         $Order = $this->createOrder($Customer);
 
-         // その他値引き5円 + 前回入力したポイント値引き分100円
+         // その他値引き5円 + 前回入力したデータインポート値引き分100円
         $Order->setDiscount($otherDiscount + $previousUseDataImport);
 
-        // 仮利用ポイントの履歴を作成する
+        // 仮利用データインポートの履歴を作成する
         $this->app['eccube.plugin.dataimport.history.service']->addEntity($Order);
         $this->app['eccube.plugin.dataimport.history.service']->addEntity($Order->getCustomer());
-        $this->app['eccube.plugin.dataimport.history.service']->savePreUseDataImport($previousUseDataImport * -1); // 前回入力したポイントを履歴に設定
+        $this->app['eccube.plugin.dataimport.history.service']->savePreUseDataImport($previousUseDataImport * -1); // 前回入力したデータインポートを履歴に設定
 
         $lastPreUseDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->getLatestPreUseDataImport($Order);
         $lastPreUseDataImport = abs($lastPreUseDataImport);
 
         $this->expected = $previousUseDataImport;
         $this->actual = $lastPreUseDataImport;
-        $this->verify('前回入力したポイントは '.$this->expected.' pt');
+        $this->verify('前回入力したデータインポートは '.$this->expected.' pt');
 
         $calculater = $this->app['eccube.plugin.dataimport.calculate.helper.factory'];
         $calculater->addEntity('Order', $Order);
         $calculater->addEntity('Customer', $Customer);
-        $calculater->setUseDataImport($useDataImport); // ポイント利用10pt
+        $calculater->setUseDataImport($useDataImport); // データインポート利用10pt
 
         $this->expected = true;
-        $this->actual = $calculater->setDiscount($lastPreUseDataImport); // 同一受注でポイントを入力した履歴があるかどうか
-        $this->verify('同一受注の利用ポイント履歴あり');
+        $this->actual = $calculater->setDiscount($lastPreUseDataImport); // 同一受注でデータインポートを入力した履歴があるかどうか
+        $this->verify('同一受注の利用データインポート履歴あり');
 
         $this->expected = $useDataImport + $otherDiscount;
         $this->actual = $Order->getDiscount();
@@ -680,35 +680,35 @@ class DataImportCalculateHelperTest extends EccubeTestCase
      */
     public function testSetDiscount4()
     {
-        $previousUseDataImport = 100; // 前回入力したポイント100
-        $useDataImport = 100;         // 今回利用ポイント100
+        $previousUseDataImport = 100; // 前回入力したデータインポート100
+        $useDataImport = 100;         // 今回利用データインポート100
         $otherDiscount = -5;     // その他の割引-5円(5円加算)
         $Customer = $this->createCustomer();
         $Order = $this->createOrder($Customer);
 
-         // その他値引き-5円 + 前回入力したポイント値引き分100円
+         // その他値引き-5円 + 前回入力したデータインポート値引き分100円
         $Order->setDiscount($otherDiscount + $previousUseDataImport);
 
-        // 仮利用ポイントの履歴を作成する
+        // 仮利用データインポートの履歴を作成する
         $this->app['eccube.plugin.dataimport.history.service']->addEntity($Order);
         $this->app['eccube.plugin.dataimport.history.service']->addEntity($Order->getCustomer());
-        $this->app['eccube.plugin.dataimport.history.service']->savePreUseDataImport($previousUseDataImport * -1); // 前回入力したポイントを履歴に設定
+        $this->app['eccube.plugin.dataimport.history.service']->savePreUseDataImport($previousUseDataImport * -1); // 前回入力したデータインポートを履歴に設定
 
         $lastPreUseDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->getLatestPreUseDataImport($Order);
         $lastPreUseDataImport = abs($lastPreUseDataImport);
 
         $this->expected = $previousUseDataImport;
         $this->actual = $lastPreUseDataImport;
-        $this->verify('前回入力したポイントは '.$this->expected.' pt');
+        $this->verify('前回入力したデータインポートは '.$this->expected.' pt');
 
         $calculater = $this->app['eccube.plugin.dataimport.calculate.helper.factory'];
         $calculater->addEntity('Order', $Order);
         $calculater->addEntity('Customer', $Customer);
-        $calculater->setUseDataImport($useDataImport); // ポイント利用100pt
+        $calculater->setUseDataImport($useDataImport); // データインポート利用100pt
 
         $this->expected = true;
-        $this->actual = $calculater->setDiscount($lastPreUseDataImport); // 同一受注でポイントを入力した履歴があるかどうか
-        $this->verify('同一受注の利用ポイント履歴あり');
+        $this->actual = $calculater->setDiscount($lastPreUseDataImport); // 同一受注でデータインポートを入力した履歴があるかどうか
+        $this->verify('同一受注の利用データインポート履歴あり');
 
         $this->expected = $useDataImport + $otherDiscount;
         $this->actual = $Order->getDiscount();
@@ -716,7 +716,7 @@ class DataImportCalculateHelperTest extends EccubeTestCase
     }
 
     /**
-     * 仮利用ポイントの登録
+     * 仮利用データインポートの登録
      * @param Customer $customer
      * @param Order $order
      * @param int $dataimportValue

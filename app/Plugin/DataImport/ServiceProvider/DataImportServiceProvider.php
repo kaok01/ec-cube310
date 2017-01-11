@@ -39,7 +39,7 @@ class DataImportServiceProvider implements ServiceProviderInterface
     {
         /**
          * ルーティング登録
-         * 管理画面 > 設定 > 基本情報設定 > ポイント基本情報設定画面
+         * 管理画面 > 設定 > 基本情報設定 > データインポート基本情報設定画面
          */
         $app->match(
             '/'.$app['config']['admin_route'].'/dataimport/setting',
@@ -64,7 +64,7 @@ class DataImportServiceProvider implements ServiceProviderInterface
             }
         );
 
-        /** ポイントステータステーブル用リポジトリ */
+        /** データインポートステータステーブル用リポジトリ */
         $app['eccube.plugin.dataimport.repository.dataimportstatus'] = $app->share(
             function () use ($app) {
                 return $app['orm.em']->getRepository('Plugin\DataImport\Entity\DataImportStatus');
@@ -78,28 +78,28 @@ class DataImportServiceProvider implements ServiceProviderInterface
             }
         );
 
-        /** ポイント機能基本情報テーブル用リポジトリ */
+        /** データインポート機能基本情報テーブル用リポジトリ */
         $app['eccube.plugin.dataimport.repository.dataimportinfo'] = $app->share(
             function () use ($app) {
                 return $app['orm.em']->getRepository('Plugin\DataImport\Entity\DataImportInfo');
             }
         );
 
-        /** ポイント会員情報テーブル */
+        /** データインポート会員情報テーブル */
         $app['eccube.plugin.dataimport.repository.dataimportcustomer'] = $app->share(
             function () use ($app) {
                 return $app['orm.em']->getRepository('Plugin\DataImport\Entity\DataImportCustomer');
             }
         );
 
-        /** ポイント機能商品付与率テーブル */
+        /** データインポート機能商品付与率テーブル */
         $app['eccube.plugin.dataimport.repository.dataimportproductrate'] = $app->share(
             function () use ($app) {
                 return $app['orm.em']->getRepository('Plugin\DataImport\Entity\DataImportProductRate');
             }
         );
 
-        /** ポイント機能スナップショットテーブル */
+        /** データインポート機能スナップショットテーブル */
         $app['eccube.plugin.dataimport.repository.dataimportsnapshot'] = $app->share(
             function () use ($app) {
                 return $app['orm.em']->getRepository('Plugin\DataImport\Entity\DataImportSnapshot');
@@ -360,7 +360,7 @@ class DataImportServiceProvider implements ServiceProviderInterface
     }
 
     /**
-     * ポイントプラグイン用ログファイルの初期設定
+     * データインポートプラグイン用ログファイルの初期設定
      *
      * @param BaseApplication $app
      * @param $logFileName

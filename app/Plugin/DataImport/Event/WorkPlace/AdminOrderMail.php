@@ -16,7 +16,7 @@ use Eccube\Event\TemplateEvent;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * フックポイント汎用処理具象クラス
+ * フックデータインポート汎用処理具象クラス
  *  - 拡張元 : メール通知
  * Class AdminOrderMail
  *
@@ -26,7 +26,7 @@ class  AdminOrderMail extends AbstractWorkPlace
 {
 
     /**
-     * 加算ポイント表示
+     * 加算データインポート表示
      *
      * @param TemplateEvent $event
      * @return bool
@@ -56,11 +56,11 @@ class  AdminOrderMail extends AbstractWorkPlace
 
         $body = $args['body'];
 
-        // 利用ポイント取得
+        // 利用データインポート取得
         $useDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->getLatestUseDataImport($Order);
         $useDataImport = abs($useDataImport);
 
-        // 加算ポイント取得.
+        // 加算データインポート取得.
         $addDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->getLatestAddDataImportByOrder($Order);
 
         $body = $this->getBody($body, $useDataImport, $addDataImport);
@@ -73,7 +73,7 @@ class  AdminOrderMail extends AbstractWorkPlace
 
 
     /**
-     * 加算ポイント表示
+     * 加算データインポート表示
      *
      * @param EventArgs $event
      * @return bool
@@ -131,11 +131,11 @@ class  AdminOrderMail extends AbstractWorkPlace
 
             $Order = $MailHistory->getOrder();
 
-            // 利用ポイント取得
+            // 利用データインポート取得
             $useDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->getLatestUseDataImport($Order);
             $useDataImport = abs($useDataImport);
 
-            // 加算ポイント取得.
+            // 加算データインポート取得.
             $addDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->getLatestAddDataImportByOrder($Order);
 
             $body = $this->getBody($body, $useDataImport, $addDataImport);
@@ -170,11 +170,11 @@ class  AdminOrderMail extends AbstractWorkPlace
         $snippet = PHP_EOL;
         $snippet .= PHP_EOL;
         $snippet .= '***********************************************'.PHP_EOL;
-        $snippet .= '　ポイント情報                                 '.PHP_EOL;
+        $snippet .= '　データインポート情報                                 '.PHP_EOL;
         $snippet .= '***********************************************'.PHP_EOL;
         $snippet .= PHP_EOL;
-        $snippet .= '利用ポイント：'.number_format($useDataImport).' pt'.PHP_EOL;
-        $snippet .= '加算ポイント：'.number_format($addDataImport).' pt'.PHP_EOL;
+        $snippet .= '利用データインポート：'.number_format($useDataImport).' pt'.PHP_EOL;
+        $snippet .= '加算データインポート：'.number_format($addDataImport).' pt'.PHP_EOL;
         $snippet .= PHP_EOL;
         $replace = $search[0][0].$snippet;
         return preg_replace('/'.$search[0][0].'/u', $replace, $body);

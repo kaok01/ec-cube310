@@ -15,7 +15,7 @@ use Eccube\Event\EventArgs;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * フックポイント汎用処理具象クラス
+ * フックデータインポート汎用処理具象クラス
  *  - 拡張元 : 受注メール
  *  - 拡張項目 : メール内容
  * Class ServiceMail
@@ -54,7 +54,7 @@ class ServiceMail extends AbstractWorkPlace
         // 計算ヘルパーの取得
         $calculator = $this->app['eccube.plugin.dataimport.calculate.helper.factory'];
 
-        // 利用ポイントの取得と設定
+        // 利用データインポートの取得と設定
         $useDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->getLatestUseDataImport($order);
         $useDataImport = abs($useDataImport);
 
@@ -85,11 +85,11 @@ class ServiceMail extends AbstractWorkPlace
         $snippet = PHP_EOL;
         $snippet .= PHP_EOL;
         $snippet .= '***********************************************'.PHP_EOL;
-        $snippet .= '　ポイント情報                                 '.PHP_EOL;
+        $snippet .= '　データインポート情報                                 '.PHP_EOL;
         $snippet .= '***********************************************'.PHP_EOL;
         $snippet .= PHP_EOL;
-        $snippet .= '利用ポイント：'.number_format($useDataImport).' pt'.PHP_EOL;
-        $snippet .= '加算ポイント：'.number_format($addDataImport).' pt'.PHP_EOL;
+        $snippet .= '利用データインポート：'.number_format($useDataImport).' pt'.PHP_EOL;
+        $snippet .= '加算データインポート：'.number_format($addDataImport).' pt'.PHP_EOL;
         $snippet .= PHP_EOL;
         $replace = $search[0][0].$snippet;
         $body = preg_replace('/'.$search[0][0].'/u', $replace, $body);

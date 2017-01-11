@@ -92,6 +92,6 @@ class AdminDataImportCustomerEditControllerTest extends AbstractAdminWebTestCase
 
         $this->expected = $currentDataImport;
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($this->Customer, $this->app);
-        $this->verify('設定した現在ポイントは '.$this->expected);
+        $this->verify('設定した現在データインポートは '.$this->expected);
     }
 }

@@ -33,7 +33,7 @@ class DataImportInfoRepository extends EntityRepository
     }
 
     /**
-     * ポイント基本情報を保存
+     * データインポート基本情報を保存
      *  - 受注ステータス・ユーザー設定不可項目をダミーとして追加
      * @param \Plugin\DataImport\Entity\DataImportInfo $dataimportInfo
      * @return bool
@@ -51,7 +51,7 @@ class DataImportInfoRepository extends EntityRepository
     }
 
     /**
-     * ポイント機能基本設定情報で最後に設定した内容を取得
+     * データインポート機能基本設定情報で最後に設定した内容を取得
      * @return mixed|null
      * @throws \Doctrine\ORM\NonUniqueResultException
      */

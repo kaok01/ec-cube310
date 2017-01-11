@@ -14,9 +14,9 @@ use Eccube\Event\TemplateEvent;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * フックポイント汎用処理具象クラス
+ * フックデータインポート汎用処理具象クラス
  *  - 拡張元 : 商品購入確認
- *  - 拡張項目 : 合計金額・ポイント
+ *  - 拡張項目 : 合計金額・データインポート
  * Class FrontShopping
  * @package Plugin\DataImport\Event\WorkPlace
  */
@@ -24,7 +24,7 @@ class FrontShopping extends AbstractWorkPlace
 {
     /**
      * フロント商品購入確認画面
-     * - ポイント計算/購入金額合計計算
+     * - データインポート計算/購入金額合計計算
      * @param TemplateEvent $event
      * @return bool
      */
@@ -35,11 +35,11 @@ class FrontShopping extends AbstractWorkPlace
         $Order = $args['Order'];
         $Customer = $Order->getCustomer();
 
-        // ポイント利用画面で入力された利用ポイントを取得
+        // データインポート利用画面で入力された利用データインポートを取得
         $useDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->getLatestPreUseDataImport($Order);
         $useDataImport = abs($useDataImport);
 
-        // 加算ポイントの取得
+        // 加算データインポートの取得
         $calculator = $this->app['eccube.plugin.dataimport.calculate.helper.factory'];
         $calculator->setUseDataImport($useDataImport); // calculatorに渡す際は絶対値
         $calculator->addEntity('Order', $Order);
@@ -51,25 +51,25 @@ class FrontShopping extends AbstractWorkPlace
             return true;
         }
 
-        // 現在の保有ポイント取得
+        // 現在の保有データインポート取得
         $currentDataImport = $calculator->getDataImport();
 
-        // 会員のポイントテーブルにレコードがない場合はnullを返す. その場合は0で表示する
+        // 会員のデータインポートテーブルにレコードがない場合はnullを返す. その場合は0で表示する
         if (is_null($currentDataImport)) {
             $currentDataImport = 0;
         }
 
-        // ポイント基本情報を取得
+        // データインポート基本情報を取得
         $DataImportInfo = $this->app['eccube.plugin.dataimport.repository.dataimportinfo']->getLastInsertData();
 
-        // ポイント表示用変数作成
+        // データインポート表示用変数作成
         $dataimport = array();
         $dataimport['current'] = $currentDataImport;
         $dataimport['use'] = $useDataImport;
         $dataimport['add'] = $addDataImport;
         $dataimport['rate'] = $DataImportInfo->getPlgDataImportConversionRate();
 
-        // 加算ポイント/利用ポイントを表示する
+        // 加算データインポート/利用データインポートを表示する
         $snippet = $this->app->renderView(
             'DataImport/Resource/template/default/Event/ShoppingConfirm/dataimport_summary.twig',
             array(
@@ -79,7 +79,7 @@ class FrontShopping extends AbstractWorkPlace
         $search = '<p id="summary_box__total_amount"';
         $this->replaceView($event, $snippet, $search);
 
-        // ポイント利用画面へのボタンを表示する
+        // データインポート利用画面へのボタンを表示する
         $snippet = $this->app->renderView(
             'DataImport/Resource/template/default/Event/ShoppingConfirm/use_dataimport_button.twig',
             array(

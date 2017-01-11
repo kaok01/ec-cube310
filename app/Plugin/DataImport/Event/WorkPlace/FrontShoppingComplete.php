@@ -19,7 +19,7 @@ use Plugin\DataImport\Entity\DataImportAbuse;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * フックポイント汎用処理具象クラス
+ * フックデータインポート汎用処理具象クラス
  *  - 拡張元 : 商品購入完了
  *  - 拡張項目 : メール内容
  * Class FrontShoppingComplete
@@ -28,9 +28,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 class FrontShoppingComplete extends AbstractWorkPlace
 {
     /**
-     * ポイントログの保存
-     *  - 仮付与ポイント
-     *  - 確定ポイント判定
+     * データインポートログの保存
+     *  - 仮付与データインポート
+     *  - 確定データインポート判定
      *  - スナップショット保存
      *  - メール送信
      * @param EventArgs $event
@@ -43,29 +43,29 @@ class FrontShoppingComplete extends AbstractWorkPlace
 
         $Order = $event->getArgument('Order');
 
-        // 利用ポイントを登録
+        // 利用データインポートを登録
         $useDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->getLatestPreUseDataImport($Order);
         $this->app['eccube.plugin.dataimport.history.service']->refreshEntity();
         $this->app['eccube.plugin.dataimport.history.service']->addEntity($Order);
         $this->app['eccube.plugin.dataimport.history.service']->addEntity($Order->getCustomer());
         $this->app['eccube.plugin.dataimport.history.service']->saveUseDataImport($useDataImport);
 
-        // 保有ポイントのマイナスチェック（保有ポイント以上にポイントを利用していないか？）
+        // 保有データインポートのマイナスチェック（保有データインポート以上にデータインポートを利用していないか？）
         $calculateCurrentDataImport = $this->calculateCurrentDataImport($Order->getCustomer());
         if ($calculateCurrentDataImport < 0) {
             $this->app['monolog.dataimport']->addInfo('save current dataimport', array(
                     'current dataimport' => $calculateCurrentDataImport,
                 )
             );
-            // ポイントがマイナスの時はメール送信
+            // データインポートがマイナスの時はメール送信
             $this->app['eccube.plugin.dataimport.mail.helper']->sendDataImportNotifyMail($Order, $calculateCurrentDataImport, $useDataImport);
-            // 保有ポイント以上にポイントを利用した受注であるということを記録
+            // 保有データインポート以上にデータインポートを利用した受注であるということを記録
             $dataimportAbuse = new DataImportAbuse($Order->getId());
             $this->app['orm.em']->persist($dataimportAbuse);
             $this->app['orm.em']->flush($dataimportAbuse);
         }
 
-        // 加算ポイントを登録
+        // 加算データインポートを登録
         $addDataImport = $this->calculateAddDataImport($Order, $useDataImport);
         $this->app['eccube.plugin.dataimport.history.service']->refreshEntity();
         $this->app['eccube.plugin.dataimport.history.service']->addEntity($Order);
@@ -73,13 +73,13 @@ class FrontShoppingComplete extends AbstractWorkPlace
         $this->app['eccube.plugin.dataimport.history.service']->saveAddDataImport($addDataImport);
         $this->app['eccube.plugin.dataimport.history.service']->saveDataImportStatus();
 
-        // 加算ポイントのステータスを変更（ポイント設定が確定ステータス＝新規受注の場合）
+        // 加算データインポートのステータスを変更（データインポート設定が確定ステータス＝新規受注の場合）
         $dataimportInfo = $this->app['eccube.plugin.dataimport.repository.dataimportinfo']->getLastInsertData();
         if ($dataimportInfo->getPlgAddDataImportStatus() == $this->app['config']['order_new']) {
             $this->app['eccube.plugin.dataimport.history.service']->fixDataImportStatus();
         }
 
-        // 保有ポイントを再計算して、会員の保有ポイントを更新する
+        // 保有データインポートを再計算して、会員の保有データインポートを更新する
         $calculateCurrentDataImport = $this->calculateCurrentDataImport($Order->getCustomer());
         $this->app['eccube.plugin.dataimport.repository.dataimportcustomer']->saveDataImport(
             $calculateCurrentDataImport,
@@ -95,7 +95,7 @@ class FrontShoppingComplete extends AbstractWorkPlace
                 'use dataimport' => $useDataImport,
             )
         );
-        // ポイント保存用変数作成
+        // データインポート保存用変数作成
         $dataimport = array();
         $dataimport['current'] = $calculateCurrentDataImport;
         $dataimport['use'] = $useDataImport * -1;
@@ -142,7 +142,7 @@ __EOL__;
     }
 
     /**
-     * 会員の保有ポイントを計算する.
+     * 会員の保有データインポートを計算する.
      *
      * TODO: 他のクラスでも同様の処理をしているので共通化したほうが良い
      * @param Customer $Customer
@@ -162,7 +162,7 @@ __EOL__;
     }
 
     /**
-     * 加算ポイントを算出する.
+     * 加算データインポートを算出する.
      *
      * @param Order $Order
      * @param int $useDataImport

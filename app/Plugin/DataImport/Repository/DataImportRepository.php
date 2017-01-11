@@ -24,15 +24,15 @@ use Plugin\DataImport\Helper\DataImportHistoryHelper\DataImportHistoryHelper;
 class DataImportRepository extends EntityRepository
 {
     /**
-     * カスタマーIDを基準にポイントの合計を計算
+     * カスタマーIDを基準にデータインポートの合計を計算
      * @param int $customer_id
      * @param array $orderIds
-     * @return int 保有ポイント
+     * @return int 保有データインポート
      */
     public function calcCurrentDataImport($customer_id, array $orderIds)
     {
         try {
-            // ログテーブルからポイントを計算
+            // ログテーブルからデータインポートを計算
             $qb = $this->createQueryBuilder('p');
             $qb->select('SUM(p.plg_dynamic_dataimport) as dataimport_sum')
                 ->where(
@@ -55,7 +55,7 @@ class DataImportRepository extends EntityRepository
                     )
                 );
             }
-            // 合計ポイント
+            // 合計データインポート
             $dataimport = $qb->getQuery()->getSingleScalarResult();
             return (int)$dataimport;
         } catch (NoResultException $e) {
@@ -64,10 +64,10 @@ class DataImportRepository extends EntityRepository
     }
 
     /**
-     * 仮ポイントを会員IDを基に返却
+     * 仮データインポートを会員IDを基に返却
      *  - 合計値
      * @param array $orderIds
-     * @return int 仮ポイント
+     * @return int 仮データインポート
      */
     public function calcProvisionalAddDataImport(array $orderIds)
     {
@@ -91,15 +91,15 @@ class DataImportRepository extends EntityRepository
     }
 
     /**
-     * 受注に対して行われた最後の付与ポイントを取得
+     * 受注に対して行われた最後の付与データインポートを取得
      * @param $order
      * @param $default レコードがない時のデフォルト値 nullと0を区別したい際は、この引数を利用する
-     * @return int 付与ポイント
+     * @return int 付与データインポート
      */
     public function getLatestAddDataImportByOrder(Order $Order, $default = 0)
     {
         try {
-            // 受注をもとにその受注に対して行われた最後の付与ポイントを取得
+            // 受注をもとにその受注に対して行われた最後の付与データインポートを取得
             $qb = $this->createQueryBuilder('p')
                 ->andWhere('p.customer_id = :customer_id')
                 ->andWhere('p.order_id = :order_id')
@@ -120,10 +120,10 @@ class DataImportRepository extends EntityRepository
     }
 
     /**
-     * 最終利用ポイントを受注エンティティより取得
+     * 最終利用データインポートを受注エンティティより取得
      * @param Order $order
      * @param $default レコードがない時のデフォルト値 nullと0を区別したい際は、この引数を利用する
-     * @return int 利用ポイント
+     * @return int 利用データインポート
      */
     public function getLatestUseDataImport(Order $Order, $default = 0)
     {
@@ -134,7 +134,7 @@ class DataImportRepository extends EntityRepository
         }
 
         try {
-            // 履歴情報をもとに現在利用ポイントを計算し取得
+            // 履歴情報をもとに現在利用データインポートを計算し取得
             $qb = $this->createQueryBuilder('p')
                 ->where('p.customer_id = :customerId')
                 ->andWhere('p.order_id = :orderId')
@@ -154,14 +154,14 @@ class DataImportRepository extends EntityRepository
     }
 
     /**
-     * 最終仮利用ポイントを取得
+     * 最終仮利用データインポートを取得
      * @param Order $order
-     * @return int 仮利用ポイント
+     * @return int 仮利用データインポート
      */
     public function getLatestPreUseDataImport(Order $order)
     {
         try {
-            // 履歴情報をもとに現在利用ポイントを計算し取得
+            // 履歴情報をもとに現在利用データインポートを計算し取得
             $qb = $this->createQueryBuilder('p')
                 ->where('p.customer_id = :customerId')
                 ->andWhere('p.order_id = :orderId')

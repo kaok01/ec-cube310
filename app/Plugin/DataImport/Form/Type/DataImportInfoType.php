@@ -54,7 +54,7 @@ class DataImportInfoType extends AbstractType
                 'plg_add_dataimport_status',
                 'choice',
                 array(
-                    'label' => 'ポイント確定タイミング',
+                    'label' => 'データインポート確定タイミング',
                     'choices' => $this->orderStatus,
                     'mapped' => true,
                     'expanded' => false,
@@ -68,9 +68,9 @@ class DataImportInfoType extends AbstractType
                 'plg_calculation_type',
                 'choice',
                 array(
-                    'label' => 'ポイント減算方式',
+                    'label' => 'データインポート減算方式',
                     'choices' => array(
-                        \Plugin\DataImport\Entity\DataImportInfo::POINT_CALCULATE_SUBTRACTION => 'ポイント利用時に減算',
+                        \Plugin\DataImport\Entity\DataImportInfo::POINT_CALCULATE_SUBTRACTION => 'データインポート利用時に減算',
                         \Plugin\DataImport\Entity\DataImportInfo::POINT_CALCULATE_NORMAL => '減算なし',
                     ),
                     'mapped' => true,
@@ -85,7 +85,7 @@ class DataImportInfoType extends AbstractType
                 'plg_basic_dataimport_rate',
                 'integer',
                 array(
-                    'label' => '基本ポイント付与率',
+                    'label' => '基本データインポート付与率',
                     'required' => true,
                     'mapped' => true,
                     'empty_data' => null,
@@ -107,12 +107,12 @@ class DataImportInfoType extends AbstractType
                 'plg_dataimport_conversion_rate',
                 'integer',
                 array(
-                    'label' => 'ポイント換算レート',
+                    'label' => 'データインポート換算レート',
                     'required' => true,
                     'mapped' => true,
                     'empty_data' => null,
                     'attr' => array(
-                        'placeholder' => 'ポイント利用時の換算値です( 1 → 1pt = 1円 )',
+                        'placeholder' => 'データインポート利用時の換算値です( 1 → 1pt = 1円 )',
                     ),
                     'constraints' => array(
                         new Assert\NotBlank(),
@@ -129,7 +129,7 @@ class DataImportInfoType extends AbstractType
                 'plg_round_type',
                 'choice',
                 array(
-                    'label' => 'ポイント端数計算方法',
+                    'label' => 'データインポート端数計算方法',
                     'choices' => array(
                         \Plugin\DataImport\Entity\DataImportInfo::POINT_ROUND_CEIL => '切り上げ',
                         \Plugin\DataImport\Entity\DataImportInfo::POINT_ROUND_FLOOR => '切り捨て',

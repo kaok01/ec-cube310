@@ -17,16 +17,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * フックポイント汎用処理具象クラス
+ * フックデータインポート汎用処理具象クラス
  *  - 拡張元 : 会員登録( 編集 )
- *  - 拡張項目 : 保有ポイント登録( 編集 )
+ *  - 拡張項目 : 保有データインポート登録( 編集 )
  * Class AdminCustomer
  * @package Plugin\DataImport\Event\WorkPlace
  */
 class  AdminCustomer extends AbstractWorkPlace
 {
     /**
-     * 会員保有ポイント追加
+     * 会員保有データインポート追加
      *
      * @param EventArgs $event
      */
@@ -44,19 +44,19 @@ class  AdminCustomer extends AbstractWorkPlace
 
         $data = is_null($lastDataImport) ? '' : $lastDataImport;
 
-        // 保有ポイント項目
+        // 保有データインポート項目
         $builder
             ->add(
                 'plg_dataimport_current',
                 'text',
                 array(
-                    'label' => '保有ポイント',
+                    'label' => '保有データインポート',
                     'required' => false,
                     'mapped' => false,
                     'empty_data' => null,
                     'data' => $data,
                     'attr' => array(
-                        'placeholder' => '入力した値でカスタマーの保有ポイントを更新します ( pt )',
+                        'placeholder' => '入力した値でカスタマーの保有データインポートを更新します ( pt )',
                     ),
                     'constraints' => array(
                         new Assert\Length(
@@ -81,7 +81,7 @@ class  AdminCustomer extends AbstractWorkPlace
     }
 
     /**
-     * 保有ポイント保存
+     * 保有データインポート保存
      * @param EventArgs $event
      * @return bool
      */
@@ -99,7 +99,7 @@ class  AdminCustomer extends AbstractWorkPlace
             return false;
         }
 
-        // 保有ポイント
+        // 保有データインポート
         $dataimportCurrent = $form->get('plg_dataimport_current')->getData();
 
         if (empty($dataimportCurrent) && $dataimportCurrent != 0) {
@@ -129,10 +129,10 @@ class  AdminCustomer extends AbstractWorkPlace
             return false;
         }
 
-        // ポイント付与保存処理
+        // データインポート付与保存処理
         $saveEntity = $this->app['eccube.plugin.dataimport.repository.dataimportcustomer']->saveDataImport($dataimportCurrent, $customer);
 
-        // 現在の保持ポイントを減算して登録（ゼロリセットする）
+        // 現在の保持データインポートを減算して登録（ゼロリセットする）
         $orderIds = $this->app['eccube.plugin.dataimport.repository.dataimportstatus']->selectOrderIdsWithFixedByCustomer(
             $customer->getId()
         );
@@ -153,7 +153,7 @@ class  AdminCustomer extends AbstractWorkPlace
         $this->app['eccube.plugin.dataimport.history.service']->saveManualdataimport($calculateCurrentDataImport * -1);
         $this->app['eccube.plugin.dataimport.history.service']->refreshEntity();
         
-        // 新しいポイントを登録
+        // 新しいデータインポートを登録
         $this->app['eccube.plugin.dataimport.history.service']->addEntity($customer);
         $this->app['eccube.plugin.dataimport.history.service']->saveManualdataimport($dataimportCurrent);
 
@@ -162,7 +162,7 @@ class  AdminCustomer extends AbstractWorkPlace
         $dataimport['use'] = 0;
         $dataimport['add'] = $dataimportCurrent;
 
-        // 手動設定ポイントのスナップショット登録
+        // 手動設定データインポートのスナップショット登録
         $this->app['eccube.plugin.dataimport.history.service']->refreshEntity();
         $this->app['eccube.plugin.dataimport.history.service']->addEntity($customer);
         $this->app['eccube.plugin.dataimport.history.service']->saveSnapShot($dataimport);

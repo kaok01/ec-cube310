@@ -15,7 +15,7 @@ use Eccube\Event\TemplateEvent;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * フックポイント汎用処理具象クラス
+ * フックデータインポート汎用処理具象クラス
  *  - 拡張元 : マイページ
  *  - 拡張項目 : 画面表示
  * Class FrontMyPage
@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class FrontMyPage extends AbstractWorkPlace
 {
     /**
-     * マイページにポイント情報を差し込む
+     * マイページにデータインポート情報を差し込む
      * @param TemplateEvent $event
      * @return bool
      */
@@ -34,7 +34,7 @@ class FrontMyPage extends AbstractWorkPlace
 
         $dataimportRate = $DataImportInfo->getPlgDataImportConversionRate();
 
-        // ポイント計算ヘルパーを取得
+        // データインポート計算ヘルパーを取得
         $calculator = $this->app['eccube.plugin.dataimport.calculate.helper.factory'];
 
         // カスタマー情報を取得
@@ -43,30 +43,30 @@ class FrontMyPage extends AbstractWorkPlace
         // 計算に必要なエンティティを登録
         $calculator->addEntity('Customer', $Customer);
 
-        // 会員保有ポイントを取得
+        // 会員保有データインポートを取得
         $currentDataImport = $calculator->getDataImport();
 
-        // 会員保有ポイント取得判定
+        // 会員保有データインポート取得判定
         if (empty($currentDataImport)) {
             $currentDataImport = 0;
         }
 
-        // 仮ポイント取得
+        // 仮データインポート取得
         $provisionalAddDataImport = $calculator->getProvisionalAddDataImport();
 
-        // 仮ポイント取得判定
+        // 仮データインポート取得判定
         if (empty($provisionalAddDataImport)) {
             $provisionalAddDataImport = 0;
         }
 
-        // ポイント表示用変数作成
+        // データインポート表示用変数作成
         $dataimport = array();
         $dataimport['current'] = $currentDataImport;
         $dataimport['pre'] = $provisionalAddDataImport;
         $dataimport['rate'] = $dataimportRate;
 
-        // 使用ポイントボタン付与
-        // twigコードにポイント表示欄を追加
+        // 使用データインポートボタン付与
+        // twigコードにデータインポート表示欄を追加
         $snippet = $this->app->renderView(
             'DataImport/Resource/template/default/Event/MypageTop/dataimport_box.twig',
             array(

@@ -14,7 +14,7 @@
 {% set menus = ['setting', 'shop', 'shop_index'] %}
 
 {% block title %}基本情報設定{% endblock %}
-{% block sub_title %}ポイント設定{% endblock %}
+{% block sub_title %}データインポート設定{% endblock %}
 
 {% form_theme form 'Form/bootstrap_3_horizontal_layout.html.twig' %}
 
@@ -27,11 +27,11 @@
             <div class="col-md-9">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">ポイント確定タイミング</h3>
+                        <h3 class="box-title">データインポート確定タイミング</h3>
                     </div><!-- /.box-header -->
                     <div class="box-body">
                         <div class="form-group">
-                            <div class="col-sm-3 col-lg-3">ポイント確定タイミング</div>
+                            <div class="col-sm-3 col-lg-3">データインポート確定タイミング</div>
                             <div class="col-sm-9 col-lg-9">
                                 {{ form_widget(form.plg_add_dataimport_status) }}
                                 {{ form_errors(form.plg_add_dataimport_status) }}
@@ -41,32 +41,32 @@
                 </div>
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">ポイント基本設定</h3>
+                        <h3 class="box-title">データインポート基本設定</h3>
                     </div><!-- /.box-header -->
                     <div class="box-body">
                         <div class="form-group">
-                            <div class="col-sm-3 col-lg-3">基本ポイント付与率</div>
+                            <div class="col-sm-3 col-lg-3">基本データインポート付与率</div>
                             <div class="col-sm-9 col-lg-9">
                                 {{ form_widget(form.plg_basic_dataimport_rate) }}
                                 {{ form_errors(form.plg_basic_dataimport_rate) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-sm-3 col-lg-3">ポイント換算レート</div>
+                            <div class="col-sm-3 col-lg-3">データインポート換算レート</div>
                             <div class="col-sm-9 col-lg-9">
                                 {{ form_widget(form.plg_dataimport_conversion_rate) }}
                                 {{ form_errors(form.plg_dataimport_conversion_rate) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-sm-3 col-lg-3">ポイント端数計算方法</div>
+                            <div class="col-sm-3 col-lg-3">データインポート端数計算方法</div>
                             <div class="col-sm-9 col-lg-9">
                                 {{ form_widget(form.plg_round_type) }}
                                 {{ form_errors(form.plg_round_type) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-sm-3 col-lg-3">ポイント減算方式</div>
+                            <div class="col-sm-3 col-lg-3">データインポート減算方式</div>
                             <div class="col-sm-9 col-lg-9">
                                 {{ form_widget(form.plg_calculation_type) }}
                                 {{ form_errors(form.plg_calculation_type) }}
@@ -76,7 +76,7 @@
                 </div><!-- /.box -->
                 <div id="dataimport_info_box" class="box accordion">
                     <div id="dataimport_info_box__toggle" class="box-header toggle">
-                        <h3 class="box-title">ポイント機能利用時のご注意
+                        <h3 class="box-title">データインポート機能利用時のご注意
                             <svg class="cb cb-angle-down icon_down">
                                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cb-angle-down"></use>
                             </svg>
@@ -85,7 +85,7 @@
                     <div id="dataimport_info_box__body" class="box-body accpanel" style="display: block;">
                         <div class="form-group">
                             <div class="col-sm-12 col-lg-12">
-                                <p>ポイント機能を利用するにあたっては、お客様との間でトラブルを避けるために、「特定商取引法に基づく表記」などに、利用規約を定めることをおすすめします。経済産業省「企業ポイントに関する消費者保護のあり方（ガイドライン）」等を参考にしてください。</p>
+                                <p>データインポート機能を利用するにあたっては、お客様との間でトラブルを避けるために、「特定商取引法に基づく表記」などに、利用規約を定めることをおすすめします。経済産業省「企業データインポートに関する消費者保護のあり方（ガイドライン）」等を参考にしてください。</p>
                             </div>
                         </div>
                     </div>

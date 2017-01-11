@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\Exception as HttpException;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * ポイント設定画面用コントローラー
+ * データインポート設定画面用コントローラー
  * Class AdminDataImportController
  * @package Plugin\DataImport\Controller
  */
@@ -31,7 +31,7 @@ class AdminDataImportController
     }
 
     /**
-     * ポイント基本情報管理設定画面
+     * データインポート基本情報管理設定画面
      * @param Application $app
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -40,7 +40,7 @@ class AdminDataImportController
     {
         $app['monolog.dataimport.admin']->addInfo('index start');
 
-        // 最終保存のポイント設定情報取得
+        // 最終保存のデータインポート設定情報取得
         $DataImportInfo = $app['eccube.plugin.dataimport.repository.dataimportinfo']->getLastInsertData();
 
         $form = $app['form.factory']

@@ -42,18 +42,18 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
         $Customer = $this->logIn();
         $client = $this->client;
 
-        // 保有ポイントを設定する
+        // 保有データインポートを設定する
         DataImportTestUtil::saveCustomerDataImport($Customer, $currentDataImport, $this->app);
 
         // カート画面
         $this->scenarioCartIn($client);
 
         $crawler = $client->request('GET', '/cart');
-        $this->assertRegExp('/現在の保有ポイントは「'.number_format($currentDataImport).' pt」です。/u', $crawler->filter('#cart_item__dataimport_info')->text());
+        $this->assertRegExp('/現在の保有データインポートは「'.number_format($currentDataImport).' pt」です。/u', $crawler->filter('#cart_item__dataimport_info')->text());
     }
 
     /**
-     * ポイントを使用しないテストケース.
+     * データインポートを使用しないテストケース.
      */
     public function testDataImportShopping()
     {
@@ -82,8 +82,8 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
         $this->verify();
 
         $body = $this->parseMailCatcherSource($Message);
-        $this->assertRegexp('/利用ポイント：0 pt/u', $body);
-        $this->assertRegexp('/加算ポイント：1,100 pt/u', $body);
+        $this->assertRegexp('/利用データインポート：0 pt/u', $body);
+        $this->assertRegexp('/加算データインポート：1,100 pt/u', $body);
 
         // 生成された受注のチェック
         $Order = $this->app['eccube.repository.order']->findOneBy(
@@ -112,18 +112,18 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
         );
         $this->expected = 1100;
         $this->actual = $provisionalDataImport;
-        $this->verify('仮ポイントの合計は '.$this->expected);
+        $this->verify('仮データインポートの合計は '.$this->expected);
     }
 
     /**
-     * ポイント利用のテストケース.
+     * データインポート利用のテストケース.
      */
     public function testUseDataImportShopping()
     {
-        $currentDataImport = 1000;   // 保有ポイント
-        $useDataImport = 100;        // 利用ポイント
+        $currentDataImport = 1000;   // 保有データインポート
+        $useDataImport = 100;        // 利用データインポート
 
-        // ポイント確定ステータスを「発送済み」に設定
+        // データインポート確定ステータスを「発送済み」に設定
         $DataImportInfo = $this->app['eccube.plugin.dataimport.repository.dataimportinfo']->getLastInsertData();
         $DataImportInfo->setPlgAddDataImportStatus($this->app['config']['order_deliv']);
         $this->app['orm.em']->flush();
@@ -132,7 +132,7 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
         $Customer = $this->logIn();
         $client = $this->client;
 
-        // 保有ポイントを設定する
+        // 保有データインポートを設定する
         DataImportTestUtil::saveCustomerDataImport($Customer, $currentDataImport, $this->app);
 
         // カート画面
@@ -144,14 +144,14 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
         $this->actual = $crawler->filter('h1.page-heading')->text();
         $this->verify();
 
-        // ポイント利用画面
+        // データインポート利用画面
         $crawler = $client->request('GET', $this->app->path('dataimport_use'));
         $this->assertRegexp(
-            '/現在の保有ポイントは「'.number_format($currentDataImport).' pt」です。/u',
+            '/現在の保有データインポートは「'.number_format($currentDataImport).' pt」です。/u',
             $crawler->filter('#detail_box')->text()
         );
 
-        // ポイント利用処理
+        // データインポート利用処理
         $crawler = $this->scenarioUseDataImport($client, $useDataImport);
         $this->assertTrue($client->getResponse()->isRedirect($this->app->url('shopping')));
 
@@ -168,31 +168,31 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
 
         $body = $this->parseMailCatcherSource($Message);
 
-        $this->assertRegexp('/利用ポイント：'.$useDataImport.' pt/u', $body);
-        $this->assertRegexp('/加算ポイント：1,100 pt/u', $body);
+        $this->assertRegexp('/利用データインポート：'.$useDataImport.' pt/u', $body);
+        $this->assertRegexp('/加算データインポート：1,100 pt/u', $body);
 
         $this->expected = $currentDataImport - $useDataImport;
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($Customer, $this->app);
-        $this->verify('保有ポイントの合計は '.$this->expected);
+        $this->verify('保有データインポートの合計は '.$this->expected);
     }
 
     /**
-     * ポイント利用のテストケース.
+     * データインポート利用のテストケース.
      *
      * 長期間利用した際のシナリオ
      * 1. 50回購入
-     * 2. 1 のうち、25回ポイント確定
-     * 3. 新たに 50回購入し、各100ポイントずつ利用する
-     * 4. 2で確定しなかったポイントを確定
+     * 2. 1 のうち、25回データインポート確定
+     * 3. 新たに 50回購入し、各100データインポートずつ利用する
+     * 4. 2で確定しなかったデータインポートを確定
      */
     public function testLongUseDataImportShopping()
     {
-        $addDataImport = 1100;       // 1回の受注で加算されるポイント
+        $addDataImport = 1100;       // 1回の受注で加算されるデータインポート
         $purchaseNum = 50;     // 購入回数
-        $useDataImport = 100;        // 利用ポイント
+        $useDataImport = 100;        // 利用データインポート
         $discount = 100;        // 値引き額
 
-        // ポイント確定ステータスを「発送済み」に設定
+        // データインポート確定ステータスを「発送済み」に設定
         $DataImportInfo = $this->app['eccube.plugin.dataimport.repository.dataimportinfo']->getLastInsertData();
         $DataImportInfo->setPlgAddDataImportStatus($this->app['config']['order_deliv']);
         $this->app['orm.em']->flush();
@@ -219,7 +219,7 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
 
         $this->expected = 0;
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($Customer, $this->app);
-        $this->verify('保有ポイントの合計は '.$this->expected);
+        $this->verify('保有データインポートの合計は '.$this->expected);
         $OrderDeliv = $this->app['eccube.repository.order_status']->find($this->app['config']['order_deliv']);
 
         // 半分だけ受注ステータスを発送済みに更新
@@ -233,7 +233,7 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
 
                 $deliveryNum++;
 
-                // ポイント確定
+                // データインポート確定
                 $this->fixDataImport($Order, $Customer);
             } else {
                 $orderNewIds[] = $Order->getId();
@@ -243,17 +243,17 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
 
         $this->expected = $addDataImport * $deliveryNum;
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($Customer, $this->app);
-        $this->verify('保有ポイントの合計は '.$this->expected);
+        $this->verify('保有データインポートの合計は '.$this->expected);
         $currentDataImport = $this->actual;
 
 
-        $provisionalAddDataImport = 0; // 仮ポイント確認用
+        $provisionalAddDataImport = 0; // 仮データインポート確認用
         for ($i = 0; $i < $purchaseNum; $i++) {
             // カート画面
             $this->scenarioCartIn($client);
             // 確認画面
             $crawler = $this->scenarioConfirm($client);
-            // ポイント利用処理
+            // データインポート利用処理
             $crawler = $this->scenarioUseDataImport($client, $useDataImport);
             // 完了画面
             $crawler = $this->scenarioComplete($client, $this->app->path('shopping_confirm'));
@@ -262,7 +262,7 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
 
         $this->expected = $currentDataImport - ($useDataImport * $purchaseNum);
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($Customer, $this->app);
-        $this->verify('保有ポイントの合計は '.$this->expected);
+        $this->verify('保有データインポートの合計は '.$this->expected);
         $currentDataImport = $this->expected;
 
         $deliveryNum2 = 0;
@@ -273,41 +273,41 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
 
             $deliveryNum2++;
 
-            // ポイント確定
+            // データインポート確定
             $this->fixDataImport($NewOrder, $Customer);
         }
 
         $this->expected = $currentDataImport + ($addDataImport * $deliveryNum2);
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($Customer, $this->app);
-        $this->verify('保有ポイントの合計は '.$this->expected);
+        $this->verify('保有データインポートの合計は '.$this->expected);
 
         $this->expected = $provisionalAddDataImport;
         $this->actual = $calculator->getProvisionalAddDataImport();
-        $this->verify('現在の仮ポイント合計は '.$this->expected);
+        $this->verify('現在の仮データインポート合計は '.$this->expected);
     }
 
     /**
-     * ポイント利用(減算方式)のテストケース.
+     * データインポート利用(減算方式)のテストケース.
      *
      * 長期間利用した際のシナリオ
      * 1. 50回購入
-     * 2. 1 のうち、25件ポイント確定
-     * 3. 新たに 50回購入し、各100ポイントずつ利用する(減算方式)
-     * 4. 2で確定しなかったポイントを確定
-     * 5. 3の受注のうち25件ポイント確定、25件削除
-     * 6. 3のポイント確定受注の利用・加算ポイントを変更する
+     * 2. 1 のうち、25件データインポート確定
+     * 3. 新たに 50回購入し、各100データインポートずつ利用する(減算方式)
+     * 4. 2で確定しなかったデータインポートを確定
+     * 5. 3の受注のうち25件データインポート確定、25件削除
+     * 6. 3のデータインポート確定受注の利用・加算データインポートを変更する
      */
     public function testLongUseDataImportShoppingWithSubtraction()
     {
-        $addDataImport = 1100;       // 1回の受注で加算されるポイント
+        $addDataImport = 1100;       // 1回の受注で加算されるデータインポート
         $purchaseNum = 50;     // 購入回数
-        $useDataImport = 100;        // 利用ポイント
+        $useDataImport = 100;        // 利用データインポート
         $discount = 100;        // 値引き額
 
-        // ポイント確定ステータスを「発送済み」に設定
+        // データインポート確定ステータスを「発送済み」に設定
         $DataImportInfo = $this->app['eccube.plugin.dataimport.repository.dataimportinfo']->getLastInsertData();
         $DataImportInfo->setPlgAddDataImportStatus($this->app['config']['order_deliv']);
-        // ポイント減算方式に設定
+        // データインポート減算方式に設定
         $DataImportInfo->setPlgCalculationType(DataImportInfo::POINT_CALCULATE_SUBTRACTION);
         $this->app['orm.em']->flush();
 
@@ -333,7 +333,7 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
 
         $this->expected = 0;
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($Customer, $this->app);
-        $this->verify('保有ポイントの合計は '.$this->expected);
+        $this->verify('保有データインポートの合計は '.$this->expected);
         $OrderDeliv = $this->app['eccube.repository.order_status']->find($this->app['config']['order_deliv']);
 
         // 半分だけ受注ステータスを発送済みに更新
@@ -347,7 +347,7 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
 
                 $deliveryNum++;
 
-                // ポイント確定
+                // データインポート確定
                 $this->fixDataImport($Order, $Customer);
             } else {
                 $orderNewIds[] = $Order->getId();
@@ -357,17 +357,17 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
 
         $this->expected = $addDataImport * $deliveryNum;
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($Customer, $this->app);
-        $this->verify('保有ポイントの合計は '.$this->expected);
+        $this->verify('保有データインポートの合計は '.$this->expected);
         $currentDataImport = $this->actual;
 
 
-        $provisionalAddDataImport = 0; // 仮ポイント確認用
+        $provisionalAddDataImport = 0; // 仮データインポート確認用
         for ($i = 0; $i < $purchaseNum; $i++) {
             // カート画面
             $this->scenarioCartIn($client);
             // 確認画面
             $crawler = $this->scenarioConfirm($client);
-            // ポイント利用処理
+            // データインポート利用処理
             $crawler = $this->scenarioUseDataImport($client, $useDataImport);
             // 完了画面
             $crawler = $this->scenarioComplete($client, $this->app->path('shopping_confirm'));
@@ -379,7 +379,7 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
 
         $this->expected = $currentDataImport - ($useDataImport * $purchaseNum);
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($Customer, $this->app);
-        $this->verify('保有ポイントの合計は '.$this->expected);
+        $this->verify('保有データインポートの合計は '.$this->expected);
         $currentDataImport = $this->expected;
 
         $deliveryNum2 = 0;
@@ -390,18 +390,18 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
 
             $deliveryNum2++;
 
-            // ポイント確定
+            // データインポート確定
             $this->fixDataImport($NewOrder, $Customer);
         }
 
         $this->expected = $currentDataImport + ($addDataImport * $deliveryNum2);
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($Customer, $this->app);
-        $this->verify('保有ポイントの合計は '.$this->expected);
+        $this->verify('保有データインポートの合計は '.$this->expected);
         $currentDataImport = $this->expected;
 
         $this->expected = $provisionalAddDataImport;
         $this->actual = $calculator->getProvisionalAddDataImport();
-        $this->verify('現在の仮ポイント合計は '.$this->expected);
+        $this->verify('現在の仮データインポート合計は '.$this->expected);
 
         $OrderNew = $this->app['eccube.repository.order_status']->find($this->app['config']['order_new']);
         $NewOrders2 = $this->app['eccube.repository.order']->findBy(
@@ -420,7 +420,7 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
                 $NewOrder->setOrderStatus($OrderDeliv);
                 $this->app['orm.em']->flush($NewOrder);
 
-                // ポイント確定
+                // データインポート確定
                 $this->fixDataImport($NewOrder, $Customer);
                 $fixAddDataImport += $addDataImport - ($discount * ($DataImportInfo->getPlgBasicDataImportRate() / 100));
                 $useDataImportOrderIds[] = $NewOrder->getId();
@@ -428,21 +428,21 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
                 // 受注削除
                 $this->deleteOrder($NewOrder);
                 $deleted++;
-                $deleteUseDataImport += $useDataImport; // 利用したポイントを戻す
+                $deleteUseDataImport += $useDataImport; // 利用したデータインポートを戻す
             }
             $i++;
         }
 
         $this->expected = 0;
         $this->actual = $calculator->getProvisionalAddDataImport();
-        $this->verify('現在の仮ポイント合計は '.$this->expected);
+        $this->verify('現在の仮データインポート合計は '.$this->expected);
 
         $this->expected = $currentDataImport + $fixAddDataImport + $deleteUseDataImport;
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($Customer, $this->app);
-        $this->verify('保有ポイントの合計は '.$this->expected);
+        $this->verify('保有データインポートの合計は '.$this->expected);
         $currentDataImport = $this->expected;
 
-        // 受注のポイントを変更する
+        // 受注のデータインポートを変更する
         foreach ($useDataImportOrderIds as $order_id) {
             $UseDataImportOrder = $this->app['eccube.repository.order']->find($order_id);
             // 利用 200pt, 加算 1098pt に変更する
@@ -455,7 +455,7 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
 
         $this->expected = $currentDataImport;
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($Customer, $this->app);
-        $this->verify('保有ポイントの合計は '.$this->expected);
+        $this->verify('保有データインポートの合計は '.$this->expected);
     }
 
     /**
@@ -465,10 +465,10 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
      */
     public function testChangeShipping()
     {
-        $currentDataImport = 1000;   // 保有ポイント
-        $useDataImport = 100;        // 利用ポイント
+        $currentDataImport = 1000;   // 保有データインポート
+        $useDataImport = 100;        // 利用データインポート
 
-        // ポイント確定ステータスを「発送済み」に設定
+        // データインポート確定ステータスを「発送済み」に設定
         $DataImportInfo = $this->app['eccube.plugin.dataimport.repository.dataimportinfo']->getLastInsertData();
         $DataImportInfo->setPlgAddDataImportStatus($this->app['config']['order_deliv']);
         $this->app['orm.em']->flush();
@@ -478,7 +478,7 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
         $Customer = $this->logIn();
         $client = $this->client;
 
-        // 保有ポイントを設定する
+        // 保有データインポートを設定する
         DataImportTestUtil::saveCustomerDataImport($Customer, $currentDataImport, $this->app);
 
         // カート画面
@@ -490,14 +490,14 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
         $this->actual = $crawler->filter('h1.page-heading')->text();
         $this->verify();
 
-        // ポイント利用画面
+        // データインポート利用画面
         $crawler = $client->request('GET', $this->app->path('dataimport_use'));
         $this->assertRegexp(
-            '/現在の保有ポイントは「'.number_format($currentDataImport).' pt」です。/u',
+            '/現在の保有データインポートは「'.number_format($currentDataImport).' pt」です。/u',
             $crawler->filter('#detail_box')->text()
         );
 
-        // ポイント利用処理
+        // データインポート利用処理
         $crawler = $this->scenarioUseDataImport($client, $useDataImport);
         $this->assertTrue($client->getResponse()->isRedirect($this->app->url('shopping')));
 
@@ -535,33 +535,33 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
 
         $body = $this->parseMailCatcherSource($Message);
 
-        $this->assertRegexp('/利用ポイント：'.$useDataImport.' pt/u', $body);
-        $this->assertRegexp('/加算ポイント：1,100 pt/u', $body);
+        $this->assertRegexp('/利用データインポート：'.$useDataImport.' pt/u', $body);
+        $this->assertRegexp('/加算データインポート：1,100 pt/u', $body);
 
         $this->expected = $currentDataImport - $useDataImport;
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($Customer, $this->app);
-        $this->verify('保有ポイントの合計は '.$this->expected);
+        $this->verify('保有データインポートの合計は '.$this->expected);
     }
 
     /**
-     * ポイントがマイナスの際の表示テストケース.
+     * データインポートがマイナスの際の表示テストケース.
      */
     public function testMinusDataImport()
     {
-        $currentDataImport = -1000;   // 保有ポイント
+        $currentDataImport = -1000;   // 保有データインポート
         $useDataImport = 0;
 
         $faker = $this->getFaker();
         $Customer = $this->logIn();
         $client = $this->client;
 
-        // 保有ポイントを設定する
+        // 保有データインポートを設定する
         DataImportTestUtil::saveCustomerDataImport($Customer, $currentDataImport, $this->app);
 
         // Myページ
         $crawler = $client->request('GET', $this->app->path('mypage'));
         $this->assertRegexp(
-            '/現在の保有ポイントは「0 pt」です。/u',
+            '/現在の保有データインポートは「0 pt」です。/u',
             $crawler->filter('.txt_center')->text(),
             'Myページ'
         );
@@ -570,7 +570,7 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
         $this->scenarioCartIn($client);
         $crawler = $client->request('GET', $this->app->url('cart'));
         $this->assertRegexp(
-            '/現在の保有ポイントは「0 pt」です。/u',
+            '/現在の保有データインポートは「0 pt」です。/u',
             $crawler->filter('#cart_item__dataimport_info')->text(),
             'カート画面'
         );
@@ -581,22 +581,22 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
         $this->actual = $crawler->filter('h1.page-heading')->text();
         $this->verify();
         $this->assertRegexp(
-            '/現在の保有ポイントは「0 pt」です。/u',
+            '/現在の保有データインポートは「0 pt」です。/u',
             $crawler->filter('#dataimport_box__info')->text(),
             '購入確認画面'
         );
 
-        // ポイント利用画面
+        // データインポート利用画面
         $crawler = $client->request('GET', $this->app->path('dataimport_use'));
         $this->assertRegexp(
-            '/現在の保有ポイントは「0 pt」です。/u',
+            '/現在の保有データインポートは「0 pt」です。/u',
             $crawler->filter('#detail_box')->text(),
-            'ポイント利用画面'
+            'データインポート利用画面'
         );
         $this->assertNotRegexp(
             '/「'.number_format($currentDataImport).' pt」までご利用いただけます。/u',
             $crawler->filter('#detail_box')->text(),
-            'ポイント利用画面'
+            'データインポート利用画面'
         );
 
         // 完了画面
@@ -605,15 +605,15 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
     }
 
     /**
-     * 購入中にポイントがマイナスになった場合のテストケース.
+     * 購入中にデータインポートがマイナスになった場合のテストケース.
      */
     public function testUseDataImportWithMinus()
     {
-        $currentDataImport = 1000;   // 保有ポイント
-        $useDataImport = 100;        // 利用ポイント
-        $minusDataImport = -2000;    // テスト用のポイント
+        $currentDataImport = 1000;   // 保有データインポート
+        $useDataImport = 100;        // 利用データインポート
+        $minusDataImport = -2000;    // テスト用のデータインポート
 
-        // ポイント確定ステータスを「発送済み」に設定
+        // データインポート確定ステータスを「発送済み」に設定
         $DataImportInfo = $this->app['eccube.plugin.dataimport.repository.dataimportinfo']->getLastInsertData();
         $DataImportInfo->setPlgAddDataImportStatus($this->app['config']['order_deliv']);
         $this->app['orm.em']->flush();
@@ -622,7 +622,7 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
         $Customer = $this->logIn();
         $client = $this->client;
 
-        // 保有ポイントを設定する
+        // 保有データインポートを設定する
         DataImportTestUtil::saveCustomerDataImport($Customer, $currentDataImport, $this->app);
 
         // カート画面
@@ -634,18 +634,18 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
         $this->actual = $crawler->filter('h1.page-heading')->text();
         $this->verify();
 
-        // ポイント利用画面
+        // データインポート利用画面
         $crawler = $client->request('GET', $this->app->path('dataimport_use'));
         $this->assertRegexp(
-            '/現在の保有ポイントは「'.number_format($currentDataImport).' pt」です。/u',
+            '/現在の保有データインポートは「'.number_format($currentDataImport).' pt」です。/u',
             $crawler->filter('#detail_box')->text()
         );
 
-        // ポイント利用処理
+        // データインポート利用処理
         $crawler = $this->scenarioUseDataImport($client, $useDataImport);
         $this->assertTrue($client->getResponse()->isRedirect($this->app->url('shopping')));
 
-        // 保有ポイントをマイナスに設定する
+        // 保有データインポートをマイナスに設定する
         DataImportTestUtil::saveCustomerDataImport($Customer, $minusDataImport, $this->app);
 
         // 完了画面
@@ -668,7 +668,7 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
         $Messages = $this->getMailCatcherMessages();
         $Message = $this->getMailCatcherMessage($Messages[0]->id);
 
-        $this->expected = '[' . $this->BaseInfo->getShopName() . '] ポイント通知';
+        $this->expected = '[' . $this->BaseInfo->getShopName() . '] データインポート通知';
         $this->actual = $Message->subject;
         $this->verify('マイナス通知メールのチェック');
 
@@ -676,8 +676,8 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
 
         $this->assertRegexp('/会員ID：'.$Customer->getId().'/u', $body);
         $this->assertRegexp('/注文番号：'.$Order->getId().'/u', $body);
-        $this->assertRegexp('/利用ポイント：'.number_format($useDataImport).'/u', $body);
-        $this->assertRegexp('/保有ポイント：'.number_format($minusDataImport - $useDataImport + $currentDataImport).'/u', $body);
+        $this->assertRegexp('/利用データインポート：'.number_format($useDataImport).'/u', $body);
+        $this->assertRegexp('/保有データインポート：'.number_format($minusDataImport - $useDataImport + $currentDataImport).'/u', $body);
     }
 
     protected function scenarioCartIn($client, $product_class_id = 1)
@@ -731,7 +731,7 @@ class FrontDataImportControllerTest extends AbstractWebTestCase
     }
 
     /**
-     * ポイント利用処理のシナリオ
+     * データインポート利用処理のシナリオ
      */
     protected function scenarioUseDataImport($client, $useDataImport)
     {

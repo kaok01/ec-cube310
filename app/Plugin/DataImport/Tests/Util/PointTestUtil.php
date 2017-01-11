@@ -3,7 +3,7 @@
 namespace Plugin\DataImport\Tests\Util;
 
 /**
- * ポイントテストケースのユーティリティ.
+ * データインポートテストケースのユーティリティ.
  *
  * 何故か abstract class を作るとテストに失敗するため、汎用的なメソッドを static で提供する.
  *
@@ -12,7 +12,7 @@ namespace Plugin\DataImport\Tests\Util;
 class DataImportTestUtil {
 
     /**
-     * 会員の保有ポイントを返す.
+     * 会員の保有データインポートを返す.
      *
      * @see Plugin\DataImport\Event\WorkPlace\FrontShoppingComplete::calculateCurrentDataImport()
      */
@@ -29,11 +29,11 @@ class DataImportTestUtil {
     }
 
     /**
-     * 会員の保有ポイントを設定する.
+     * 会員の保有データインポートを設定する.
      */
     public static function saveCustomerDataImport($Customer, $currentDataImport, $app)
     {
-        // 手動設定ポイントを登録
+        // 手動設定データインポートを登録
         $app['eccube.plugin.dataimport.history.service']->refreshEntity();
         $app['eccube.plugin.dataimport.history.service']->addEntity($Customer);
         $app['eccube.plugin.dataimport.history.service']->saveManualdataimport($currentDataImport);
@@ -42,11 +42,11 @@ class DataImportTestUtil {
         $dataimport['use'] = 0;
         $dataimport['add'] = $currentDataImport;
 
-        // 手動設定ポイントのスナップショット登録
+        // 手動設定データインポートのスナップショット登録
         $app['eccube.plugin.dataimport.history.service']->refreshEntity();
         $app['eccube.plugin.dataimport.history.service']->addEntity($Customer);
         $app['eccube.plugin.dataimport.history.service']->saveSnapShot($dataimport);
-        // 保有ポイントを登録
+        // 保有データインポートを登録
         $app['eccube.plugin.dataimport.repository.dataimportcustomer']->saveDataImport(
             $currentDataImport,
             $Customer

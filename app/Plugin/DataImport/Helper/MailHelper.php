@@ -32,7 +32,7 @@ class MailHelper
 
 
     /**
-     * ポイントでマイナス発生時にメール通知する。
+     * データインポートでマイナス発生時にメール通知する。
      *
      * @param Order $Order
      * @param int $currentDataImport
@@ -44,11 +44,11 @@ class MailHelper
         $body = $this->app->renderView('DataImport/Resource/template/admin/Mail/dataimport_notify.twig', array(
             'Order' => $Order,
             'currentDataImport' => $currentDataImport,
-            'useDataImport' => abs($useDataImport), // DBから取得した利用ポイントはマイナス値なので、絶対値で表示する
+            'useDataImport' => abs($useDataImport), // DBから取得した利用データインポートはマイナス値なので、絶対値で表示する
         ));
 
         $message = \Swift_Message::newInstance()
-            ->setSubject('['.$this->BaseInfo->getShopName().'] ポイント通知')
+            ->setSubject('['.$this->BaseInfo->getShopName().'] データインポート通知')
             ->setFrom(array($this->BaseInfo->getEmail01() => $this->BaseInfo->getShopName()))
             ->setTo(array($this->BaseInfo->getEmail01()))
             ->setBcc($this->BaseInfo->getEmail01())

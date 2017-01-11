@@ -33,7 +33,7 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 
 /**
- * ポイントプラグインイベント処理ルーティングクラス
+ * データインポートプラグインイベント処理ルーティングクラス
  * Class DataImportEvent
  * @package Plugin\DataImport
  */
@@ -53,7 +53,7 @@ class DataImportEvent
     }
 
     /**
-     * 商品毎ポイント付与率
+     * 商品毎データインポート付与率
      *  - フォーム拡張処理
      *  - 管理画面 > 商品編集
      * @param EventArgs $event
@@ -67,7 +67,7 @@ class DataImportEvent
     }
 
     /**
-     * 商品毎ポイント付与率
+     * 商品毎データインポート付与率
      *  - 保存処理
      *  - 管理画面 > 商品編集
      * @param EventArgs $event
@@ -80,7 +80,7 @@ class DataImportEvent
     }
 
     /**
-     * 会員保有ポイント
+     * 会員保有データインポート
      *  - フォーム拡張処理
      *  - 管理画面 > 会員編集
      * @param EventArgs $event
@@ -93,7 +93,7 @@ class DataImportEvent
     }
 
     /**
-     * 会員保有ポイント
+     * 会員保有データインポート
      *  - 保存処理
      *  - 管理画面 > 会員編集
      * @param EventArgs $event
@@ -120,7 +120,7 @@ class DataImportEvent
     }
 
     /**
-     * 受注ステータス変更時ポイント付与
+     * 受注ステータス変更時データインポート付与
      *  - 判定・更新処理
      *  - 管理画面 > 受注登録 ( 編集 )
      * @param EventArgs $event
@@ -156,7 +156,7 @@ class DataImportEvent
 
     /**
      * 商品購入確認完了
-     *  - 利用ポイント・保有ポイント・仮付与ポイント保存
+     *  - 利用データインポート・保有データインポート・仮付与データインポート保存
      *  - フロント画面 > 商品購入確認完了
      * @param EventArgs $event
      */
@@ -172,7 +172,7 @@ class DataImportEvent
 
     /**
      * 商品購入確認完了
-     *  - 利用ポイント・保有ポイント・仮付与ポイントメール反映
+     *  - 利用データインポート・保有データインポート・仮付与データインポートメール反映
      *  - フロント画面 > 商品購入完了
      * @param EventArgs $event
      */
@@ -220,8 +220,8 @@ class DataImportEvent
 
     /**
      * 商品購入確認画面
-     *  - ポイント使用処理
-     *  - 付与ポイント計算処理・画面描画処理
+     *  - データインポート使用処理
+     *  - 付与データインポート計算処理・画面描画処理
      *  - フロント画面 > 商品購入確認画面
      * @param TemplateEvent $event
      */
@@ -237,7 +237,7 @@ class DataImportEvent
 
     /**
      * 管理画面受注編集
-     *  - 利用ポイント・保有ポイント・付与ポイント表示
+     *  - 利用データインポート・保有データインポート・付与データインポート表示
      *  - 管理画面 > 受注情報登録・編集
      * @param TemplateEvent $event
      */
@@ -250,7 +250,7 @@ class DataImportEvent
 
     /**
      *  マイページ
-     *  - 利用ポイント・保有ポイント表示
+     *  - 利用データインポート・保有データインポート表示
      *
      * @param TemplateEvent $event
      */
@@ -277,7 +277,7 @@ class DataImportEvent
 
     /**
      * 商品購入完了メール
-     *  - ポイントの表示
+     *  - データインポートの表示
      *
      * @param EventArgs $event
      */
@@ -293,7 +293,7 @@ class DataImportEvent
 
     /**
      * 商品詳細画面
-     *  - 加算ポイント表示
+     *  - 加算データインポート表示
      *
      * @param TemplateEvent $event
      */
@@ -306,7 +306,7 @@ class DataImportEvent
 
     /**
      * カート画面
-     *  - 利用ポイント・保有ポイント・加算ポイント表示
+     *  - 利用データインポート・保有データインポート・加算データインポート表示
      *
      * @param TemplateEvent $event
      */
@@ -319,7 +319,7 @@ class DataImportEvent
 
     /**
      * マイページ履歴画面
-     *  - 利用ポイント・保有ポイント表示
+     *  - 利用データインポート・保有データインポート表示
      *
      * @param TemplateEvent $event
      */

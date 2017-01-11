@@ -19,35 +19,35 @@ use Plugin\DataImport\Entity\DataImportStatus;
 use Plugin\DataImport\Repository\DataImportStatusRepository;
 
 /**
- * ポイント履歴ヘルパー
+ * データインポート履歴ヘルパー
  * Class DataImportHistoryHelper
  * @package Plugin\DataImport\Helper\DataImportHistoryHelper
  */
 class DataImportHistoryHelper
 {
     // 保存内容(場所)
-    const HISTORY_MESSAGE_MANUAL_EDIT = 'ポイント(手動変更)';
-    const HISTORY_MESSAGE_EDIT = 'ポイント';
-    const HISTORY_MESSAGE_USE_POINT = 'ポイント';
-    const HISTORY_MESSAGE_ORDER_EDIT = 'ポイント(受注内容変更)';
+    const HISTORY_MESSAGE_MANUAL_EDIT = 'データインポート(手動変更)';
+    const HISTORY_MESSAGE_EDIT = 'データインポート';
+    const HISTORY_MESSAGE_USE_POINT = 'データインポート';
+    const HISTORY_MESSAGE_ORDER_EDIT = 'データインポート(受注内容変更)';
 
-    // 保存内容(ポイント種別)
+    // 保存内容(データインポート種別)
     const HISTORY_MESSAGE_TYPE_CURRENT = '保有';
     const HISTORY_MESSAGE_TYPE_ADD = '加算';
     const HISTORY_MESSAGE_TYPE_PRE_USE = '仮利用';
     const HISTORY_MESSAGE_TYPE_USE = '利用';
 
-    // 保存内容(ポイント種別)
-    const STATE_CURRENT = 1; // 会員編集画面から手動更新される保有ポイント
-    const STATE_ADD = 3;    // 加算ポイント
-    const STATE_USE = 4;    // 利用ポイント
-    const STATE_PRE_USE = 5;    // 仮利用ポイント(購入中に利用ポイントとして登録されるポイント)
+    // 保存内容(データインポート種別)
+    const STATE_CURRENT = 1; // 会員編集画面から手動更新される保有データインポート
+    const STATE_ADD = 3;    // 加算データインポート
+    const STATE_USE = 4;    // 利用データインポート
+    const STATE_PRE_USE = 5;    // 仮利用データインポート(購入中に利用データインポートとして登録されるデータインポート)
 
     protected $app;                 // アプリケーション
     protected $entities;            // 保存時エンティティコレクション
-    protected $currentActionName;   // 保存時保存動作(場所 + ポイント種別)
+    protected $currentActionName;   // 保存時保存動作(場所 + データインポート種別)
     protected $historyType;         // 保存種別( integer )
-    protected $historyActionType;   // 保存ポイント種別( string )
+    protected $historyActionType;   // 保存データインポート種別( string )
 
     /**
      * DataImportHistoryHelper constructor.
@@ -57,7 +57,7 @@ class DataImportHistoryHelper
         $this->app = $app;
         // 全てINSERTのために保存用エンティティを再生成
         $this->refreshEntity();
-        // ポイント基本情報設定値
+        // データインポート基本情報設定値
         $this->entities['DataImportInfo'] = $this->app['eccube.plugin.dataimport.repository.dataimportinfo']->getLastInsertData();
     }
 
@@ -108,7 +108,7 @@ class DataImportHistoryHelper
     }
 
     /**
-     * 加算ポイントの履歴登録
+     * 加算データインポートの履歴登録
      *  - 受注管理画面
      * @param $dataimport
      */
@@ -121,7 +121,7 @@ class DataImportHistoryHelper
     }
 
     /**
-     * 加算ポイントの履歴登録
+     * 加算データインポートの履歴登録
      *  - フロント画面
      * @param $dataimport
      */
@@ -134,7 +134,7 @@ class DataImportHistoryHelper
     }
 
     /**
-     * 仮利用ポイント履歴登録
+     * 仮利用データインポート履歴登録
      *  - フロント画面
      * @param $dataimport
      */
@@ -147,7 +147,7 @@ class DataImportHistoryHelper
     }
 
     /**
-     * 利用ポイント履歴登録
+     * 利用データインポート履歴登録
      *  - フロント画面
      * @param $dataimport
      */
@@ -160,7 +160,7 @@ class DataImportHistoryHelper
     }
 
     /**
-     * 手動登録(管理者)ポイント履歴登録
+     * 手動登録(管理者)データインポート履歴登録
      *  - 管理画面・会員登録/編集
      * @param $dataimport
      */
@@ -173,7 +173,7 @@ class DataImportHistoryHelper
     }
 
     /**
-     * 受注編集による利用ポイント変更の保存
+     * 受注編集による利用データインポート変更の保存
      * @param $dataimport
      */
     public function saveUseDataImportByOrderEdit($dataimport)
@@ -252,7 +252,7 @@ class DataImportHistoryHelper
     }
 
     /**
-     * 付与ポイントのステータスレコードを追加する
+     * 付与データインポートのステータスレコードを追加する
      * @return bool
      */
     public function saveDataImportStatus()
@@ -274,7 +274,7 @@ class DataImportHistoryHelper
     }
 
     /**
-     *  ポイントステータスを確定状態にする
+     *  データインポートステータスを確定状態にする
      */
     public function fixDataImportStatus()
     {
@@ -296,7 +296,7 @@ class DataImportHistoryHelper
     }
 
     /**
-     *  ポイントステータスを削除状態にする
+     *  データインポートステータスを削除状態にする
      * @param Order $order 対象オーダー
      */
     public function deleteDataImportStatus(Order $order)

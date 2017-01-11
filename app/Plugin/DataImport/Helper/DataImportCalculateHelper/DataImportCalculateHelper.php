@@ -15,7 +15,7 @@ use Eccube\Entity\Product;
 use Plugin\DataImport\Entity\DataImportInfo;
 
 /**
- * ポイント計算サービスクラス
+ * データインポート計算サービスクラス
  * Class DataImportCalculateHelper
  * @package Plugin\DataImport\Helper\DataImportCalculateHelper
  */
@@ -43,7 +43,7 @@ class DataImportCalculateHelper
     public function __construct(\Eccube\Application $app)
     {
         $this->app = $app;
-        // ポイント情報基本設定取得
+        // データインポート情報基本設定取得
         $this->dataimportInfo = $this->app['eccube.plugin.dataimport.repository.dataimportinfo']->getLastInsertData();
 
         if (empty($this->dataimportInfo)) { // XXX ここのチェックは意味が無い
@@ -108,7 +108,7 @@ class DataImportCalculateHelper
     }
 
     /**
-     * 利用ポイントの設定
+     * 利用データインポートの設定
      * @param $useDataImport
      * @return bool
      */
@@ -119,7 +119,7 @@ class DataImportCalculateHelper
             return false;
         }
 
-        // 利用ポイントがマイナスの場合は false
+        // 利用データインポートがマイナスの場合は false
         if ($useDataImport < 0) {
             return false;
         }
@@ -129,7 +129,7 @@ class DataImportCalculateHelper
     }
 
     /**
-     * 加算ポイントをセットする.
+     * 加算データインポートをセットする.
      *
      * @param $addDataImport
      */
@@ -139,13 +139,13 @@ class DataImportCalculateHelper
     }
 
     /**
-     * ポイント計算時端数を設定に基づき計算返却
+     * データインポート計算時端数を設定に基づき計算返却
      * @param $value
      * @return bool|float
      */
     public function getRoundValue($value)
     {
-        // ポイント基本設定オブジェクトの有無を確認
+        // データインポート基本設定オブジェクトの有無を確認
         if (empty($this->dataimportInfo)) {
             return false;
         }
@@ -194,9 +194,9 @@ class DataImportCalculateHelper
     }
 
     /**
-     * 仮付与ポイントを返却
+     * 仮付与データインポートを返却
      *  - 会員IDをもとに返却
-     * @return int 仮付与ポイント
+     * @return int 仮付与データインポート
      */
     public function getProvisionalAddDataImport()
     {
@@ -213,11 +213,11 @@ class DataImportCalculateHelper
     }
 
     /**
-     * カート情報をもとに加算ポイントを返却する.
+     * カート情報をもとに加算データインポートを返却する.
      *
      * かートの明細単位で計算を行う
      * 商品ごとの付与率が設定されている場合は商品ごと付与率を利用する
-     * 商品ごとの付与率に0が設定されている場合は加算ポイントは付与しない
+     * 商品ごとの付与率に0が設定されている場合は加算データインポートは付与しない
      *
      * @return int
      */
@@ -254,7 +254,7 @@ class DataImportCalculateHelper
     }
 
     /**
-     * 受注情報をもとに付与ポイントを返却
+     * 受注情報をもとに付与データインポートを返却
      * @return bool|int
      */
     public function getAddDataImportByOrder()
@@ -273,7 +273,7 @@ class DataImportCalculateHelper
             return;
         }
 
-        // 商品ごとのポイント付与率を取得
+        // 商品ごとのデータインポート付与率を取得
         $productRates = $this->app['eccube.plugin.dataimport.repository.dataimportproductrate']->getDataImportProductRateByEntity(
             $this->products
         );
@@ -283,10 +283,10 @@ class DataImportCalculateHelper
             $productRates = false;
         }
 
-        // 商品ごとのポイント付与率セット
+        // 商品ごとのデータインポート付与率セット
         $this->productRates = $productRates;
 
-        // 取得ポイント付与率商品ID配列を取得
+        // 取得データインポート付与率商品ID配列を取得
         if ($this->productRates) {
             $productKeys = array_keys($this->productRates);
         }
@@ -296,11 +296,11 @@ class DataImportCalculateHelper
         // 商品詳細ごとの購入金額にレートをかける
         // レート計算後個数をかける
         foreach ($this->products as $node) {
-            // 商品毎ポイント付与率が設定されていない場合
+            // 商品毎データインポート付与率が設定されていない場合
             $rate = $basicRate / 100;
             if ($this->productRates) {
                 if (in_array($node->getProduct()->getId(), $productKeys)) {
-                    // 商品ごとポイント付与率が設定されている場合
+                    // 商品ごとデータインポート付与率が設定されている場合
                     $rate = $this->productRates[$node->getProduct()->getId()] / 100;
                 }
             }
@@ -316,9 +316,9 @@ class DataImportCalculateHelper
     }
 
     /**
-     * 商品情報から加算ポイントを算出する.
+     * 商品情報から加算データインポートを算出する.
      *
-     * 商品毎の付与率がnullの場合は基本ポイント付与率で算出する
+     * 商品毎の付与率がnullの場合は基本データインポート付与率で算出する
      * 商品毎の付与率が設定されている場合(0も含む)は、商品毎の付与率で算出する
      *
      * @return array
@@ -329,11 +329,11 @@ class DataImportCalculateHelper
         $productRate = $this->app['eccube.plugin.dataimport.repository.dataimportproductrate']->getLastDataImportProductRateById(
             $Product->getId()
         );
-        // 基本ポイント付与率を取得
+        // 基本データインポート付与率を取得
         $basicRate = $this->dataimportInfo->getPlgBasicDataImportRate();
 
         // 商品毎の付与率あればそちらを優先
-        // なければ基本ポイント付与率を利用
+        // なければ基本データインポート付与率を利用
         $calculateRate = $basicRate;
         if (!is_null($productRate)) {
             $calculateRate = $productRate;
@@ -348,7 +348,7 @@ class DataImportCalculateHelper
     }
 
     /**
-     * ポイント機能基本情報から計算方法を取得し判定
+     * データインポート機能基本情報から計算方法を取得し判定
      * @return bool
      */
     protected function isSubtraction()
@@ -367,13 +367,13 @@ class DataImportCalculateHelper
     }
 
     /**
-     * ポイント利用時の減算処理
+     * データインポート利用時の減算処理
      *
-     * 利用ポイント数 ＊ ポイント金額換算率 ＝ ポイント値引額
-     * 加算ポイント - ポイント値引き額 * 基本ポイント付与率 = 減算後加算ポイント
+     * 利用データインポート数 ＊ データインポート金額換算率 ＝ データインポート値引額
+     * 加算データインポート - データインポート値引き額 * 基本データインポート付与率 = 減算後加算データインポート
      *
-     * ポイント利用時かつ, ポイント設定でポイント減算ありを選択指定た場合に, 加算ポイントの減算処理を行う.
-     * 減算の計算後, プロパティのaddDataImportに減算後の加算ポイントをセットする.
+     * データインポート利用時かつ, データインポート設定でデータインポート減算ありを選択指定た場合に, 加算データインポートの減算処理を行う.
+     * 減算の計算後, プロパティのaddDataImportに減算後の加算データインポートをセットする.
      *
      * @return bool|float|void
      */
@@ -386,16 +386,16 @@ class DataImportCalculateHelper
             throw new \LogicException('calculation type not found.');
         }
 
-        // 利用ポイントがない場合は処理しない.
+        // 利用データインポートがない場合は処理しない.
         if (empty($this->useDataImport)) {
             return $this->addDataImport;
         }
 
-        // 利用ポイント数 ＊ ポイント金額換算率 ＝ ポイント値引額
+        // 利用データインポート数 ＊ データインポート金額換算率 ＝ データインポート値引額
         $dataimportDiscount = $this->useDataImport * $this->dataimportInfo->getPlgDataImportConversionRate();
 
         $basicRate = $this->dataimportInfo->getPlgBasicDataImportRate() / 100;
-        // 加算ポイント - ポイント値引き額 * 基本ポイント付与率 = 減算後加算ポイント
+        // 加算データインポート - データインポート値引き額 * 基本データインポート付与率 = 減算後加算データインポート
         $addDataImport = $this->addDataImport - $dataimportDiscount * $basicRate;
 
 
@@ -409,7 +409,7 @@ class DataImportCalculateHelper
     }
 
     /**
-     * 保有ポイントを返却
+     * 保有データインポートを返却
      * @return bool
      */
     public function getDataImport()
@@ -426,7 +426,7 @@ class DataImportCalculateHelper
     }
 
     /**
-     * ポイント基本機能設定から換算後ポイントを返却
+     * データインポート基本機能設定から換算後データインポートを返却
      * @return bool|float
      */
     public function getConversionDataImport()
@@ -436,12 +436,12 @@ class DataImportCalculateHelper
             return false;
         }
 
-        // 利用ポイントの確認
+        // 利用データインポートの確認
         if ($this->useDataImport != 0 && empty($this->useDataImport)) {
             return false;
         }
 
-        // ポイント基本設定の確認
+        // データインポート基本設定の確認
         if (empty($this->dataimportInfo)) {
             return false;
         }
@@ -453,14 +453,14 @@ class DataImportCalculateHelper
     }
 
     /**
-     * 受注情報と、利用ポイント・換算値から値引き額を計算し、
+     * 受注情報と、利用データインポート・換算値から値引き額を計算し、
      * 受注情報の更新を行う
      *
-     * 購入途中で何回もポイント履歴が発生するケースがあるため, 前回保存した履歴
-     * と今回のポイント差分を算出し,差分が発生している場合は true を返し値引き額
+     * 購入途中で何回もデータインポート履歴が発生するケースがあるため, 前回保存した履歴
+     * と今回のデータインポート差分を算出し,差分が発生している場合は true を返し値引き額
      * を保存する.
      *
-     * @param integer $lastUseDataImport 同じ受注で保存した履歴の最終ポイント数
+     * @param integer $lastUseDataImport 同じ受注で保存した履歴の最終データインポート数
      * @return bool 差分が無い場合は false を返す
      */
     public function setDiscount($lastUseDataImport)
@@ -470,12 +470,12 @@ class DataImportCalculateHelper
             return false;
         }
 
-        // 利用ポイントの確認
+        // 利用データインポートの確認
         if ($this->useDataImport != 0 && empty($this->useDataImport)) {
             return false;
         }
 
-        // ポイント基本設定の確認
+        // データインポート基本設定の確認
         if (empty($this->dataimportInfo)) {
             return false;
         }
@@ -483,7 +483,7 @@ class DataImportCalculateHelper
         // 受注情報に保存されている最終保存の値引き額を取得
         $currDiscount = $this->entities['Order']->getDiscount();
 
-        // 値引き額と利用ポイント換算値を比較→相違があればポイント利用分相殺後利用ポイントセット
+        // 値引き額と利用データインポート換算値を比較→相違があればデータインポート利用分相殺後利用データインポートセット
         $useDiscount = $this->getConversionDataImport();
 
         $diff = $currDiscount - ($lastUseDataImport * $this->dataimportInfo->getPlgDataImportConversionRate());
@@ -501,12 +501,12 @@ class DataImportCalculateHelper
     }
 
     /**
-     * ポイントを利用していたが、お届け先変更・配送業者・支払方法の変更により、
-     * 支払い金額にマイナスが発生した場合に、利用しているポイントを打ち消し、受注の値引きを戻す.
+     * データインポートを利用していたが、お届け先変更・配送業者・支払方法の変更により、
+     * 支払い金額にマイナスが発生した場合に、利用しているデータインポートを打ち消し、受注の値引きを戻す.
      *
-     * ポイントを利用していない場合は打ち消し処理は行わない
+     * データインポートを利用していない場合は打ち消し処理は行わない
      *
-     * @return bool ポイント利用可能な場合 false, 支払い金額がマイナスでポイント利用不可の場合は true を返し、ポイントを打ち消す
+     * @return bool データインポート利用可能な場合 false, 支払い金額がマイナスでデータインポート利用不可の場合は true を返し、データインポートを打ち消す
      * @throws \LogicException
      */
     public function calculateTotalDiscountOnChangeConditions()
@@ -523,7 +523,7 @@ class DataImportCalculateHelper
             $this->app['monolog']->critical('Customer not found.');
             throw new \LogicException('Customer not found.');
         }
-        // ポイント基本設定の確認
+        // データインポート基本設定の確認
         if (empty($this->dataimportInfo)) {
             throw new \LogicException('DataImportInfo not found.');
         }
@@ -532,20 +532,20 @@ class DataImportCalculateHelper
         $customer = $this->entities['Customer'];
 
         $totalAmount = $order->getTotalPrice();
-        // $totalAmount が正の整数の場合はポイント利用可能なので false を返す.
+        // $totalAmount が正の整数の場合はデータインポート利用可能なので false を返す.
         if ($totalAmount >= 0) {
             return false;
         }
 
-        // 最終保存仮利用ポイント
+        // 最終保存仮利用データインポート
         $useDataImport = $this->app['eccube.plugin.dataimport.repository.dataimport']->getLatestPreUseDataImport($order);
 
-        // ポイントを利用していない場合は、打ち消し処理は行わない
+        // データインポートを利用していない場合は、打ち消し処理は行わない
         if ($useDataImport == 0) {
             return false;
         }
 
-        // 最終ポイント利用額を算出
+        // 最終データインポート利用額を算出
         $dataimportDiscount = (int)$this->getRoundValue($useDataImport * $this->dataimportInfo->getPlgDataImportConversionRate());
 
 
@@ -554,14 +554,14 @@ class DataImportCalculateHelper
             'dataimportDiscount' => $dataimportDiscount,
         ));
 
-        // 利用ポイント差し引き値引き額をセット
+        // 利用データインポート差し引き値引き額をセット
         $this->app['eccube.service.shopping']->setDiscount($order, $dataimportDiscount);
         // キャンセルのために「0」でログテーブルを更新
         $this->app['eccube.plugin.dataimport.history.service']->addEntity($order);
         $this->app['eccube.plugin.dataimport.history.service']->addEntity($customer);
         $this->app['eccube.plugin.dataimport.history.service']->savePreUseDataImport(0);
 
-        // 利用ポイント打ち消し後の受注情報更新
+        // 利用データインポート打ち消し後の受注情報更新
         $newOrder = $this->app['eccube.service.shopping']->calculatePrice($order);
 
         $this->app['orm.em']->flush($newOrder);

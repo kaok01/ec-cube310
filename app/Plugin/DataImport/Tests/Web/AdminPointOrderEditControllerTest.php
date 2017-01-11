@@ -123,8 +123,8 @@ class AdminDataImportOrderEditControllerTest extends AbstractAdminWebTestCase
 
     public function testRoutingAdminOrderNewPost()
     {
-        $currentDataImport = 1000;   // 現在の保有ポイント
-        $useDataImport = 100;        // 使用するポイント
+        $currentDataImport = 1000;   // 現在の保有データインポート
+        $useDataImport = 100;        // 使用するデータインポート
 
         DataImportTestUtil::saveCustomerDataImport($this->Customer, $currentDataImport, $this->app);
 
@@ -150,18 +150,18 @@ class AdminDataImportOrderEditControllerTest extends AbstractAdminWebTestCase
 
         $this->expected = number_format($currentDataImport - $useDataImport).' Pt';
         $this->actual = $crawler->filter('#dataimport_info_box p')->text();
-        $this->verify('受注管理画面に表示されるポイントは '.$this->expected);
+        $this->verify('受注管理画面に表示されるデータインポートは '.$this->expected);
 
         $this->expected = $currentDataImport - $useDataImport;
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($this->Customer, $this->app);
-        $this->verify('現在の保有ポイントは '.$this->expected);
+        $this->verify('現在の保有データインポートは '.$this->expected);
     }
 
     public function testRoutingAdminOrderNewPostUseAndAddIsZero()
     {
-        $currentDataImport = 1000;   // 現在の保有ポイント
-        $useDataImport = 0;        // 使用するポイント
-        $addDataImport = 0;        // 加算するポイント
+        $currentDataImport = 1000;   // 現在の保有データインポート
+        $useDataImport = 0;        // 使用するデータインポート
+        $addDataImport = 0;        // 加算するデータインポート
 
         DataImportTestUtil::saveCustomerDataImport($this->Customer, $currentDataImport, $this->app);
 
@@ -187,18 +187,18 @@ class AdminDataImportOrderEditControllerTest extends AbstractAdminWebTestCase
 
         $this->expected = number_format($currentDataImport - $useDataImport).' Pt';
         $this->actual = $crawler->filter('#dataimport_info_box p')->text();
-        $this->verify('受注管理画面に表示されるポイントは '.$this->expected);
+        $this->verify('受注管理画面に表示されるデータインポートは '.$this->expected);
 
         $this->expected = $currentDataImport - $useDataImport;
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($this->Customer, $this->app);
-        $this->verify('現在の保有ポイントは '.$this->expected);
+        $this->verify('現在の保有データインポートは '.$this->expected);
     }
 
     public function testRoutingAdminOrderNewPostUseAndAddIsNull()
     {
-        $currentDataImport = 1000;   // 現在の保有ポイント
-        $useDataImport = null;        // 使用するポイント
-        $addDataImport = null;        // 加算するポイント
+        $currentDataImport = 1000;   // 現在の保有データインポート
+        $useDataImport = null;        // 使用するデータインポート
+        $addDataImport = null;        // 加算するデータインポート
 
         DataImportTestUtil::saveCustomerDataImport($this->Customer, $currentDataImport, $this->app);
 
@@ -224,23 +224,23 @@ class AdminDataImportOrderEditControllerTest extends AbstractAdminWebTestCase
 
         $this->expected = number_format($currentDataImport - $useDataImport).' Pt';
         $this->actual = $crawler->filter('#dataimport_info_box p')->text();
-        $this->verify('受注管理画面に表示されるポイントは '.$this->expected);
+        $this->verify('受注管理画面に表示されるデータインポートは '.$this->expected);
 
         $this->expected = $currentDataImport - $useDataImport;
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($this->Customer, $this->app);
-        $this->verify('現在の保有ポイントは '.$this->expected);
+        $this->verify('現在の保有データインポートは '.$this->expected);
     }
 
     public function testRoutingAdminOrderNewPostUseAndAddIsOne()
     {
-        // ポイント確定ステータスを「発送済み」に設定
+        // データインポート確定ステータスを「発送済み」に設定
         $DataImportInfo = $this->app['eccube.plugin.dataimport.repository.dataimportinfo']->getLastInsertData();
         $DataImportInfo->setPlgAddDataImportStatus($this->app['config']['order_deliv']);
         $this->app['orm.em']->flush();
 
-        $currentDataImport = 1000;   // 現在の保有ポイント
-        $useDataImport = 1;        // 使用するポイント
-        $addDataImport = 1;        // 加算するポイント
+        $currentDataImport = 1000;   // 現在の保有データインポート
+        $useDataImport = 1;        // 使用するデータインポート
+        $addDataImport = 1;        // 加算するデータインポート
 
         DataImportTestUtil::saveCustomerDataImport($this->Customer, $currentDataImport, $this->app);
 
@@ -266,11 +266,11 @@ class AdminDataImportOrderEditControllerTest extends AbstractAdminWebTestCase
 
         $this->expected = number_format($currentDataImport - $useDataImport).' Pt';
         $this->actual = $crawler->filter('#dataimport_info_box p')->text();
-        $this->verify('受注管理画面に表示されるポイントは '.$this->expected);
+        $this->verify('受注管理画面に表示されるデータインポートは '.$this->expected);
 
         $this->expected = $currentDataImport - $useDataImport;
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($this->Customer, $this->app);
-        $this->verify('現在の保有ポイントは '.$this->expected);
+        $this->verify('現在の保有データインポートは '.$this->expected);
     }
 
     public function testRoutingAdminOrderEdit()
@@ -289,13 +289,13 @@ class AdminDataImportOrderEditControllerTest extends AbstractAdminWebTestCase
 
         $this->expected = number_format($currentDataImport).' Pt';
         $this->actual = $crawler->filter('#dataimport_info_box p')->text();
-        $this->verify('受注管理画面に表示されるポイントは '.$this->expected);
+        $this->verify('受注管理画面に表示されるデータインポートは '.$this->expected);
     }
 
     public function testRoutingAdminOrderEditPost()
     {
-        $currentDataImport = 1000;   // 現在の保有ポイント
-        $useDataImport = 100;        // 使用するポイント
+        $currentDataImport = 1000;   // 現在の保有データインポート
+        $useDataImport = 100;        // 使用するデータインポート
 
         $Customer = $this->createCustomer();
         $Order = $this->createOrder($Customer);
@@ -319,10 +319,10 @@ class AdminDataImportOrderEditControllerTest extends AbstractAdminWebTestCase
 
         $this->expected = number_format($currentDataImport - $useDataImport).' Pt';
         $this->actual = $crawler->filter('#dataimport_info_box p')->text();
-        $this->verify('受注管理画面に表示されるポイントは '.$this->expected);
+        $this->verify('受注管理画面に表示されるデータインポートは '.$this->expected);
 
         $this->expected = $currentDataImport - $useDataImport;
         $this->actual = DataImportTestUtil::calculateCurrentDataImport($Customer, $this->app);
-        $this->verify('現在の保有ポイントは '.$this->expected);
+        $this->verify('現在の保有データインポートは '.$this->expected);
     }
 }

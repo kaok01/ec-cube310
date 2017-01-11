@@ -21,7 +21,7 @@ use Plugin\DataImport\Entity\DataImportOrder;
 class DataImportOrderRepository extends EntityRepository
 {
     /**
-     * 保有ポイントの保存
+     * 保有データインポートの保存
      * @param $dataimport
      * @param $customer
      * @return bool|DataImportCustomer
