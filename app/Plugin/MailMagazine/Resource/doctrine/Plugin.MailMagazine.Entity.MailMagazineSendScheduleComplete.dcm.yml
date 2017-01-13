@@ -22,7 +22,7 @@ Plugin\MailMagazine\Entity\MailMagazineSendScheduleComplete:
             type: datetime
             nullable: false
     manyToOne:
-        SendHistory:
+        Schedule:
             targetEntity: Plugin\MailMagazine\Entity\MailMagazineSendSchedule
             joinColumn:
                 name: schedule_id

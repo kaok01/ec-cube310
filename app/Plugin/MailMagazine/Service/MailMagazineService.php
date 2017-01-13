@@ -23,6 +23,7 @@ class MailMagazineService
     const REPOSITORY_SEND_CUSTOMER = 'eccube.plugin.mail_magazine.repository.mail_magazine_send_customer';
 
     const REPOSITORY_SEND_SCHEDULE = 'eccube.plugin.mail_magazine.repository.mail_magazine_send_schedule';
+    const REPOSITORY_SEND_SCHEDULE_COMPLETE = 'eccube.plugin.mail_magazine.repository.mail_magazine_send_schedule_complete';
 
     // send_flagの定数
     /** メール送信成功 */
@@ -311,6 +312,139 @@ class MailMagazineService
             $output->writeln('schedule service exec');
 
         }
+        $now = new \Datetime();
+        $searchDate = $now;
+
+        $Schedules = $this->app[self::REPOSITORY_SEND_SCHEDULE]->GetCurrentSchedule($now,$searchDate);
+        foreach($Schedules as $Schedule){
+            if(!$this->runSchedule($Schedule,$searchDate)){
+                if($output){
+                    $output->writeln('failed run schedule');
+
+                }
+
+            }
+
+        }
+
+        return true;
+    }
+
+    protected function runSchedule($Schedule,$searchDate){
+        dump($searchDate);
+
+        $ScheduleHistory = $Schedule->getSendHistory();
+        $SendWeek = $Schedule->getSendWeek();
+        $SendWeek = $SendWeek?unserialize(base64_decode($SendWeek)):null;
+
+        dump($SendWeek);
+
+        $ScheduleComplete = $this->app[self::REPOSITORY_SEND_SCHEDULE_COMPLETE]
+            ->findBy(array(
+                    'Schedule'=>$Schedule,
+                    'schedule_date'=>$searchDate,
+            ));
+        dump($ScheduleComplete);
+        if($ScheduleComplete){
+            dump('schedule was run');
+            return false;
+        }
+        //配信時刻をチェック
+        if(false){
+            dump('schedule is not sendtime yet');
+            return false;
+        }
+        //配信間隔をチェック
+        if(false){
+            dump('schedule is not sendweek yet');
+            return false;
+        }
+
+
+        dump($ScheduleHistory);
+        // $ScheduleHistoryRepo = $this->app[self::REPOSITORY_SEND_HISTORY]
+        //     ->find($ScheduleHistory->getId());
+        $ScheduleHistoryRepo = $this->app['eccube.plugin.mail_magazine.repository.mail_magazine_history']->find($ScheduleHistory->getId());
+
+        dump($ScheduleHistoryRepo);
+        // 検索条件をアンシリアライズする
+        // base64,serializeされているので注意すること
+        $searchData = unserialize(base64_decode($ScheduleHistoryRepo->getSearchData()));
+        dump($searchData);
+
+        // Formを取得する
+        /*
+        $form = $this->app['form.factory']
+            ->createBuilder('mail_magazine', null)
+            ->getForm();
+        $request = new \Symfony\Component\HttpFoundation\Request();
+        $request->request->set('mail_magazine',$searchData);
+        dump($request);
+        $form->handleRequest($request);
+        $data = $form->getData();
+
+        dump($data);
+        */
+
+        $crepo = $this->app['eccube.plugin.mail_magazine.repository.mail_magazine_customer'];
+        $crepo->setApplication($this->app);
+        $customerList = $crepo->getCustomerBySearchData($searchData);
+        dump($customerList);
+
+        foreach($customerList as $customer) {
+            // Entityにデータを設定する
+            $findcustomer = $this->app[self::REPOSITORY_SEND_CUSTOMER]
+                ->findBy(array(
+                'send_id'=>$ScheduleHistory->getId(),
+                'customer_id'=>$customer->getId(),
+                ));
+        dump($findcustomer);
+        die();
+            if($findcustomer){
+                /*
+                $sendCustomer = new \Plugin\MailMagazine\Entity\MailMagazineSendCustomer();
+
+                $sendCustomer->setSendId($sendId);
+                $sendCustomer->setCustomerId($customer->getId());
+                $sendCustomer->setEmail($customer->getEmail());
+                $sendCustomer->setName($customer->getName01() . " " . $customer->getName02());
+
+                $status = $this->app[self::REPOSITORY_SEND_CUSTOMER]->createSendCustomer($sendCustomer);
+                */
+            }else{
+
+                $sendCustomer = new \Plugin\MailMagazine\Entity\MailMagazineSendCustomer();
+
+                $sendCustomer->setSendId($sendId);
+                $sendCustomer->setCustomerId($customer->getId());
+                $sendCustomer->setEmail($customer->getEmail());
+                $sendCustomer->setName($customer->getName01() . " " . $customer->getName02());
+
+                $status = $this->app[self::REPOSITORY_SEND_CUSTOMER]->createSendCustomer($sendCustomer);
+
+            }
+
+        }
+        dump('search ready.');
+        if($customerList){
+
+            // 登録した配信履歴からメールを送信する
+            $this->sendrMailMagazine($ScheduleHistory->getId());
+
+            // 送信完了メールを送信する
+            $this->sendMailMagazineCompleateReportMail();
+
+        }
+
+        //スケジュール配信完了
+        $ScheduleComplete = new \Plugin\MailMagazine\Entity\MailMagazineSendScheduleComplete();
+        $ScheduleComplete->setSchedule($Schedule);
+        $ScheduleComplete->setScheduleDate($searchDate);
+
+        $this->app[self::REPOSITORY_SEND_SCHEDULE_COMPLETE]->create($ScheduleComplete);
+
+
+
         return true;
     }
 }

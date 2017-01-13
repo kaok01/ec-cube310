@@ -270,9 +270,7 @@ dump($formScheduleData);
      * @param string $id
      */
     public function commit(Application $app, Request $request, $id = null) {
-dump($id);
-dump($request);
-die();
+
         // POSTでない場合は終了する
         if ('POST' !== $request->getMethod()) {
             throw new BadRequestHttpException();

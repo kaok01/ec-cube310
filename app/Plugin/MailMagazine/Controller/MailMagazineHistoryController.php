@@ -31,7 +31,6 @@ class MailMagazineHistoryController
      */
     public function index(Application $app, Request $request,$id=null)
     {
-dump($id);
         // dtb_send_historyからdel_flg = 0のデータを抽出
         // リストをView変数に突っ込む
         $pagination = null;
@@ -67,7 +66,7 @@ dump($id);
                 empty($pageNo) ? 1 : $pageNo,
                 empty($searchData['pagemax']) ? 10 : $searchData['pagemax']->getId()
         );
-dump($pagination);
+
         return $app->render('MailMagazine/View/admin/history_list.twig', array(
             'pagination' => $pagination
         ));

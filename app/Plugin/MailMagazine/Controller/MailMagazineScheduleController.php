@@ -27,6 +27,10 @@ class MailMagazineScheduleController
     public function __construct()
     {
     }
+    public function test(Application $app, Request $request){
+        dump('test');
+        $app['eccube.plugin.mail_magazine.service.mail']->ScheduleExec();
+    }
 
     /**
      * 配信内容設定検索画面を表示する.

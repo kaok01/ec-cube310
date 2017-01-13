@@ -66,6 +66,7 @@ class MailMagazineServiceProvider implements ServiceProviderInterface
             return $app['orm.em']->getRepository('Plugin\MailMagazine\Entity\MailmagaCustomer');
         });
 
+
         // ===========================================
         // 配信内容設定
         // ===========================================
@@ -160,6 +161,10 @@ class MailMagazineServiceProvider implements ServiceProviderInterface
             ->value('id', null)->assert('id', '\d+|')
             ->bind('admin_mail_magazine_history_delete');
 
+
+        $app->match('/' . $app["config"]["admin_route"] . '/mail/schedule/test', '\\Plugin\\MailMagazine\\Controller\\MailMagazineScheduleController::test')
+            ->value('id', null)->assert('id', '\d+|')
+            ->bind('admin_mail_magazine_schedule_test');
         // ===========================================
         // スケジュール配信
         // ===========================================

@@ -15,7 +15,7 @@ namespace Plugin\MailMagazine\Entity;
  * SendHistory
  * Plugin MailMagazine
  */
-class MailMagazineSendSchedule extends \Eccube\Entity\AbstractEntity
+class MailMagazineSendScheduleComplete extends \Eccube\Entity\AbstractEntity
 {
     /**
     * @var integer
@@ -25,7 +25,7 @@ class MailMagazineSendSchedule extends \Eccube\Entity\AbstractEntity
     /**
     * @var integer
     */
-    private $schedule;
+    private $Schedule;
 
     /**
     * @var \DateTime
@@ -56,12 +56,12 @@ class MailMagazineSendSchedule extends \Eccube\Entity\AbstractEntity
 
     public function setSchedule(\Plugin\MailMagazine\Entity\MailMagazineSendSchedule $v=null)
     {
-        $this->schedule=$v;
+        $this->Schedule=$v;
         return $this;
     }
     public function getSchedule()
     {
-        return $this->schedule;
+        return $this->Schedule;
     }
 
     public function setScheduleDate($v)

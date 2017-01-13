@@ -148,6 +148,13 @@ class MailMagazineSendSchedule extends \Eccube\Entity\AbstractEntity
     }
     public function setSendStart($v)
     {
+        if($v){
+
+            $convDt = $v->format('Y-m-d 00:00:00.000000');
+            $convDt = new \Datetime($convDt);
+            $v=$convDt;
+        }
+
         $this->send_start=$v;
         return $this;
     }
@@ -157,6 +164,13 @@ class MailMagazineSendSchedule extends \Eccube\Entity\AbstractEntity
     }
     public function setSendEnd($v)
     {
+        if($v){
+
+            $convDt = $v->format('Y-m-d 00:00:00.000000');
+            $convDt = new \Datetime($convDt);
+            $v=$convDt;
+        }
+        
         $this->send_end=$v;
         return $this;
     }

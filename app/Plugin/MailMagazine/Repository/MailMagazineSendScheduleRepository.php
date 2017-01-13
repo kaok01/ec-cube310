@@ -21,6 +21,37 @@ use Doctrine\ORM\EntityRepository;
  */
 class MailMagazineSendScheduleRepository extends EntityRepository
 {
+    public function GetCurrentSchedule($targetDate,&$searchDate){
+dump($targetDate);
+        $convDt = $targetDate->format('Y-m-d 00:00:00.000000');
+dump($convDt);
+        //$convDt = \Datetime::createFromFormat($targetDate->format('Y-m-d H:i:s.u'),$convDt);
+        $convDt = new \Datetime($convDt);
+
+dump($convDt);
+
+        $result= $this->findAll();
+dump($result);
+        $qb=$this->createQueryBuilder('m');
+dump('1');
+        $q= $qb
+                    ->where($qb->expr()->between(':currDt','m.send_start','m.send_end')
+                        )
+                    ->andWhere('m.enable_flg=1')
+                    ->andWhere('m.del_flg=0')
+                    ->setParameter(':currDt',$convDt)
+                    ->getQuery();
+dump('2');
+
+        $result= $q->getResult();
+dump('3');
+
+        dump($result);
+        
+        $searchDate = $convDt;
+
+        return $result;
+    }
 
     /**
      * dtb_send_historyに追加する.

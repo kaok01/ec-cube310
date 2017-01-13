@@ -34,12 +34,15 @@ class MailMagazineSendScheduleCompleteRepository extends EntityRepository
         return true;
     }
 
-    public function update(\Plugin\MailMagazine\Entity\MailMagazineSendScheduleComplete $sendSchedule)
-    {
-        return $this->createSendSchedule($sendSchedule);
-    }
+    /**
+    * 更新を行う.
+    * @param \Plugin\MailMagazine\Entity\MailMagazineSendSchedule $MailMagazineSendSchedule
+    * @return boolean
+    */
+    public function update(\Plugin\MailMagazine\Entity\MailMagazineSendSchedule $MailMagazineSendSchedule) {
+        return $this->create($MailMagazineSendScheduleComplete);
 
-
+    }    
     /**
     * phigical delete.
     * @return bool
@@ -63,33 +66,5 @@ class MailMagazineSendScheduleCompleteRepository extends EntityRepository
         return true;
     }
 
-    /**
-    * 更新を行う.
-    * @param \Plugin\MailMagazine\Entity\MailMagazineSendSchedule $MailMagazineSendSchedule
-    * @return boolean
-    */
-    public function update(\Plugin\MailMagazine\Entity\MailMagazineSendSchedule $MailMagazineSendSchedule) {
-        $em = $this->getEntityManager();
-        $em->getConnection()->beginTransaction();
-        try {
-            if(is_array($MailMagazineSendSchedule->getSendWeek())){
-                $v=$MailMagazineSendSchedule->getSendWeek();
-                $v = base64_encode(serialize($v));
-                $MailMagazineSendSchedule->setSendWeek($v);
 
-            }
-            $em->persist($MailMagazineSendSchedule);
-            $em->flush();
-
-            $em->getConnection()->commit();
-        } catch (\Exception $e) {
-            $em->getConnection()->rollback();
-            throw $e;
-
-            return false;
-        }
-
-        return true;
-
-    }    
 }
