@@ -182,8 +182,8 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                         }
                         $key= '会社名';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->customerTwig);
+                            // $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
+                            // return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setCompanyName(Str::trimAll($row[$key]));
                         }
