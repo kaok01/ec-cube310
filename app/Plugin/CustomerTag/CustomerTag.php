@@ -27,6 +27,7 @@ class CustomerTag
 
     public function onRenderAdminCustomerNewBefore(FilterResponseEvent $event)
     {
+        //管理画面の編集機能は未実装
         return;
         $app = $this->app;
         if (!$this->app->isGranted('ROLE_ADMIN')) {
@@ -82,6 +83,7 @@ class CustomerTag
 
     public function onRenderAdminCustomerEditBefore(FilterResponseEvent $event)
     {
+        //管理画面の編集機能は未実装
         return;
         $app = $this->app;
         if (!$app->isGranted('ROLE_ADMIN')) {
@@ -101,6 +103,7 @@ class CustomerTag
 
     public function onAdminCustomerEditAfter()
     {
+        //管理画面の編集機能は未実装
         return;
 
         $app = $this->app;
@@ -210,6 +213,7 @@ class CustomerTag
 
     public function onRenderCustomersDetailBefore(FilterResponseEvent $event)
     {
+        //フロント機能は未実装
         return;
         
         $app = $this->app;

@@ -91,7 +91,7 @@ class CustomerTagServiceProvider implements ServiceProviderInterface
         // メニュー登録
         $app['config'] = $app->share($app->extend('config', function ($config) {
             $addNavi['id'] = "customertag";
-            $addNavi['name'] = "会員情報タグマスター";
+            $addNavi['name'] = "会員情報タグ登録";
             $addNavi['url'] = "admin_customertag";
 
             $nav = $config['nav'];
