@@ -127,8 +127,6 @@ class MailMagazineController
      * @param string $id
      */
     public function confirm(Application $app, Request $request, $id = null) {
-dump($id);
-dump($request);
 
         // POSTでない場合は終了する
         if ('POST' !== $request->getMethod()) {
@@ -195,8 +193,6 @@ dump($request);
      * @param string $id
      */
     public function confirm_schedule(Application $app, Request $request, $id = null) {
-dump($id);
-dump($request);
 
         // POSTでない場合は終了する
         if ('POST' !== $request->getMethod()) {
@@ -207,7 +203,7 @@ dump($request);
         //$builder = $app['form.factory']->createBuilder('mail_magazine', null);
         $builder = $app['form.factory']->createBuilder('mail_magazine', null);
         $schedulebuilder = $app['form.factory']->createBuilder('mail_magazine_schedule', null);
-/*
+    /*
         // ------------------------------------------------
         // メルマガテンプレート用にvalidationを付与するため
         // 項目を削除、追加する
@@ -231,12 +227,12 @@ dump($request);
                         new NotBlank()
                 )
         ));
-*/
+    */
         $scheduleform = $schedulebuilder->getForm();
         $scheduleform->handleRequest($request);
         $scheduleform->setData(array('enable_flg'=>true));
         $formScheduleData = $scheduleform->getData();
-dump($formScheduleData);
+
         //$formScheduleData['enable_flg'] = 1;
         //->setEnableFlg(1);
         //$scheduleform->setData($formScheduleData);
@@ -319,9 +315,7 @@ dump($formScheduleData);
      * @param string $id
      */
     public function commit_schedule(Application $app, Request $request, $id = null) {
-dump($id);
-dump($request);
-//die();
+
         // POSTでない場合は終了する
         if ('POST' !== $request->getMethod()) {
             throw new BadRequestHttpException();
@@ -342,8 +336,6 @@ dump($request);
         $scheduledata = $scheduleform->getData();
 
 
-dump($data);
-dump($scheduledata);
 
         // 送信対象者をdtb_customerから取得する
         if (!$form->isValid()) {
@@ -354,8 +346,7 @@ dump($scheduledata);
         if (!$scheduleform->isValid()) {
             //throw new BadRequestHttpException();
         }
-dump($form);
-dump($scheduleform);
+
         // サービスの取得
         $service = $app['eccube.plugin.mail_magazine.service.mail'];
 

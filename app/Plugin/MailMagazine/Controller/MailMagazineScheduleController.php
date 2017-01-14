@@ -63,7 +63,7 @@ class MailMagazineScheduleController
                 empty($pageNo) ? 1 : $pageNo,
                 empty($searchData['pagemax']) ? 10 : $searchData['pagemax']->getId()
         );
-dump($pagination);
+
         foreach($pagination as $item){
             if(!is_null($item->getSendWeek())){
                 $v = $item->getSendWeek();
@@ -157,13 +157,13 @@ dump($pagination);
      * @param unknown $id
      */
     public function edit(Application $app, Request $request, $id) {
-dump('render');
+
 
         // POST以外はエラーにする
         if ('POST' !== $request->getMethod()) {
             throw new BadRequestHttpException();
         }
-dump('render');
+
         // id の存在確認
         // nullであれば一覧に戻る
         if(is_null($id) || strlen($id) == 0) {
@@ -176,7 +176,7 @@ dump('render');
         // 選択したメルマガテンプレートを検索
         // 存在しなければメッセージを表示
         $schedule = $app['eccube.plugin.mail_magazine.repository.mail_magazine_schedule']->find($id);
-dump($schedule);
+
 
         if(is_null($schedule)) {
             // データが存在しない場合はメルマガテンプレート一覧へリダイレクト
@@ -189,7 +189,7 @@ dump($schedule);
         $form = $app['form.factory']
             ->createBuilder('mail_magazine_schedule', $schedule)
             ->getForm();
-dump('render');
+
         return $app->render('MailMagazine/View/admin/schedule_edit.twig', array(
                 'form' => $form->createView()
         ));
@@ -251,7 +251,7 @@ dump('render');
 
                     return $app->redirect($app->url('admin_mail_magazine_schedule'));
                 }
-dump($data);
+
                 // 更新処理
                 $schedule
                     ->setScheduleName($data['schedule_name'])
@@ -263,8 +263,7 @@ dump($data);
                     ->setSendTime($data['send_time'])
                     ->setUpdateDate(new \Datetime())
                 ;
-dump($schedule);
-//die();
+
 
                 $status = $app['eccube.plugin.mail_magazine.repository.mail_magazine_schedule']->update($schedule);
                 if (!$status) {

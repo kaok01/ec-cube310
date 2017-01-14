@@ -312,7 +312,7 @@ class MailMagazineService
             $output->writeln('schedule service exec');
 
         }
-        $now = new \Datetime();
+        $now = new \Datetime('2017-01-19');
         $searchDate = $now;
 
         $Schedules = $this->app[self::REPOSITORY_SEND_SCHEDULE]->GetCurrentSchedule($now,$searchDate);
@@ -365,7 +365,7 @@ class MailMagazineService
         // $ScheduleHistoryRepo = $this->app[self::REPOSITORY_SEND_HISTORY]
         //     ->find($ScheduleHistory->getId());
         $ScheduleHistoryRepo = $this->app['eccube.plugin.mail_magazine.repository.mail_magazine_history']->find($ScheduleHistory->getId());
-
+dump('11');
         dump($ScheduleHistoryRepo);
         // 検索条件をアンシリアライズする
         // base64,serializeされているので注意すること
