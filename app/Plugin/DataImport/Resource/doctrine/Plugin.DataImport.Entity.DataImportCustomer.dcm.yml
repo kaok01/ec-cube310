@@ -4,21 +4,10 @@ Plugin\DataImport\Entity\DataImportCustomer:
     repositoryClass: Plugin\DataImport\Repository\DataImportCustomerRepository
     id:
         plg_dataimport_customer_id:
-            type: integer
+            type: string
             nullable: false
-            unsigned: false
             id: true
-            generator:
-                strategy: AUTO
     fields:
-        plg_dataimport_current:
-            type: integer
-            nullable: false
-            unsigned: false
-        customer_id:
-            type: integer
-            nullable: false
-            unsigned: false
         create_date:
             type: datetime
             nullable: false

@@ -4,21 +4,10 @@ Plugin\DataImport\Entity\DataImportOrder:
     repositoryClass: Plugin\DataImport\Repository\DataImportOrderRepository
     id:
         plg_dataimport_order_id:
-            type: integer
+            type: string
             nullable: false
-            unsigned: false
             id: true
-            generator:
-                strategy: AUTO
     fields:
-        plg_dataimport_current:
-            type: integer
-            nullable: false
-            unsigned: false
-        order_id:
-            type: integer
-            nullable: false
-            unsigned: false
         create_date:
             type: datetime
             nullable: false

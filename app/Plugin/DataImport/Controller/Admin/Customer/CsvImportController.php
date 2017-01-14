@@ -79,6 +79,7 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                         return $this->render($app, $form, $headers, $this->customerTwig);
                     }
 
+
                     $size = count($data);
                     if ($size < 1) {
                         $this->addErrors('CSVデータが存在しません。');
@@ -105,12 +106,53 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                         $id = $row['会員ID'];
 
                         if ($id == '') {
-                            $Customer = $app['eccube.repository.customer']->newCustomer();
-                            $CustomerAddress = new \Eccube\Entity\CustomerAddress();
-                            $Customer->setBuyTimes(0);
-                            $Customer->setBuyTotal(0);
+                            $makecustomer=true;
 
-                            $this->em->persist($Customer);
+                            //連携会員ID
+                            $refid = $row['連携ID'];
+
+                            if ($refid == '') {
+                                //何もしない
+                            } else {
+                                $DataImportCustomer = $app['eccube.plugin.dataimport.repository.dataimportcustomer']
+                                    ->find($refid);
+                                if ($DataImportCustomer) {
+                                    $id = $DataImportCustomer->getCustomer()->getId();
+                                    $makecustomer=false;
+                                }else{
+                                    //
+                                }
+                               
+
+                            }        
+
+                            if($makecustomer){
+
+                                $Customer = $app['eccube.repository.customer']->newCustomer();
+                                $CustomerAddress = new \Eccube\Entity\CustomerAddress();
+                                $Customer->setBuyTimes(0);
+                                $Customer->setBuyTotal(0);
+
+                                $this->em->persist($Customer);
+                            }else{
+                                $Customer = $app['orm.em']
+                                    ->getRepository('Eccube\Entity\Customer')
+                                    ->find($id);
+                                if (!$Customer) {
+                                    $this->addErrors(($data->key() + 1) . '行目の会員IDが存在しません。');
+                                    return $this->render($app, $form, $headers, $this->customerTwig);
+                                }
+                                 // 編集用にデフォルトパスワードをセット
+                                $previous_password = $Customer->getPassword();
+                                $Customer->setPassword($app['config']['default_password']);
+                                $CustomerAddress = $app['orm.em']
+                                    ->getRepository('Eccube\Entity\CustomerAddress')
+                                    ->findBy(array('Customer'=>$Customer,'del_flg'=>0));
+                                if($CustomerAddress){
+                                    $CustomerAddress = $CustomerAddress[0];
+                                }                               
+
+                            }
                         } else {
                             if (preg_match('/^\d+$/', $row['会員ID'])) {
                                 $Customer = $app['orm.em']
@@ -324,7 +366,24 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                                 }
 
 
+                            }else{
+                                $Customermails = $app['orm.em']
+                                    ->getRepository('Eccube\Entity\Customer')
+                                    ->findBy(array('email'=>Str::trimAll($row[$key]),'del_flg'=>0));
+                                if ($Customermails) {
+                                    foreach($Customermails as $Customermail){
+                                        if($Customermail->getId()==$id){
+
+                                        }else{
+                                            $this->addErrors(($data->key() + 1) . '行目のメールアドレスで会員情報が登録済です。');
+                                            return $this->render($app, $form, $headers, $this->customerTwig);
+                                            
+                                        }
+
+                                    }
+                                }
                             }
+                                
                             $Customer->setEmail(Str::trimAll($row[$key]));
                         }
 
@@ -471,6 +530,25 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
 
                         }
 
+                        //連携会員ID
+                        $refid = $row['連携ID'];
+
+                        if ($refid == '') {
+                            //何もしない
+                        } else {
+                            $DataImportCustomer = $app['eccube.plugin.dataimport.repository.dataimportcustomer']
+                                ->find($refid);
+                            if (!$DataImportCustomer) {
+                                $DataImportCustomer=$app['eccube.plugin.dataimport.repository.dataimportcustomer']
+                                                    ->create($refid,$Customer);
+                            }else{
+                                $DataImportCustomer->setCustomer($Customer);
+                                $this->em->persist($DataImportCustomer);
+
+                            }
+                           
+
+                        }                        
 
                         if ($this->hasErrors()) {
                             return $this->render($app, $form, $headers, $this->customerTwig);

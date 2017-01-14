@@ -46,14 +46,7 @@ class DataImportServiceProvider implements ServiceProviderInterface
             'Plugin\DataImport\Controller\AdminDataImportController::index'
         )->bind('dataimport_info');
 
-        /**
-         * ルーティング登録
-         * フロント画面 > 商品購入確認画面
-         */
-        $app->match(
-            '/shopping/use_dataimport',
-            'Plugin\DataImport\Controller\FrontDataImportController::useDataImport'
-        )->bind('dataimport_use');
+ 
 
         /**
          * レポジトリ登録
@@ -71,12 +64,6 @@ class DataImportServiceProvider implements ServiceProviderInterface
             }
         );
 
-        /** 不適切な受注記録テーブル用リポジトリ */
-        $app['eccube.plugin.dataimport.repository.dataimportabuse'] = $app->share(
-            function () use ($app) {
-                return $app['orm.em']->getRepository('Plugin\DataImport\Entity\DataImportAbuse');
-            }
-        );
 
         /** データインポート機能基本情報テーブル用リポジトリ */
         $app['eccube.plugin.dataimport.repository.dataimportinfo'] = $app->share(
@@ -89,20 +76,6 @@ class DataImportServiceProvider implements ServiceProviderInterface
         $app['eccube.plugin.dataimport.repository.dataimportcustomer'] = $app->share(
             function () use ($app) {
                 return $app['orm.em']->getRepository('Plugin\DataImport\Entity\DataImportCustomer');
-            }
-        );
-
-        /** データインポート機能商品付与率テーブル */
-        $app['eccube.plugin.dataimport.repository.dataimportproductrate'] = $app->share(
-            function () use ($app) {
-                return $app['orm.em']->getRepository('Plugin\DataImport\Entity\DataImportProductRate');
-            }
-        );
-
-        /** データインポート機能スナップショットテーブル */
-        $app['eccube.plugin.dataimport.repository.dataimportsnapshot'] = $app->share(
-            function () use ($app) {
-                return $app['orm.em']->getRepository('Plugin\DataImport\Entity\DataImportSnapshot');
             }
         );
 
@@ -135,15 +108,23 @@ class DataImportServiceProvider implements ServiceProviderInterface
             'Plugin\DataImport\Controller\Admin\Order\CsvImportController::csvOrder'
         )->bind('admin_dataimport_order_infotopcsv_import');
 
+        /**
+         * ルーティング登録
+         * CSVファイル取得
+         */
         $app->match(
             '/'.$app['config']['admin_route'].'/dataimport/csv_template/{type}', 
             'Plugin\DataImport\Controller\Base\CsvImportController::csvTemplate'
         )->bind('admin_dataimport_csv_template');
 
-        $app->match(
-            '/'.$app['config']['admin_route'].'/order/productmap', 
-            'Plugin\DataImport\Controller\Admin\Order\CsvImportController::csvOrder'
-        )->bind('admin_dataimport_order_productmap');
+        // /**
+        //  * ルーティング登録
+        //  * CSVファイル取得
+        //  */
+        // $app->match(
+        //     '/'.$app['config']['admin_route'].'/order/productmap', 
+        //     'Plugin\DataImport\Controller\Admin\Order\CsvImportController::csvOrder'
+        // )->bind('admin_dataimport_order_');
 
         // 商品関連付け情報テーブルリポジトリ
         $app['eccube.plugin.dataimport.repository.productmap_product'] = $app->share(function () use ($app) {
@@ -188,18 +169,11 @@ class DataImportServiceProvider implements ServiceProviderInterface
         });
 
 
-
-        // Service
-        //$app['eccube.recommend.service.recommend'] = $app->share(function () use ($app) {
-        //    return new \Plugin\Recommend\Service\RecommendService($app);
-        //});
-
         /**
          * フォームタイプ登録
          */
         $app['form.types'] = $app->share($app->extend('form.types', function ($types) use ($app) {
             $types[] = new \Plugin\DataImport\Form\Type\DataImportInfoType($app);
-            $types[] = new \Plugin\DataImport\Form\Type\DataImportUseType($app);
             $types[] = new \Plugin\DataImport\Form\Type\ProductMapProductType($app);
             return $types;
         })
@@ -242,6 +216,7 @@ class DataImportServiceProvider implements ServiceProviderInterface
 
             return $config;
         }));
+        /*
         $app['config'] = $app->share($app->extend('config', function ($config) {
             $addNavi['id'] = "admin_dataimport_order_infotopcsv_import";
             $addNavi['name'] = "CSV取込み（開発用）";
@@ -257,6 +232,7 @@ class DataImportServiceProvider implements ServiceProviderInterface
 
             return $config;
         }));
+        */
         $app['config'] = $app->share($app->extend('config', function ($config) {
             $addNavi['id'] = "admin_dataimport_customer_csv_import";
             $addNavi['name'] = "会員CSV登録";

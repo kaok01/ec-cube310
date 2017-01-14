@@ -20,22 +20,15 @@ use Plugin\DataImport\Entity\DataImportOrder;
  */
 class DataImportOrderRepository extends EntityRepository
 {
-    /**
-     * 保有データインポートの保存
-     * @param $dataimport
-     * @param $customer
-     * @return bool|DataImportCustomer
-     * @throws NoResultException
-     */
-    public function saveDataImport($dataimport, $order)
+    public function create($dataimportid, $order)
     {
         // 引数判定
-        if ((!isset($dataimport) && $dataimport != 0) || empty($order)) {
+        if ($dataimportid=="" || empty($order)) {
             return false;
         }
 
         $DataImportOrder = new DataImportOrder();
-        $DataImportOrder->setPlgDataImportCurrent((integer)$dataimport);
+        $DataImportOrder->setPlgDataImportOrderId($dataimportid);
         $DataImportOrder->setOrder($order);
 
         $em = $this->getEntityManager();
@@ -44,5 +37,6 @@ class DataImportOrderRepository extends EntityRepository
 
         return $DataImportOrder;
     }
+
 
 }

@@ -20,17 +20,10 @@ use Doctrine\ORM\Mapping as ORM;
 class DataImportCustomer extends \Eccube\Entity\AbstractEntity
 {
     /**
-     * @var integer
+     * @var string
      */
     private $plg_dataimport_customer_id;
-    /**
-     * @var integer
-     */
-    private $plg_dataimport_current;
-    /**
-     * @var integer
-     */
-    private $customer_id;
+
     /**
      * @var \Eccube\Entity\Customer
      */
@@ -67,51 +60,7 @@ class DataImportCustomer extends \Eccube\Entity\AbstractEntity
         return $this->plg_dataimport_customer_id;
     }
 
-    /**
-     * Set plg_dataimport_current
-     *
-     * @param integer $plg_dataimport_current
-     * @return DataImportCustomer
-     */
-    public function setPlgDataImportCurrent($plg_dataimport_current)
-    {
-        $this->plg_dataimport_current = $plg_dataimport_current;
 
-        return $this;
-    }
-
-    /**
-     * Get plg_dataimport_current
-     *
-     * @return integer plg_dataimport_current
-     */
-    public function getPlgDataImportCurrent()
-    {
-        return $this->plg_dataimport_current;
-    }
-
-    /**
-     * Set customer_id
-     *
-     * @param integer $customer_id
-     * @return DataImportCustomer
-     */
-    public function setCustomerId($customer_id)
-    {
-        $this->customer_id = $customer_id;
-
-        return $this;
-    }
-
-    /**
-     * Get customer_id
-     *
-     * @return integer
-     */
-    public function getCustomerId()
-    {
-        return $this->customer_id;
-    }
 
     /**
      * Set Customer

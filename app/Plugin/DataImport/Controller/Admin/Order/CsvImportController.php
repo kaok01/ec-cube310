@@ -112,49 +112,33 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                         }
 
                         $id = $row['注文ID'];
-                        /*
-                            if ($id == '') {
-                                $Order = $this->newOrder();
+                        $del_flg = $row['削除フラグ'];
 
-                                $this->em->persist($Order);
-                            } else {
-                                if (preg_match('/^\d+$/', $row['会員ID'])) {
-                                    $Customer = $app['orm.em']
-                                        ->getRepository('Eccube\Entity\Order')
-                                        ->find($id);
-                                    if (!$Customer) {
-                                        $this->addErrors(($data->key() + 1) . '行目の会員IDが存在しません。');
-                                        return $this->render($app, $form, $headers, $this->orderTwig);
-                                    }
-                                     // 編集用にデフォルトパスワードをセット
-                                    $previous_password = $Customer->getPassword();
-                                    $Customer->setPassword($app['config']['default_password']);
-                                   
-                                } else {
-                                    $this->addErrors(($data->key() + 1) . '行目の会員IDが存在しません。');
-                                    return $this->render($app, $form, $headers, $this->orderTwig);
-                                }
-
-                            }
-                        */
                         $TargetOrder = null;
                         $OriginOrder = null;
+                        $noAction = false;
+                        $Overwrite = false;
 
                         if (empty($id)) {
                             // 空のエンティティを作成.
                             
-                           $refid = $row['連携注文ID'];
+                            $refid = $row['連携注文ID'];
                             if($refid){
-                                $TargetOrder = $app['eccube.plugin.dataimport.repository.dataimportorder']->find($refid);
-                                if($TargetOrder){
 
-                                    $TargetOrder = $app['eccube.repository.order']->find($TargetOrder->getOrderId());
+                                $DataImportOrder = $app['eccube.plugin.dataimport.repository.dataimportorder']->find($refid);
+                                if($DataImportOrder){
+
+                                    $noAction = false;
+                                    $Overwrite = true;
+
+                                    $TargetOrder = $app['eccube.repository.order']->find($DataImportOrder->getOrder()->getId());
                                     if(is_null($TargetOrder)){
                                         $this->addErrors(($data->key() + 1) . '行目の連携注文IDが存在しません。');
                                         return $this->render($app, $form, $headers, $this->orderTwig);
 
                                     }
                                 }else{
+
                                     $TargetOrder = $this->newOrder();
 
                                 }
@@ -164,6 +148,7 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
 
                             }
                         }
+
                         if(is_null($TargetOrder)){
                             $TargetOrder = $app['eccube.repository.order']->find($id);
                             if (is_null($TargetOrder)) {
@@ -185,152 +170,152 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                                     "販売個数"=>"order_num",
                                     "削除フラグ"=>"del_flg",
                         */
-                        $refproductid = $row['連携商品ID'];
-                        if($refproductid){
-                            $targets = $app['config']
-                                    ['DataImport']['const']
-                                        ['extention']
-                                            ['order']
-                                                ['productmaps'];
+                        if(!$noAction && $del_flg!=1){
 
-                            foreach($targets as $k=>$v){
-                                if($v['id']==$refproductid){
-                                    $convid = $k;
-                                }
-                            }
-
-                            $TargetProduct = $app['eccube.repository.product']->find($convid);
-                            if($TargetProduct){
-
-
-                            }else{
-
-                                $this->addErrors(($data->key() + 1) . '行目の連携商品IDに対応する商品が登録されていません。');
-                                return $this->render($app, $form, $headers, $this->orderTwig);
-                            }
-
-                        }else{
-                            $this->addErrors(($data->key() + 1) . '行目の連携商品IDが設定されていません。');
-                            return $this->render($app, $form, $headers, $this->orderTwig);
-
-                        }
-
-                        $email = $row['メールアドレス'];
-                        if($email){
-
-                            $TargetCustomer = $app['eccube.repository.customer']->findBy(array('email'=>$email));
-                            if($TargetCustomer){
+                            if($Overwrite){
                                 
+                                // foreach($TargetOrder->getShippings() as $currshp){
+                                //     $app['orm.em']->remove($currshp);
+                                //     $app['orm.em']->flush();
+
+                                // }
+
+                                foreach($TargetOrder->getOrderDetails() as $currod){
+                                    $app['orm.em']->remove($currod);
+                                    $app['orm.em']->flush();
+
+
+                                }
+
+                            }
+
+
+                            $refproductid = $row['連携商品ID'];
+                            if($refproductid){
+                                // $targets = $app['config']
+                                //         ['DataImport']['const']
+                                //             ['extention']
+                                //                 ['order']
+                                //                     ['productmaps'];
+
+                                // foreach($targets as $k=>$v){
+                                //     if($v['id']==$refproductid){
+                                //         $convid = $k;
+                                //     }
+                                // }
+
+                                $ProductMap = $app['eccube.plugin.dataimport.repository.productmap_product']
+                                        ->findBy(array('refid'=>$refproductid));
+
+
+                                if($ProductMap){
+                                    $TargetProduct = $app['eccube.repository.product']->find($ProductMap[0]->getProduct()->getId());
+
+                                }
+                                if($TargetProduct){
+
+
+                                }else{
+
+                                    $this->addErrors(($data->key() + 1) . '行目の連携商品IDに対応する商品が登録されていません。');
+                                    return $this->render($app, $form, $headers, $this->orderTwig);
+                                }
 
                             }else{
-
-                                $this->addErrors(($data->key() + 1) . '行目のメールに対応する会員が登録されていません。');
+                                $this->addErrors(($data->key() + 1) . '行目の連携商品IDが設定されていません。');
                                 return $this->render($app, $form, $headers, $this->orderTwig);
+
                             }
 
-                        }else{
-                            $this->addErrors(($data->key() + 1) . '行目のメールアドレスが設定されていません。');
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            $email = $row['メールアドレス'];
+                            if($email){
 
-                        }
-                        $orderdt = $row['受注日'];
-                        if($orderdt){
+                                $TargetCustomer = $app['eccube.repository.customer']->findBy(array('email'=>$email));
+                                if($TargetCustomer){
+                                    
 
-                            $Orderdt = new \Datetime($orderdt);
-                            if($Orderdt){
-                                $TargetOrder->setOrderDate($Orderdt);
+                                }else{
+
+                                    $this->addErrors(($data->key() + 1) . '行目のメールに対応する会員が登録されていません。');
+                                    return $this->render($app, $form, $headers, $this->orderTwig);
+                                }
 
                             }else{
-
-                                $this->addErrors(($data->key() + 1) . '行目の受注日が設定されていません。');
+                                $this->addErrors(($data->key() + 1) . '行目のメールアドレスが設定されていません。');
                                 return $this->render($app, $form, $headers, $this->orderTwig);
+
+                            }
+                            $orderdt = $row['受注日'];
+                            if($orderdt){
+
+                                $Orderdt = new \Datetime($orderdt);
+                                if($Orderdt){
+                                    $TargetOrder->setOrderDate($Orderdt);
+
+                                }else{
+
+                                    $this->addErrors(($data->key() + 1) . '行目の受注日が設定されていません。');
+                                    return $this->render($app, $form, $headers, $this->orderTwig);
+                                }
+
+                            }else{
+                                $this->addErrors(($data->key() + 1) . '行目の受注日が設定されていません');
+                                return $this->render($app, $form, $headers, $this->orderTwig);
+
+                            }
+                            $productclass = null;
+
+                            foreach($TargetProduct->getProductClasses() as $pc){
+                                $productclass = $pc;
+
+                            }
+                            $TaxRule = $app['eccube.repository.tax_rule']->getByRule();
+
+                            $orderprice = $row['小計'];
+                            if($orderprice){
+                                $orderinctax = $orderprice * (100+$TaxRule->getTaxRate()) / 100;
+
+                            }else{
+                                //
+                                $orderprice = $productclass->getPrice01()
+                                            ?$productclass->getPrice02()
+                                            :$productclass->getPrice01();
+                                $orderinctax = $productclass->getPrice01IncTax()
+                                            ?$productclass->getPrice02IncTax()
+                                            :$productclass->getPrice01IncTax();
+
+
+
                             }
 
-                        }else{
-                            $this->addErrors(($data->key() + 1) . '行目の受注日が設定されていません');
-                            return $this->render($app, $form, $headers, $this->orderTwig);
+                            $ordernum = $row['販売個数'];
+                            if($ordernum){
 
-                        }
-                        $productclass = null;
+                            }else{
+                                //
+                                $ordernum = 1;
 
-                        foreach($TargetProduct->getProductClasses() as $pc){
-                            $productclass = $pc;
-
-                        }
-
-                        $TaxRule = $app['eccube.repository.tax_rule']->getByRule();
-
-                        $detail = new \Eccube\Entity\OrderDetail();
-                        $detail->setOrder($TargetOrder)
-                            ->setProduct($TargetProduct)
-                            ->setProductClass($productclass)
-                            ->setQuantity(1)
-                            ->setTaxRate($TaxRule->getTaxRate())
-                            ->setPriceIncTax($productclass->getPrice01IncTax()
-                                        ?$productclass->getPrice02IncTax()
-                                        :$productclass->getPrice01IncTax()
-                                    )
-                            ->setPrice($productclass->getPrice02()
-                                        ?$productclass->getPrice02()
-                                        :$productclass->getPrice01()
-                                    );
-
-                        $TargetOrder->addOrderDetail($detail);
-                        $TargetOrder->setCustomer($TargetCustomer[0]);
-
-                        $TargetOrder->setTotal($TargetOrder->getTotalPrice());
-
-
-                        $TargetOrder
-                            ->setName01($TargetCustomer[0]->getName01())
-                            ->setName02($TargetCustomer[0]->getName02())
-                            ->setKana01($TargetCustomer[0]->getKana01())
-                            ->setKana02($TargetCustomer[0]->getKana02())
-                            ->setZip01($TargetCustomer[0]->getZip01())
-                            ->setZip02($TargetCustomer[0]->getZip02())
-                            ->setPref(is_null($TargetCustomer[0]->getPref()) ? null : $TargetCustomer[0]->getPref())
-                            ->setAddr01($TargetCustomer[0]->getAddr01())
-                            ->setAddr02($TargetCustomer[0]->getAddr02())
-                            ->setEmail($TargetCustomer[0]->getEmail())
-                            ->setTel01($TargetCustomer[0]->getTel01())
-                            ->setTel02($TargetCustomer[0]->getTel02())
-                            ->setTel03($TargetCustomer[0]->getTel03())
-                            ->setFax01($TargetCustomer[0]->getFax01())
-                            ->setFax02($TargetCustomer[0]->getFax02())
-                            ->setFax03($TargetCustomer[0]->getFax03())
-                            ->setCompanyName($TargetCustomer[0]->getCompanyName());
-
-
-
-                        // 編集前の受注情報を保持
-                        $OriginOrder = clone $TargetOrder;
-                        $OriginalOrderDetails = new ArrayCollection();
-
-                        foreach ($TargetOrder->getOrderDetails() as $OrderDetail) {
-                            $OriginalOrderDetails->add($OrderDetail);
-                        }
-
-
-                        // 入力情報にもとづいて再計算.
-                        $this->calculate($app, $TargetOrder);
-
-
-                        // $BaseInfo = $app['eccube.repository.base_info']->get();
-
-                        // お支払い方法の更新
-                        $TargetOrder->setPaymentMethod($TargetOrder->getPayment()->getMethod());
-
-                        // 配送業者・お届け時間の更新
-                        $Shippings = $TargetOrder->getShippings();
-                        foreach ($Shippings as $Shipping) {
-                            $Shipping->setShippingDeliveryName($Shipping->getDelivery()->getName());
-                            if (!is_null($Shipping->getDeliveryTime())) {
-                                $Shipping->setShippingDeliveryTime($Shipping->getDeliveryTime()->getDeliveryTime());
-                            } else {
-                                $Shipping->setShippingDeliveryTime(null);
                             }
 
-                            $Shipping
+
+
+
+                            $detail = new \Eccube\Entity\OrderDetail();
+                            $detail->setOrder($TargetOrder)
+                                ->setProduct($TargetProduct)
+                                ->setProductClass($productclass)
+                                ->setQuantity($ordernum)
+                                ->setTaxRate($TaxRule->getTaxRate())
+                                ->setPriceIncTax($orderinctax)
+                                ->setPrice($orderprice);
+
+                            $TargetOrder->addOrderDetail($detail);
+                            $TargetOrder->setCustomer($TargetCustomer[0]);
+
+                            $TargetOrder->setTotal($TargetOrder->getTotalPrice());
+
+
+                            $TargetOrder
                                 ->setName01($TargetCustomer[0]->getName01())
                                 ->setName02($TargetCustomer[0]->getName02())
                                 ->setKana01($TargetCustomer[0]->getKana01())
@@ -340,6 +325,7 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                                 ->setPref(is_null($TargetCustomer[0]->getPref()) ? null : $TargetCustomer[0]->getPref())
                                 ->setAddr01($TargetCustomer[0]->getAddr01())
                                 ->setAddr02($TargetCustomer[0]->getAddr02())
+                                ->setEmail($TargetCustomer[0]->getEmail())
                                 ->setTel01($TargetCustomer[0]->getTel01())
                                 ->setTel02($TargetCustomer[0]->getTel02())
                                 ->setTel03($TargetCustomer[0]->getTel03())
@@ -349,91 +335,181 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                                 ->setCompanyName($TargetCustomer[0]->getCompanyName());
 
 
-                        }
 
-
-                        // 受注日/発送日/入金日の更新.
-                        $this->updateDate($app, $TargetOrder, $OriginOrder);
-
-                        // // 受注明細で削除されているものをremove
-                        // foreach ($OriginalOrderDetails as $OrderDetail) {
-                        //     if (false === $TargetOrder->getOrderDetails()->contains($OrderDetail)) {
-                        //         $app['orm.em']->remove($OrderDetail);
-                        //     }
-                        // }
-
-
-                        if ($BaseInfo->getOptionMultipleShipping() == Constant::ENABLED) {
-                            foreach ($TargetOrder->getOrderDetails() as $OrderDetail) {
-                                /** @var $OrderDetail \Eccube\Entity\OrderDetail */
-                                $OrderDetail->setOrder($TargetOrder);
-                            }
-
-                            /** @var \Eccube\Entity\Shipping $Shipping */
-                            foreach ($Shippings as $Shipping) {
-                                $shipmentItems = $Shipping->getShipmentItems();
-                                /** @var \Eccube\Entity\ShipmentItem $ShipmentItem */
-                                foreach ($shipmentItems as $ShipmentItem) {
-                                    $ShipmentItem->setOrder($TargetOrder);
-                                    $ShipmentItem->setShipping($Shipping);
-                                    $app['orm.em']->persist($ShipmentItem);
-                                }
-                                $Shipping->setOrder($TargetOrder);
-                                $app['orm.em']->persist($Shipping);
-                            }
-                        } else {
-
-                            $NewShipmentItems = new ArrayCollection();
+                            // 編集前の受注情報を保持
+                            $OriginOrder = clone $TargetOrder;
+                            $OriginalOrderDetails = new ArrayCollection();
 
                             foreach ($TargetOrder->getOrderDetails() as $OrderDetail) {
-                                /** @var $OrderDetail \Eccube\Entity\OrderDetail */
-                                $OrderDetail->setOrder($TargetOrder);
-
-                                $NewShipmentItem = new ShipmentItem();
-                                $NewShipmentItem
-                                    ->setProduct($OrderDetail->getProduct())
-                                    ->setProductClass($OrderDetail->getProductClass())
-                                    ->setProductName($OrderDetail->getProduct()->getName())
-                                    ->setProductCode($OrderDetail->getProductClass()->getCode())
-                                    ->setClassCategoryName1($OrderDetail->getClassCategoryName1())
-                                    ->setClassCategoryName2($OrderDetail->getClassCategoryName2())
-                                    ->setClassName1($OrderDetail->getClassName1())
-                                    ->setClassName2($OrderDetail->getClassName2())
-                                    ->setPrice($OrderDetail->getPrice())
-                                    ->setQuantity($OrderDetail->getQuantity())
-                                    ->setOrder($TargetOrder);
-                                $NewShipmentItems[] = $NewShipmentItem;
-
+                                $OriginalOrderDetails->add($OrderDetail);
                             }
-                            // 配送商品の更新. delete/insert.
+
+
+                            // 入力情報にもとづいて再計算.
+                            $this->calculate($app, $TargetOrder);
+
+
+                            // $BaseInfo = $app['eccube.repository.base_info']->get();
+
+                            // お支払い方法の更新
+                            $TargetOrder->setPaymentMethod($TargetOrder->getPayment()->getMethod());
+
+                            // 配送業者・お届け時間の更新
                             $Shippings = $TargetOrder->getShippings();
                             foreach ($Shippings as $Shipping) {
-                                $ShipmentItems = $Shipping->getShipmentItems();
-                                foreach ($ShipmentItems as $ShipmentItem) {
-                                    $app['orm.em']->remove($ShipmentItem);
+                                $Shipping->setShippingDeliveryName($Shipping->getDelivery()->getName());
+                                if (!is_null($Shipping->getDeliveryTime())) {
+                                    $Shipping->setShippingDeliveryTime($Shipping->getDeliveryTime()->getDeliveryTime());
+                                } else {
+                                    $Shipping->setShippingDeliveryTime(null);
                                 }
-                                $ShipmentItems->clear();
-                                foreach ($NewShipmentItems as $NewShipmentItem) {
-                                    $NewShipmentItem->setShipping($Shipping);
-                                    $ShipmentItems->add($NewShipmentItem);
+
+                                $Shipping
+                                    ->setName01($TargetCustomer[0]->getName01())
+                                    ->setName02($TargetCustomer[0]->getName02())
+                                    ->setKana01($TargetCustomer[0]->getKana01())
+                                    ->setKana02($TargetCustomer[0]->getKana02())
+                                    ->setZip01($TargetCustomer[0]->getZip01())
+                                    ->setZip02($TargetCustomer[0]->getZip02())
+                                    ->setPref(is_null($TargetCustomer[0]->getPref()) ? null : $TargetCustomer[0]->getPref())
+                                    ->setAddr01($TargetCustomer[0]->getAddr01())
+                                    ->setAddr02($TargetCustomer[0]->getAddr02())
+                                    ->setTel01($TargetCustomer[0]->getTel01())
+                                    ->setTel02($TargetCustomer[0]->getTel02())
+                                    ->setTel03($TargetCustomer[0]->getTel03())
+                                    ->setFax01($TargetCustomer[0]->getFax01())
+                                    ->setFax02($TargetCustomer[0]->getFax02())
+                                    ->setFax03($TargetCustomer[0]->getFax03())
+                                    ->setCompanyName($TargetCustomer[0]->getCompanyName());
+
+
+                            }
+
+
+                            // 受注日/発送日/入金日の更新.
+                            $this->updateDate($app, $TargetOrder, $OriginOrder);
+
+                            // // 受注明細で削除されているものをremove
+                            // foreach ($OriginalOrderDetails as $OrderDetail) {
+                            //     if (false === $TargetOrder->getOrderDetails()->contains($OrderDetail)) {
+                            //         $app['orm.em']->remove($OrderDetail);
+                            //     }
+                            // }
+
+
+                            if ($BaseInfo->getOptionMultipleShipping() == Constant::ENABLED) {
+                                foreach ($TargetOrder->getOrderDetails() as $OrderDetail) {
+                                    /** @var $OrderDetail \Eccube\Entity\OrderDetail */
+                                    $OrderDetail->setOrder($TargetOrder);
+                                }
+
+                                /** @var \Eccube\Entity\Shipping $Shipping */
+                                foreach ($Shippings as $Shipping) {
+                                    $shipmentItems = $Shipping->getShipmentItems();
+                                    /** @var \Eccube\Entity\ShipmentItem $ShipmentItem */
+                                    foreach ($shipmentItems as $ShipmentItem) {
+                                        $ShipmentItem->setOrder($TargetOrder);
+                                        $ShipmentItem->setShipping($Shipping);
+                                        $app['orm.em']->persist($ShipmentItem);
+                                    }
+                                    $Shipping->setOrder($TargetOrder);
+                                    $app['orm.em']->persist($Shipping);
+                                }
+                            } else {
+
+                                $NewShipmentItems = new ArrayCollection();
+
+                                foreach ($TargetOrder->getOrderDetails() as $OrderDetail) {
+                                    /** @var $OrderDetail \Eccube\Entity\OrderDetail */
+                                    $OrderDetail->setOrder($TargetOrder);
+
+                                    $NewShipmentItem = new ShipmentItem();
+                                    $NewShipmentItem
+                                        ->setProduct($OrderDetail->getProduct())
+                                        ->setProductClass($OrderDetail->getProductClass())
+                                        ->setProductName($OrderDetail->getProduct()->getName())
+                                        ->setProductCode($OrderDetail->getProductClass()->getCode())
+                                        ->setClassCategoryName1($OrderDetail->getClassCategoryName1())
+                                        ->setClassCategoryName2($OrderDetail->getClassCategoryName2())
+                                        ->setClassName1($OrderDetail->getClassName1())
+                                        ->setClassName2($OrderDetail->getClassName2())
+                                        ->setPrice($OrderDetail->getPrice())
+                                        ->setQuantity($OrderDetail->getQuantity())
+                                        ->setOrder($TargetOrder);
+                                    $NewShipmentItems[] = $NewShipmentItem;
+
+                                }
+                                // 配送商品の更新. delete/insert.
+                                $Shippings = $TargetOrder->getShippings();
+                                foreach ($Shippings as $Shipping) {
+                                    $ShipmentItems = $Shipping->getShipmentItems();
+                                    foreach ($ShipmentItems as $ShipmentItem) {
+                                        $app['orm.em']->remove($ShipmentItem);
+                                    }
+                                    $ShipmentItems->clear();
+                                    foreach ($NewShipmentItems as $NewShipmentItem) {
+                                        $NewShipmentItem->setShipping($Shipping);
+                                        $ShipmentItems->add($NewShipmentItem);
+                                    }
                                 }
                             }
+
+                            $app['orm.em']->persist($TargetOrder);
+                            $app['orm.em']->flush();
+
+                            $Customer = $TargetOrder->getCustomer();
+                            if ($Customer) {
+                                // 会員の場合、購入回数、購入金額などを更新
+                                $app['eccube.repository.customer']->updateBuyData($app, $Customer, $TargetOrder->getOrderStatus()->getId());
+                            }
+
+
+
+
+                                //return $app->redirect($app->url('admin_order_edit', array('id' => $TargetOrder->getId())));
+                            //連携会員ID
+                            $refid = $row['連携注文ID'];
+
+                            if ($refid == '') {
+                                //何もしない
+                            } else {
+                                $DataImportOrder = $app['eccube.plugin.dataimport.repository.dataimportorder']
+                                    ->find($refid);
+                                if (!$DataImportOrder) {
+                                    $DataImportOrder=$app['eccube.plugin.dataimport.repository.dataimportorder']
+                                                        ->create($refid,$TargetOrder);
+                                }else{
+                                    $DataImportOrder->setOrder($TargetOrder);
+                                    $this->em->persist($DataImportOrder);
+
+                                }
+                               
+
+                            }         
                         }
-dump($TargetOrder);
-                        $app['orm.em']->persist($TargetOrder);
-                        $app['orm.em']->flush();
 
-                        $Customer = $TargetOrder->getCustomer();
-                        if ($Customer) {
-                            // 会員の場合、購入回数、購入金額などを更新
-                            $app['eccube.repository.customer']->updateBuyData($app, $Customer, $TargetOrder->getOrderStatus()->getId());
+                        if($del_flg==1){
+                                foreach($TargetOrder->getShippings() as $currshp){
+                                    $app['orm.em']->remove($currshp);
+                                    $app['orm.em']->flush();
+
+                                }
+
+                                foreach($TargetOrder->getOrderDetails() as $currod){
+                                    $app['orm.em']->remove($currod);
+                                    $app['orm.em']->flush();
+
+
+                                }
+                                $app['orm.em']->remove($DataImportOrder);
+                                $app['orm.em']->flush();
+
+                                
+                                $app['orm.em']->remove($TargetOrder);
+                                $app['orm.em']->flush();
+
+
                         }
-
-
-
-
-                            //return $app->redirect($app->url('admin_order_edit', array('id' => $TargetOrder->getId())));
-
 
 
                         if ($this->hasErrors()) {

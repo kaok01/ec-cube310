@@ -38,7 +38,7 @@ class Version20161228120000 extends AbstractMigration
     public function up(Schema $schema)
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->createRecommendProduct($schema);
+        $this->createProductMap($schema);
     }
 
     /**
@@ -52,10 +52,10 @@ class Version20161228120000 extends AbstractMigration
     }
 
     /**
-     * おすすめ商品テーブル作成
+     * 連携商品テーブル作成
      * @param Schema $schema
      */
-    protected function createRecommendProduct(Schema $schema)
+    protected function createProductMap(Schema $schema)
     {
         $table = $schema->createTable("plg_dataimport_productmap");
         $table->addColumn('productmap_product_id', 'integer', array(

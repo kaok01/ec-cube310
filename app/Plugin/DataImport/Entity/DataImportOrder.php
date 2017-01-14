@@ -20,20 +20,10 @@ use Doctrine\ORM\Mapping as ORM;
 class DataImportOrder extends \Eccube\Entity\AbstractEntity
 {
     /**
-     * @var integer
+     * @var string
      */
     private $plg_dataimport_order_id;
-    /**
-     * @var integer
-     */
-    private $plg_dataimport_current;
-    /**
-     * @var integer
-     */
-    private $order_id;
-    /**
-     * @var \Eccube\Entity\Order
-     */
+
     private $Order;
     /**
      * @var date
@@ -68,55 +58,9 @@ class DataImportOrder extends \Eccube\Entity\AbstractEntity
     }
 
     /**
-     * Set plg_dataimport_current
+     * Set Order
      *
-     * @param integer $plg_dataimport_current
-     * @return DataImportCustomer
-     */
-    public function setPlgDataImportCurrent($plg_dataimport_current)
-    {
-        $this->plg_dataimport_current = $plg_dataimport_current;
-
-        return $this;
-    }
-
-    /**
-     * Get plg_dataimport_current
-     *
-     * @return integer plg_dataimport_current
-     */
-    public function getPlgDataImportCurrent()
-    {
-        return $this->plg_dataimport_current;
-    }
-
-    /**
-     * Set customer_id
-     *
-     * @param integer $customer_id
-     * @return DataImportCustomer
-     */
-    public function setOrderId($order_id)
-    {
-        $this->order_id = $order_id;
-
-        return $this;
-    }
-
-    /**
-     * Get customer_id
-     *
-     * @return integer
-     */
-    public function getOrderId()
-    {
-        return $this->order_id;
-    }
-
-    /**
-     * Set Customer
-     *
-     * @param \Eccube\Entity\Customer $Customer
+     * @param \Eccube\Entity\Order $Order
      * @return DataImportCustomer
      */
     public function setOrder($Order)
@@ -129,7 +73,7 @@ class DataImportOrder extends \Eccube\Entity\AbstractEntity
     /**
      * Get customer
      *
-     * @return \Eccube\Entity\Customer
+     * @return \Eccube\Entity\Order
      */
     public function getOrder()
     {

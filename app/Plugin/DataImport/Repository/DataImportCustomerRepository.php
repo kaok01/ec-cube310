@@ -27,15 +27,15 @@ class DataImportCustomerRepository extends EntityRepository
      * @return bool|DataImportCustomer
      * @throws NoResultException
      */
-    public function saveDataImport($dataimport, $customer)
+    public function create($dataimportid, $customer)
     {
         // 引数判定
-        if ((!isset($dataimport) && $dataimport != 0) || empty($customer)) {
+        if ($dataimportid=="" || empty($customer)) {
             return false;
         }
 
         $DataImportCustomer = new DataImportCustomer();
-        $DataImportCustomer->setPlgDataImportCurrent((integer)$dataimport);
+        $DataImportCustomer->setPlgDataImportCustomerId($dataimportid);
         $DataImportCustomer->setCustomer($customer);
 
         $em = $this->getEntityManager();
@@ -44,6 +44,7 @@ class DataImportCustomerRepository extends EntityRepository
 
         return $DataImportCustomer;
     }
+
 
 
 }

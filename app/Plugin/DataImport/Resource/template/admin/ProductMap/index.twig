@@ -19,9 +19,6 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #}
-{#
-[コンテンツ]-[おすすめ商品]-[一覧・検索]画面
-#}
 
 {% extends 'default_frame.twig' %}
 
@@ -71,7 +68,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                     </td>
                                     <td class="refid">{{ RecommendProduct.refid }}</td>
                                     <td><a href="{{ url('admin_dataimport_productmap_edit', { id : RecommendProduct.id }) }}" >編集</a></td>
-                                    <td><a href="{{ url('admin_dataimport_productmap_delete', {'id' : RecommendProduct.id}) }}" {{ csrf_token_for_anchor() }} data-method="delete" data-message="おすすめ情報を削除してもよろしいですか？">削除</a></td>
+                                    <td><a href="{{ url('admin_dataimport_productmap_delete', {'id' : RecommendProduct.id}) }}" {{ csrf_token_for_anchor() }} data-method="delete" data-message="連携商品情報を削除してもよろしいですか？">削除</a></td>
                                </tr>
                                 {% endfor %}
                                 </tbody>
