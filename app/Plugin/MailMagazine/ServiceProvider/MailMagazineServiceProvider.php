@@ -162,8 +162,8 @@ class MailMagazineServiceProvider implements ServiceProviderInterface
             ->bind('admin_mail_magazine_history_delete');
 
 
-        $app->match('/' . $app["config"]["admin_route"] . '/mail/schedule/test', '\\Plugin\\MailMagazine\\Controller\\MailMagazineScheduleController::test')
-            ->value('id', null)->assert('id', '\d+|')
+        $app->match('/' . $app["config"]["admin_route"] . '/mail/schedule/test/{targetdt}', '\\Plugin\\MailMagazine\\Controller\\MailMagazineScheduleController::test')
+            ->value('target', null)->assert('id', '\d+|')
             ->bind('admin_mail_magazine_schedule_test');
         // ===========================================
         // スケジュール配信

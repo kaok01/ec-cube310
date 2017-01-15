@@ -27,9 +27,11 @@ class MailMagazineScheduleController
     public function __construct()
     {
     }
-    public function test(Application $app, Request $request){
+    public function test(Application $app, Request $request, $targetdt){
         dump('test');
-        $app['eccube.plugin.mail_magazine.service.mail']->ScheduleExec();
+        $app['eccube.plugin.mail_magazine.service.mail']->ScheduleExec(null,new \Datetime($targetdt));
+        return $app->redirect($app->url('admin_mail_magazine_schedule'));
+
     }
 
     /**
@@ -77,40 +79,7 @@ class MailMagazineScheduleController
         ));
     }
 
-    /**
-     * preview画面表示
-     * @param Application $app
-     * @param Request $request
-     * @param unknown $id
-     * @return void|\Symfony\Component\HttpFoundation\Response
-     */
-    public function preview(Application $app, Request $request, $id)
-    {
 
-        // id の存在確認
-        // nullであれば一覧に戻る
-        if(is_null($id) || strlen($id) == 0) {
-            $app->addError('admin.mailmagazine.template.data.illegalaccess', 'admin');
-
-            // メルマガテンプレート一覧へリダイレクト
-            return $app->redirect($app->url('admin_mail_magazine_template'));
-        }
-
-        // パラメータ$idにマッチするデータが存在するか判定
-        // あれば、subject/bodyを取得
-        $template = $app['eccube.plugin.mail_magazine.repository.mail_magazine']->find($id);
-        if(is_null($template)) {
-            // データが存在しない場合はメルマガテンプレート一覧へリダイレクト
-            $app->addError('admin.mailmagazine.template.data.notfound', 'admin');
-
-            return $app->redirect($app->url('admin_mail_magazine_template'));
-        }
-
-        // プレビューページ表示
-        return $app->render('MailMagazine/View/admin/preview.twig', array(
-                'Template' => $template
-        ));
-    }
 
     /**
      * メルマガテンプレートを論理削除
@@ -147,7 +116,7 @@ class MailMagazineScheduleController
         }
 
         // メルマガテンプレート一覧へリダイレクト
-        return $app->redirect($app->url('admin_mail_magazine_template'));
+        return $app->redirect($app->url('admin_mail_magazine_schedule'));
     }
 
     /**
@@ -285,23 +254,5 @@ class MailMagazineScheduleController
 
     }
 
-    /**
-     * メルマガテンプレート登録画面を表示する
-     * @param Application $app
-     * @param Request $request
-     */
-    public function regist(Application $app, Request $request) {
-        $PageLayout = new \Plugin\MailMagazine\Entity\MailMagazineTemplate();
-
-        // formの作成
-        $form = $app['form.factory']
-            ->createBuilder('mail_magazine_template_edit', $PageLayout)
-            ->getForm();
-
-        return $app->render('MailMagazine/View/admin/template_edit.twig', array(
-                'form' => $form->createView()
-        ));
-
-    }
 
 }
