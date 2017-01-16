@@ -59,7 +59,7 @@ class PluginManager extends AbstractPluginManager
      */
     public function disable($config, $app)
     {
-        $this->migrationSchema($app, __DIR__.'/Resource/doctrine/migration', $config['code'], 0);
+        //$this->migrationSchema($app, __DIR__.'/Resource/doctrine/migration', $config['code'], 0);
 
     }
 

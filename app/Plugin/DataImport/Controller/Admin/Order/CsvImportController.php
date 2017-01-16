@@ -128,7 +128,7 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                                 $DataImportOrder = $app['eccube.plugin.dataimport.repository.dataimportorder']->find($refid);
                                 if($DataImportOrder){
 
-                                    $noAction = false;
+                                    $noAction = true;
                                     $Overwrite = true;
 
                                     $TargetOrder = $app['eccube.repository.order']->find($DataImportOrder->getOrder()->getId());
@@ -192,17 +192,6 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
 
                             $refproductid = $row['連携商品ID'];
                             if($refproductid){
-                                // $targets = $app['config']
-                                //         ['DataImport']['const']
-                                //             ['extention']
-                                //                 ['order']
-                                //                     ['productmaps'];
-
-                                // foreach($targets as $k=>$v){
-                                //     if($v['id']==$refproductid){
-                                //         $convid = $k;
-                                //     }
-                                // }
 
                                 $ProductMap = $app['eccube.plugin.dataimport.repository.productmap_product']
                                         ->findBy(array('refid'=>$refproductid));
@@ -537,154 +526,7 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
 
 
 
-    //Order\EditControllerから流用
-    private function test(){
-        $TargetOrder = null;
-        $OriginOrder = null;
 
-        if (is_null($id)) {
-            // 空のエンティティを作成.
-
-            $TargetOrder = $this->newOrder();
-        } else {
-            $TargetOrder = $app['eccube.repository.order']->find($id);
-            if (is_null($TargetOrder)) {
-                throw new NotFoundHttpException();
-            }
-        }
-
-        // 編集前の受注情報を保持
-        $OriginOrder = clone $TargetOrder;
-        $OriginalOrderDetails = new ArrayCollection();
-
-        foreach ($TargetOrder->getOrderDetails() as $OrderDetail) {
-            $OriginalOrderDetails->add($OrderDetail);
-        }
-
-
-        $form->handleRequest($request);
-
-        $event = new EventArgs(
-            array(
-                'builder' => $builder,
-                'OriginOrder' => $OriginOrder,
-                'TargetOrder' => $TargetOrder,
-                'OriginOrderDetails' => $OriginalOrderDetails,
-            ),
-            $request
-        );
-        //$app['eccube.event.dispatcher']->dispatch(EccubeEvents::ADMIN_ORDER_EDIT_INDEX_PROGRESS, $event);
-
-        // 入力情報にもとづいて再計算.
-        $this->calculate($app, $TargetOrder);
-
-
-        if ($TargetOrder->getTotal() > $app['config']['max_total_fee']) {
-            $form['charge']->addError(new FormError('合計金額の上限を超えております。'));
-        } elseif ($form->isValid()) {
-
-            $BaseInfo = $app['eccube.repository.base_info']->get();
-
-            // お支払い方法の更新
-            $TargetOrder->setPaymentMethod($TargetOrder->getPayment()->getMethod());
-
-            // 配送業者・お届け時間の更新
-            $Shippings = $TargetOrder->getShippings();
-            foreach ($Shippings as $Shipping) {
-                $Shipping->setShippingDeliveryName($Shipping->getDelivery()->getName());
-                if (!is_null($Shipping->getDeliveryTime())) {
-                    $Shipping->setShippingDeliveryTime($Shipping->getDeliveryTime()->getDeliveryTime());
-                } else {
-                    $Shipping->setShippingDeliveryTime(null);
-                }
-            }
-
-
-            // 受注日/発送日/入金日の更新.
-            $this->updateDate($app, $TargetOrder, $OriginOrder);
-
-            // 受注明細で削除されているものをremove
-            foreach ($OriginalOrderDetails as $OrderDetail) {
-                if (false === $TargetOrder->getOrderDetails()->contains($OrderDetail)) {
-                    $app['orm.em']->remove($OrderDetail);
-                }
-            }
-
-
-            if ($BaseInfo->getOptionMultipleShipping() == Constant::ENABLED) {
-                foreach ($TargetOrder->getOrderDetails() as $OrderDetail) {
-                    /** @var $OrderDetail \Eccube\Entity\OrderDetail */
-                    $OrderDetail->setOrder($TargetOrder);
-                }
-
-                /** @var \Eccube\Entity\Shipping $Shipping */
-                foreach ($Shippings as $Shipping) {
-                    $shipmentItems = $Shipping->getShipmentItems();
-                    /** @var \Eccube\Entity\ShipmentItem $ShipmentItem */
-                    foreach ($shipmentItems as $ShipmentItem) {
-                        $ShipmentItem->setOrder($TargetOrder);
-                        $ShipmentItem->setShipping($Shipping);
-                        $app['orm.em']->persist($ShipmentItem);
-                    }
-                    $Shipping->setOrder($TargetOrder);
-                    $app['orm.em']->persist($Shipping);
-                }
-            } else {
-
-                $NewShipmentItems = new ArrayCollection();
-
-                foreach ($TargetOrder->getOrderDetails() as $OrderDetail) {
-                    /** @var $OrderDetail \Eccube\Entity\OrderDetail */
-                    $OrderDetail->setOrder($TargetOrder);
-
-                    $NewShipmentItem = new ShipmentItem();
-                    $NewShipmentItem
-                        ->setProduct($OrderDetail->getProduct())
-                        ->setProductClass($OrderDetail->getProductClass())
-                        ->setProductName($OrderDetail->getProduct()->getName())
-                        ->setProductCode($OrderDetail->getProductClass()->getCode())
-                        ->setClassCategoryName1($OrderDetail->getClassCategoryName1())
-                        ->setClassCategoryName2($OrderDetail->getClassCategoryName2())
-                        ->setClassName1($OrderDetail->getClassName1())
-                        ->setClassName2($OrderDetail->getClassName2())
-                        ->setPrice($OrderDetail->getPrice())
-                        ->setQuantity($OrderDetail->getQuantity())
-                        ->setOrder($TargetOrder);
-                    $NewShipmentItems[] = $NewShipmentItem;
-
-                }
-                // 配送商品の更新. delete/insert.
-                $Shippings = $TargetOrder->getShippings();
-                foreach ($Shippings as $Shipping) {
-                    $ShipmentItems = $Shipping->getShipmentItems();
-                    foreach ($ShipmentItems as $ShipmentItem) {
-                        $app['orm.em']->remove($ShipmentItem);
-                    }
-                    $ShipmentItems->clear();
-                    foreach ($NewShipmentItems as $NewShipmentItem) {
-                        $NewShipmentItem->setShipping($Shipping);
-                        $ShipmentItems->add($NewShipmentItem);
-                    }
-                }
-            }
-
-            $app['orm.em']->persist($TargetOrder);
-            $app['orm.em']->flush();
-
-            $Customer = $TargetOrder->getCustomer();
-            if ($Customer) {
-                // 会員の場合、購入回数、購入金額などを更新
-                $app['eccube.repository.customer']->updateBuyData($app, $Customer, $TargetOrder->getOrderStatus()->getId());
-            }
-
-
-
-            $app->addSuccess('admin.order.save.complete', 'admin');
-
-            return $app->redirect($app->url('admin_order_edit', array('id' => $TargetOrder->getId())));
-        }
-
-    }
 
     /**
      * 顧客情報を検索する.
