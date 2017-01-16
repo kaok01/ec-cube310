@@ -36,7 +36,26 @@ class MailMagazineSendCustomerRepository extends EntityRepository
         $result = $qb->getQuery()->getResult();
         return $result;
     }
+    public function getSendCustomerCount($sendId)
+    {
+        $qb = $this->createQueryBuilder('c')
+        ->select('count(c.send_id)')
+        ->andWhere('c.send_id = :send_id')
+        ->setParameter('send_id', $sendId);
 
+        $result = $qb->getQuery()->getResult();
+        return $result;
+    }
+    public function getSendCustomerCompleteCount($sendId)
+    {
+        $qb = $this->createQueryBuilder('c')
+        ->select('count(c.send_id)')
+        ->andWhere('c.send_id = :send_id and c.send_flag = 1')
+        ->setParameter('send_id', $sendId);
+
+        $result = $qb->getQuery()->getResult();
+        return $result;
+    }
     /**
      * dtb_send_customerに追加する.
      *

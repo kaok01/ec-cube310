@@ -29,8 +29,12 @@ class MailMagazineScheduleController
     }
     public function test(Application $app, Request $request, $targetdt){
         dump('test');
-        $app['eccube.plugin.mail_magazine.service.mail']->ScheduleExec(null,new \Datetime($targetdt));
-        return $app->redirect($app->url('admin_mail_magazine_schedule'));
+        if(
+            $app['eccube.plugin.mail_magazine.service.mail']->ScheduleExec(null,new \Datetime($targetdt),'test')
+        ){
+            return $app->redirect($app->url('admin_mail_magazine_schedule'));
+
+        }
 
     }
 

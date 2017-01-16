@@ -46,6 +46,7 @@ class MailMagazineService
     /** @var \Eccube\Entity\BaseInfo */
     public $BaseInfo;
 
+    private $testsend=false;
 
     public function __construct(Application $app)
     {
@@ -183,11 +184,15 @@ class MailMagazineService
         foreach ($sendCustomerList as $sendCustomer) {
             // メール送信
             $name = trim($sendCustomer->getName());
-            $body = preg_replace('/{name}/', $name, $sendHistory->getBody());
+            $body = preg_replace('/{name}/', $name, "{name} 様\n".$sendHistory->getBody());
             // 送信した本文を保持する
             $this->lastSendMailBody = $body;
             $mailData = array(
-                    'email' => $sendCustomer->getEmail(),
+                    'email' => ($this->testsend ? 
+                                    $this->BaseInfo->getEmail01()
+                                    : 
+                                    $sendCustomer->getEmail()
+                                    ),
                     'subject' => preg_replace('/{name}/', $name, $sendHistory->getSubject()),
                     'body' => $body
             );
@@ -215,9 +220,16 @@ class MailMagazineService
             }
         }
 
+
         // 送信結果情報を更新する
+        // send_customerを取得する
+        $sendCustomerCount = $this->app[self::REPOSITORY_SEND_CUSTOMER]->getSendCustomerCount($sendId);
+        $sendCustomerCompleteCount = $this->app[self::REPOSITORY_SEND_CUSTOMER]->getSendCustomerCompleteCount($sendId);
+
+
+        $sendHistory->setSendCount($sendCustomerCount[0][1]);
         $sendHistory->setEndDate(new \DateTime());
-        $sendHistory->setCompleteCount($compleateCount);
+        $sendHistory->setCompleteCount($sendCustomerCompleteCount[0][1]);
         $this->app[self::REPOSITORY_SEND_HISTORY]->updateSendHistory($sendHistory);
 
         return true;
@@ -314,7 +326,12 @@ class MailMagazineService
         $MailmagaCustomerRepository->save($MailmagaCustomer);
     }
 
-    public function ScheduleExec($output=null,$tagdate = null){
+    public function ScheduleExec($output=null,$tagdate = null,$test = null){
+        if($test=='test'){
+            $this->testsend = true;
+        }else{
+            $this->testsend = false;
+        }
         if($output){
             $output->writeln('schedule service exec');
 
@@ -329,8 +346,10 @@ class MailMagazineService
 
         }
         $Schedules = $this->app[self::REPOSITORY_SEND_SCHEDULE]->GetCurrentSchedule($tagdate,$searchDate);
+        $result = true;
         foreach($Schedules as $Schedule){
             if(!$this->runSchedule($Schedule,$searchDate,$now)){
+                $result = false;
                 if($output){
                     $output->writeln('failed run schedule');
 
@@ -339,8 +358,8 @@ class MailMagazineService
             }
 
         }
-
-        return true;
+        $this->testsend = false;
+        return $result;
     }
 
     protected function runSchedule($Schedule,$searchDate,$now){
