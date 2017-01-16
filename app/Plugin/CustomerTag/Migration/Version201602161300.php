@@ -27,9 +27,6 @@ class Version201602161300 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $table = $schema->getTable('plg_customer_customertag');
-        if ($table->hasColumn('customertag_url')) {
-            $table->changeColumn('customertag_url', array('NotNull' => false));
-        }
     }
 
     /**
