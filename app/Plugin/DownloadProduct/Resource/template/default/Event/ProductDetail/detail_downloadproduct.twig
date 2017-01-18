@@ -1,0 +1,9 @@
+<p id="detail_description_box__sale_downloadproduct" class="text-primary">
+    {% if downloadproduct.min != downloadproduct.max %}
+        加算ダウンロード商品：<span>{{ downloadproduct.min|number_format }}</span><span class="small">pt</span> ～
+        <span>{{ downloadproduct.max|number_format }}</span><span class="small">pt</span>
+    {% else %}
+        加算ダウンロード商品：<span>{{ downloadproduct.max|number_format }}</span><span class="small">pt</span>
+    {% endif %}
+</p>
+

@@ -1,0 +1,32 @@
+Plugin\DownloadProduct\Entity\ProductMapProduct:
+    type: entity
+    table: plg_downloadproduct_productmap
+    repositoryClass: Plugin\DownloadProduct\Repository\ProductMapProductRepository
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            id: true
+            column: productmap_product_id
+            generator:
+                strategy: AUTO
+    fields:
+        refid:
+            type: text
+            nullable: true
+        create_date:
+            type: datetime
+            nullable: false
+        update_date:
+            type: datetime
+            nullable: false
+    manyToOne:
+        Product:
+            targetEntity: Eccube\Entity\Product
+            inversedBy: ProductMapProduct
+            joinColumn:
+                name: product_id
+                referencedColumnName: product_id
+    lifecycleCallbacks: {  }
+    

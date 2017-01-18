@@ -1,0 +1,10 @@
+<h2 class="heading02">ダウンロード商品利用</h2>
+<div id="downloadproduct_box" class="column">
+    <div id="downloadproduct_box__body" class="text-left form-group">
+        <p id="downloadproduct_box__info" class="text-left">
+            現在の保有ダウンロード商品は「<strong class="text-primary">{{ (downloadproduct.current) >= 0 ? (downloadproduct.current)|number_format  : 0 }} pt</strong>」です。<br/>
+            ダウンロード商品は商品購入時に1pt＝<strong class="text-primary">{{ downloadproduct.rate|price }}</strong>として利用することができます。
+            <a id="confirm_box__use_downloadproduct_edit_button" href="{{ url('downloadproduct_use') }}" class="btn btn-default btn-sm">ダウンロード商品を利用する</a>
+        </p>
+    </div>
+</div>

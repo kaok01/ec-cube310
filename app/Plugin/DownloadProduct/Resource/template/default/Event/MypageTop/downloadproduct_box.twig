@@ -1,0 +1,6 @@
+<p class="txt_center">
+    現在の保有ダウンロード商品は「<span class="text-primary">{{ downloadproduct.current >= 0 ? downloadproduct.current|number_format  : 0 }} pt</span>」です。<br/>
+    {% if app.debug %}現在の仮ダウンロード商品は「<span class="text-primary">{{ downloadproduct.pre|number_format }} pt</span>」です。<br/>{% endif %}
+    ※1pt＝<span class="text-primary">{{ downloadproduct.rate|price }}</span>でご利用いただけます。
+</p>
+

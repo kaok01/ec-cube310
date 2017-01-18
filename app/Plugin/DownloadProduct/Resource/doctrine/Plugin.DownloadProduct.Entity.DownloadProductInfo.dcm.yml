@@ -1,0 +1,38 @@
+Plugin\DownloadProduct\Entity\DownloadProductInfo:
+    type: entity
+    table: plg_downloadproduct_info
+    repositoryClass: Plugin\DownloadProduct\Repository\DownloadProductInfoRepository
+    id:
+        plg_downloadproduct_info_id:
+            type: integer
+            nullable: false
+            unsigned: false
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        plg_add_downloadproduct_status:
+            type: smallint
+            nullable: false
+        plg_basic_downloadproduct_rate:
+            type: integer
+            unsigned: false
+            nullable: false
+        plg_downloadproduct_conversion_rate:
+            type: integer
+            unsigned: false
+            nullable: false
+        plg_round_type:
+            type: smallint
+            nullable: false
+        plg_calculation_type:
+            type: smallint
+            nullable: false
+        create_date:
+            type: datetime
+            nullable: false
+        update_date:
+            type: datetime
+            nullable: false
+    lifecycleCallbacks:
+        loadClassMetadata: {  }

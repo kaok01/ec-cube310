@@ -1,0 +1,24 @@
+Plugin\DownloadProduct\Entity\DownloadProductOrder:
+    type: entity
+    table: plg_downloadproduct_order
+    repositoryClass: Plugin\DownloadProduct\Repository\DownloadProductOrderRepository
+    id:
+        plg_downloadproduct_order_id:
+            type: string
+            nullable: false
+            id: true
+    fields:
+        create_date:
+            type: datetime
+            nullable: false
+        update_date:
+            type: datetime
+            nullable: false
+    manyToOne:
+        Order:
+            targetEntity: Eccube\Entity\Order
+            joinColumn:
+                name: order_id
+                referencedColumnName: order_id
+    lifecycleCallbacks:
+        loadClassMetadata: {  }

@@ -1,0 +1,6 @@
+admin.downloadproduct.save.complete: ダウンロード商品基本情報を保存しました。
+admin.downloadproduct.save.error: ダウンロード商品基本情報の保存に失敗しました。
+admin.downloadproduct.display.usedownloadproduct.error: ダウンロード商品が不正です。
+admin.downloadproduct.validate.zero.error: 0は設定できません。
+admin.downloadproduct.customer.csv_import.save.complete: 会員CSV登録が完了しました。
+admin.downloadproduct.order.csv_import.save.complete: 受注CSV登録が完了しました。
