@@ -77,7 +77,7 @@ EOF
                 if ($plugin) {
                     //consoleでinitializePluginを実行済を前提
                     if($this->app['eccube.plugin.mail_magazine.service.mail']){
-                        $this->app['eccube.plugin.mail_magazine.service.mail']->ScheduleExec($output);
+                        $this->app['eccube.plugin.mail_magazine.service.mail']->ScheduleExec($output,new \Datetime());
                         $output->writeln('success1');
                         return;
                     }
