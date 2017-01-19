@@ -855,6 +855,7 @@ class ShoppingController extends AbstractController
      */
     public function nonmember(Application $app, Request $request)
     {
+//dump($request);die()
         $cartService = $app['eccube.service.cart'];
 
         // カートチェック
@@ -966,6 +967,14 @@ class ShoppingController extends AbstractController
             if ($event->getResponse() !== null) {
                 return $event->getResponse();
             }
+
+
+            dump($form);//die();
+            //$form->get('email')->addError('このメールアドレスは既に登録されています。ログインしてお進みください。');
+        return $app->render('Shopping/nonmember.twig', array(
+            'form' => $form->createView(),
+            'error' => 'このメールアドレスは既に登録されています。変更、または、前に戻りログインしてお進みください。'
+        ));            
 
             return $app->redirect($app->url('shopping'));
         }

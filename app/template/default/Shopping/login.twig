@@ -84,9 +84,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                 <div id="guest_box" class="col-sm-4" style="height: 330px;">
                     <div id="guest_box__body" class="column">
                         <div id="guest_box__body_inner" class="column_inner">
-                            <p id="guest_box__message" class="message">会員登録をせずに購入手続きをされたい方は、下記よりお進みください。
+                            <p id="guest_box__message" class="message">本サイトでは、ご購入手続きと同時に会員登録させて頂きます。下記を選択の上、お進みください。
                             <p id="guest_box__confirm_button" class="btn_area">
-                                <a href="{{ url('shopping_nonmember') }}" class="btn btn-info btn-block btn-lg">ゲスト購入</a></p>
+                                <a href="{{ url('shopping_nonmember') }}" class="btn btn-info btn-block btn-lg">会員登録に同意する</a></p>
+                            <p id="guest_box__confirm_button" class="btn_area">
+                                <a href="{{ url('homepage') }}" class="btn btn-info btn-block btn-lg">同意しない</a></p>
                         </div>
                     </div>
                 </div><!-- /.col -->

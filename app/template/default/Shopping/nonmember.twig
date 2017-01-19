@@ -102,6 +102,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                 {{ form_errors(form.email.first) }}
                                 {{ form_errors(form.email.second) }}
                             </div>
+                            {% if error %}
+                                <div id="customer_box__error_message" class="form-group">
+                                    <span class="text-danger">{{ error }}</span>
+                                </div>
+                            {% endif %}
                         </dd>
                     </dl>
                 </div>
