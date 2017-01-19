@@ -94,3 +94,104 @@
 ##  メール通知
 # mail.admin.order:
 #    - [onMailOrderComplete, NORMAL]
+
+
+front.shopping.index.initialize:
+    - [onFrontShoppingIndexInitialize, NORMAL]
+front.shopping.confirm.initialize:
+    - [onFrontShoppingConfirmInitialize, NORMAL]
+front.shopping.confirm.processing:
+    - [onFrontShoppingConfirmProcessing, NORMAL]
+front.shopping.confirm.complete:
+    - [onFrontShoppingConfirmComplete, NORMAL]
+front.shopping.payment.initialize:
+    - [onFrontShoppingPaymentInitialize, NORMAL]
+front.shopping.payment.complete:
+    - [onFrontShoppingPaymentComplete, NORMAL]
+#    const FRONT_SHOPPING_PAYMENT_INITIALIZE = 'front.shopping.payment.initialize';
+#    const FRONT_SHOPPING_PAYMENT_COMPLETE = 'front.shopping.payment.complete';
+
+
+#    const FRONT_SHOPPING_INDEX_INITIALIZE = 'front.shopping.index.initialize';
+
+#    // confirm
+#    const FRONT_SHOPPING_CONFIRM_INITIALIZE = 'front.shopping.confirm.initialize';
+#    const FRONT_SHOPPING_CONFIRM_PROCESSING = 'front.shopping.confirm.processing';
+#    const FRONT_SHOPPING_CONFIRM_COMPLETE = 'front.shopping.confirm.complete';
+
+#    // complete
+#    const FRONT_SHOPPING_COMPLETE_INITIALIZE = 'front.shopping.complete.initialize';
+
+#    // delivery
+#    const FRONT_SHOPPING_DELIVERY_INITIALIZE = 'front.shopping.delivery.initialize';
+#    const FRONT_SHOPPING_DELIVERY_COMPLETE = 'front.shopping.delivery.complete';
+front.shopping.delivery.initialize:
+    - [onFrontShoppingDeliveryInitialize, NORMAL]
+front.shopping.delivery.complete:
+    - [onFrontShoppingDeliveryComplete, NORMAL]
+
+#    // payment
+#    const FRONT_SHOPPING_PAYMENT_INITIALIZE = 'front.shopping.payment.initialize';
+#    const FRONT_SHOPPING_PAYMENT_COMPLETE = 'front.shopping.payment.complete';
+
+#    // shippingChange
+#    const FRONT_SHOPPING_SHIPPING_CHANGE_INITIALIZE = 'front.shopping.shipping.change.initialize';
+
+
+#    // shipping
+#    const FRONT_SHOPPING_SHIPPING_COMPLETE = 'front.shopping.shipping.complete';
+
+#    // shippingEditChange
+#    const FRONT_SHOPPING_SHIPPING_EDIT_CHANGE_INITIALIZE = 'front.shopping.shipping.edit.change.initialize';
+
+#    // shippingEdit
+#    const FRONT_SHOPPING_SHIPPING_EDIT_INITIALIZE = 'front.shopping.shipping.edit.initialize';
+#    const FRONT_SHOPPING_SHIPPING_EDIT_COMPLETE = 'front.shopping.shipping.edit.complete';
+front.shopping.shipping.change.initialize:
+    - [onFrontShoppingShippingChangeInitialize, NORMAL]
+front.shopping.shipping.complete:
+    - [onFrontShoppingShippingComplete, NORMAL]
+front.shopping.shipping.edit.change.initialize:
+    - [onFrontShoppingShippingEditChangeInitialize, NORMAL]
+front.shopping.shipping.edit.initialize:
+    - [onFrontShoppingShippingEditInitialize, NORMAL]
+front.shopping.shipping.edit.complete:
+    - [onFrontShoppingShippingEditComplete, NORMAL]
+
+#    // customer
+#    const FRONT_SHOPPING_CUSTOMER_INITIALIZE = 'front.shopping.customer.initialize';
+
+#    // login
+#    const FRONT_SHOPPING_LOGIN_INITIALIZE = 'front.shopping.login.initialize';
+
+#    // nonmember
+#    const FRONT_SHOPPING_NONMEMBER_INITIALIZE = 'front.shopping.nonmember.initialize';
+#    const FRONT_SHOPPING_NONMEMBER_COMPLETE = 'front.shopping.nonmember.complete';
+
+
+front.shopping.shipping.multiple.change.initialize:
+    - [onFrontShoppingShippingMultipleChangeInitialize, NORMAL]
+front.shopping.shipping.multiple.initialize:
+    - [onFrontShoppingShippingMultipleInitialize, NORMAL]
+front.shopping.shipping.multiple.complete:
+    - [onFrontShoppingShippingMultipleComplete, NORMAL]
+front.shopping.shipping.multiple.edit.initialize:
+    - [onFrontShoppingShippingMultipleEditInitialize, NORMAL]
+front.shopping.shipping.multiple.edit.complete:
+    - [onFrontShoppingShippingMultipleEditComplete, NORMAL]
+
+#    // shippingMultipleChange
+#    const FRONT_SHOPPING_SHIPPING_MULTIPLE_CHANGE_INITIALIZE = 'front.shopping.shipping.multiple.change.initialize';
+
+#    // shippingMultiple
+#    const FRONT_SHOPPING_SHIPPING_MULTIPLE_INITIALIZE = 'front.shopping.shipping.multiple.initialize';
+#    const FRONT_SHOPPING_SHIPPING_MULTIPLE_COMPLETE = 'front.shopping.shipping.multiple.complete';
+
+#    // shippingMultipleEdit
+#    const FRONT_SHOPPING_SHIPPING_MULTIPLE_EDIT_INITIALIZE = 'front.shopping.shipping.multiple.edit.initialize';
+#    const FRONT_SHOPPING_SHIPPING_MULTIPLE_EDIT_COMPLETE = 'front.shopping.shipping.multiple.edit.complete';
+
+mail.order:
+    - [onMailServiceMailOrder, NORMAL]
+front.contact.index.complete:
+    - [onFrontContactIndexComplete, NORMAL]

@@ -265,40 +265,33 @@ class DownloadProductServiceProvider implements ServiceProviderInterface
         }));
  
 
-        if(isset($app['eccube.plugin.customertag.service'])){
 
-            /**
-             * ルーティング登録
-             * 管理画面 > 会員管理管理 > 会員CSV登録
-             */
-            $app->match(
-                '/'.$app['config']['admin_route'].'/customer/customertag_csvimport',
-                'Plugin\DownloadProduct\Controller\Admin\Customer\CustomerTagController::csvCustomerTag'
-            )->bind('admin_downloadproduct_customertag_csv_import');
+        // メニュー
+        $app['config'] = $app->share($app->extend('config', function ($config) {
+            $addNavi = array(
+                'id' => 'mail_config',
+                'name' => "メール送信設定",
+                'has_child' => true,
+                'icon' => 'cb-comment',
+                'child' => array(
+                    array(
+                        'id' => "plugin_ContactMailConfig_index",
+                        'name' => "お問い合わせメール",
+                        'url' => "plugin_ContactMailConfig_config",
+                    ),
+                ),
+            );
 
-            $app->match(
-                '/'.$app['config']['admin_route'].'/customer/customertag_csvexport',
-                'Plugin\DownloadProduct\Controller\Admin\Customer\CustomerTagController::export'
-            )->bind('admin_downloadproduct_customertag_csv_export');
-
-            $app['config'] = $app->share($app->extend('config', function ($config) {
-                $addNavi['id'] = "admin_downloadproduct_customertag_csv_import";
-                $addNavi['name'] = "会員情報タグCSV登録";
-                $addNavi['url'] = "admin_downloadproduct_customertag_csv_import";
-
-                $nav = $config['nav'];
-                foreach ($nav as $key => $val) {
-                    if ("customer" == $val["id"]) {
-                        $nav[$key]['child'][] = $addNavi;
-                    }
+            $nav = $config['nav'];
+            foreach ($nav as $key => $val) {
+                if ("setting" == $val['id']) {
+                    array_splice($nav, $key, 0, array($addNavi));
+                    break;
                 }
-                $config['nav'] = $nav;
-
-                return $config;
-            }));
-        }
-
-
+            }
+            $config['nav'] = $nav;
+            return $config;
+        }));
 
         /**
          * メッセージ登録

@@ -14,4 +14,4 @@ const:
     # ダウンロード商品のリンクを通知するタイミング
     sendlink_order_status: 3
     # ダウンロード商品リンクの期限 0は無制限
-    downloadlink_priod: 0
+    downloadlink_period: 0
