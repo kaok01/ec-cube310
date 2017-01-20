@@ -67,8 +67,7 @@ function changeAction(action) {
                                         {% for SendSchedule in pagination %}
                                         <tr>
                                             <td class="">
-                                            {% if SendSchedule.SendHistory %}
-                                            <a href="?" onclick="changeAction('{{ url('admin_mail_magazine_schedule_edit', { id: SendSchedule.SendHistory.id }) }}'); return false;">{{ SendSchedule.schedule_name }}</a>{% else %}{{ SendSchedule.schedule_name }}{% endif %}
+                                            <a href="?" onclick="changeAction('{{ url('admin_mail_magazine_schedule_edit', { id: SendSchedule.id }) }}'); return false;">{{ SendSchedule.schedule_name }}</a>
                                             </td>
                                             <td class="">{{ SendSchedule.send_start|date("Y/m/d") }}</td>
                                             <td class="">

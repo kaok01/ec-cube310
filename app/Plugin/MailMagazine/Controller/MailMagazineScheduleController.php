@@ -78,7 +78,7 @@ class MailMagazineScheduleController
             }
 
         }
-dump($pagination);
+
         return $app->render('MailMagazine/View/admin/schedule_list.twig', array(
             'pagination' => $pagination
         ));
