@@ -11,6 +11,8 @@
 
 namespace Plugin\MailMagazine\Entity;
 
+use Eccube\Util\EntityUtil;
+
 /**
  * SendHistory
  * Plugin MailMagazine
@@ -284,7 +286,7 @@ class MailMagazineSendSchedule extends \Eccube\Entity\AbstractEntity
     * @param  \Eccube\Entity\Member $creator
     * @return SendHistory
     */
-    public function setSendHistory(\Plugin\MailMagazine\Entity\MailMagazineSendHistory $sendhistory = null)
+    public function setSendHistory( $sendhistory = null)
     {
         $this->SendHistory = $sendhistory;
 
@@ -298,6 +300,9 @@ class MailMagazineSendSchedule extends \Eccube\Entity\AbstractEntity
     */
     public function getSendHistory()
     {
+        if(EntityUtil::isEmpty($this->SendHistory)){
+            return null;
+        }
         return $this->SendHistory;
     }    
 }

@@ -288,9 +288,9 @@ class MailMagazineService
      *
      * @return number
      */
-    public function sendMailMagazineCompleateReportMail() {
+    public function sendMailMagazineCompleateReportMail($subject = null) {
 
-        $subject = date('Y年m月d日H時i分') . '　下記メールの配信が完了しました。';
+        $subject = $subject.' '.date('Y年m月d日H時i分') . '　下記メールの配信が完了しました。';
 
         $mailData = array(
                 'email' => $this->BaseInfo->getEmail03(),
@@ -444,8 +444,6 @@ $test = false;
                 // 登録した配信履歴からメールを送信する
                 $this->sendrMailMagazine($ScheduleHistory->getId());
 
-                // 送信完了メールを送信する
-                $this->sendMailMagazineCompleateReportMail();
 
             }
         }
@@ -461,6 +459,8 @@ $test = false;
 
         }
 
+        // 送信完了メールを送信する
+        $this->sendMailMagazineCompleateReportMail($Schedule->getScheduleName());
 
         return true;
     }
