@@ -45,4 +45,107 @@ class DownloadProductEvent
     {
         return $this->app->isGranted('ROLE_USER');
     }
+
+
+    public function onFrontShoppingIndexInitialize(EventArgs $event){
+
+
+    }
+
+    public function onFrontShoppingConfirmInitialize(EventArgs $event){
+
+
+    }
+    public function onFrontShoppingConfirmProcessing(EventArgs $event){
+
+
+
+    }
+
+    public function onFrontShoppingConfirmComplete(EventArgs $event){
+
+
+    }
+
+    public function onFrontShoppingPaymentInitialize(EventArgs $event){
+
+
+
+
+    }
+
+    public function onFrontShoppingPaymentComplete(EventArgs $event){
+
+
+
+    }
+
+
+
+    public function onFrontShoppingDeliveryInitialize(EventArgs $event){
+
+
+
+    }
+    public function onFrontShoppingDeliveryComplete(EventArgs $event){
+
+    }
+    public function onFrontShoppingShippingChangeInitialize(EventArgs $event){
+
+
+
+    }
+    public function onFrontShoppingShippingComplete(EventArgs $event){
+
+
+    }
+    public function onFrontShoppingShippingEditChangeInitialize(EventArgs $event){
+
+    }
+    public function onFrontShoppingShippingEditInitialize(EventArgs $event){
+
+
+
+    }
+    public function onFrontShoppingShippingEditComplete(EventArgs $event){
+
+    }
+    public function onFrontShoppingShippingMultipleChangeInitialize(EventArgs $event){
+
+
+
+    }
+    public function onFrontShoppingShippingMultipleInitialize(EventArgs $event){
+
+
+    }
+    public function onFrontShoppingShippingMultipleComplete(EventArgs $event){
+
+    }
+    public function onFrontShoppingShippingMultipleEditInitialize(EventArgs $event){
+
+
+    }
+    public function onFrontShoppingShippingMultipleEditComplete(EventArgs $event){
+
+    }
+
+    /*
+    メール文面に情報を差し込む処理
+    プラグインの処理を上書き
+    */
+    public function onMailServiceMailOrder(EventArgs $event){
+
+    }
+
+
+    public function onFrontContactIndexComplete(EventArgs $event){
+        $app = $this->app;
+
+        // $app['eccube.plugin.shoppingex.service.shoppingex']->sendContact($event);
+
+
+    }
+
+
 }
