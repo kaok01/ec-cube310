@@ -46,6 +46,92 @@ class DownloadProductServiceProvider implements ServiceProviderInterface
             'Plugin\DownloadProduct\Controller\AdminDownloadProductController::index'
         )->bind('downloadproduct_info');
 
+
+        /**
+         * ルーティング登録
+         * 管理画面 > 商品一覧 > メニュー > ダウンロード商品管理
+         */
+        $app->match(
+            '/'.$app['config']['admin_route'].'/downloadproduct/product_download/{id}',
+            'Plugin\DownloadProduct\Controller\Admin\Product\DownloadController::index'
+        )->bind('admin_downloadproduct_product_download');
+
+        // ダウンロード商品ファイル新規
+        $app->match('/' . $app["config"]["admin_route"] . '/downloadproduct/product_download/new', '\Plugin\DownloadProduct\Controller\Admin\Product\DownloadController::create')
+            ->value('id', null)->assert('id', '\d+|')
+            ->bind('admin_downloadproduct_product_download_new');
+
+        // ダウンロード商品新規ファイル編集確定
+        $app->match('/' . $app["config"]["admin_route"] . '/downloadproduct/product_download/commit', '\Plugin\DownloadProduct\Controller\Admin\Product\DownloadController::commit')
+        ->value('id', null)->assert('id', '\d+|')
+        ->bind('admin_downloadproduct_product_download_commit');
+
+        // ダウンロード商品ファイル編集
+        $app->match('/' . $app["config"]["admin_route"] . '/downloadproduct/product_download/edit/{id}', '\Plugin\DownloadProduct\Controller\Admin\Product\DownloadController::edit')
+            ->value('id', null)->assert('id', '\d+|')
+            ->bind('admin_downloadproduct_product_download_edit');
+
+        // ダウンロード商品ファイル削除
+        $app->match('/' . $app["config"]["admin_route"] . '/downloadproduct/product_download/delete/{id}', '\Plugin\DownloadProduct\Controller\Admin\Product\DownloadController::delete')
+        ->value('id', null)->assert('id', '\d+|')
+        ->bind('admin_downloadproduct_product_download_delete');
+
+
+        /**
+         * ルーティング登録
+         * 管理画面 > 受注一覧 >　メニュー > ダウンロード商品リンク管理
+         */
+        $app->match(
+            '/'.$app['config']['admin_route'].'/downloadproduct/order_downloadlink/{id}',
+            'Plugin\DownloadProduct\Controller\Admin\Order\DownloadLinkController::index'
+        )->bind('admin_downloadproduct_order_downloadlink');
+
+        // ダウンロード商品リンク通知
+        $app->match('/' . $app["config"]["admin_route"] . '/downloadproduct/order_downloadlink/new', '\Plugin\DownloadProduct\Controller\Admin\Order\DownloadLinkController::notify')
+            ->value('id', null)->assert('id', '\d+|')
+            ->bind('admin_downloadproduct_order_downloadlink_notify');
+
+        // ダウンロード商品リンク編集
+        $app->match('/' . $app["config"]["admin_route"] . '/downloadproduct/order_downloadlink/commit', '\Plugin\DownloadProduct\Controller\Admin\Order\DownloadLinkController::commit')
+        ->value('id', null)->assert('id', '\d+|')
+        ->bind('admin_downloadproduct_order_downloadlink_commit');
+
+        // ダウンロード商品リンク削除
+        $app->match('/' . $app["config"]["admin_route"] . '/downloadproduct/order_downloadlink/edit/{id}', '\Plugin\DownloadProduct\Controller\Admin\Order\DownloadLinkController::edit')
+            ->value('id', null)->assert('id', '\d+|')
+            ->bind('admin_downloadproduct_order_downloadlink_edit');
+
+        // ダウンロード商品ファイル削除
+        $app->match('/' . $app["config"]["admin_route"] . '/downloadproduct/order_downloadlink/delete/{id}', '\Plugin\DownloadProduct\Controller\Admin\Order\DownloadLinkController::delete')
+        ->value('id', null)->assert('id', '\d+|')
+        ->bind('admin_downloadproduct_order_downloadlink_delete');
+
+        /**
+         * ルーティング登録
+         * Mypage >　注文履歴 >  ダウンロード商品リンク
+         */
+        $app->match(
+            '/Mypage/downloadproduct/orderdownloadlink/{id}',
+            'Plugin\DownloadProduct\Controller\Front\Mypage\OrderDownloadLinkController::index'
+        )->bind('front_downloadproduct_order_downloadlink');
+
+        // ダウンロード商品ファイル取得
+        $app->match(
+            '/Mypage/downloadproduct/orderdownloadlink/download/{downloadlink}',
+            'Plugin\DownloadProduct\Controller\Front\Mypage\OrderDownloadLinkController::download'
+            )
+            ->value('downloadlink', null)->assert('id', '\d+|')
+            ->bind('front_downloadproduct_order_downloadlink_dowload');
+
+        // 通知メールのダウンロード商品ファイル取得
+        $app->match(
+            '/download/{downloadlink}',
+            'Plugin\DownloadProduct\Controller\Front\Mypage\OrderDownloadLinkController::notifylink'
+            )
+            ->value('downloadlink', null)->assert('id', '\d+|')
+            ->bind('front_downloadproduct_order_downloadlink_notifylink');
+
+ 
  
 
         /**
@@ -56,116 +142,21 @@ class DownloadProductServiceProvider implements ServiceProviderInterface
                 return $app['orm.em']->getRepository('Plugin\DownloadProduct\Entity\DownloadProduct');
             }
         );
-
-        /** ダウンロード商品ステータステーブル用リポジトリ */
-        $app['eccube.plugin.downloadproduct.repository.downloadproductstatus'] = $app->share(
+        $app['eccube.plugin.downloadproduct.repository.productdownload'] = $app->share(
             function () use ($app) {
-                return $app['orm.em']->getRepository('Plugin\DownloadProduct\Entity\DownloadProductStatus');
+                return $app['orm.em']->getRepository('Plugin\DownloadProduct\Entity\ProductDownload');
             }
         );
-
-
-        /** ダウンロード商品機能基本情報テーブル用リポジトリ */
-        $app['eccube.plugin.downloadproduct.repository.downloadproductinfo'] = $app->share(
+        $app['eccube.plugin.downloadproduct.repository.orderdownloadlink'] = $app->share(
             function () use ($app) {
-                return $app['orm.em']->getRepository('Plugin\DownloadProduct\Entity\DownloadProductInfo');
+                return $app['orm.em']->getRepository('Plugin\DownloadProduct\Entity\OrderDownloadLink');
             }
         );
-
-        /** ダウンロード商品会員情報テーブル */
-        $app['eccube.plugin.downloadproduct.repository.downloadproductcustomer'] = $app->share(
-            function () use ($app) {
-                return $app['orm.em']->getRepository('Plugin\DownloadProduct\Entity\DownloadProductCustomer');
-            }
-        );
-
-
-        $app['eccube.plugin.downloadproduct.repository.downloadproductorder'] = $app->share(
-            function () use ($app) {
-                return $app['orm.em']->getRepository('Plugin\DownloadProduct\Entity\DownloadProductOrder');
-            }
-        );
-        /**
-         * ルーティング登録
-         * 管理画面 > 会員管理管理 > 会員CSV登録
-         */
-        $app->match(
-            '/'.$app['config']['admin_route'].'/customer/csvimport',
-            'Plugin\DownloadProduct\Controller\Admin\Customer\CsvImportController::csvCustomer'
-        )->bind('admin_downloadproduct_customer_csv_import');
-
-        /**
-         * ルーティング登録
-         * 管理画面 > 受注管理 > 受注CSV登録
-         */
-        $app->match(
-            '/'.$app['config']['admin_route'].'/order/csvimport',
-            'Plugin\DownloadProduct\Controller\Admin\Order\CsvImportController::csvOrder'
-        )->bind('admin_downloadproduct_order_csv_import');
-
-        $app->match(
-            '/'.$app['config']['admin_route'].'/order/infotopcsvimport',
-            'Plugin\DownloadProduct\Controller\Admin\Order\CsvImportController::csvOrder'
-        )->bind('admin_downloadproduct_order_infotopcsv_import');
-
-        /**
-         * ルーティング登録
-         * CSVファイル取得
-         */
-        $app->match(
-            '/'.$app['config']['admin_route'].'/downloadproduct/csv_template/{type}', 
-            'Plugin\DownloadProduct\Controller\Base\CsvImportController::csvTemplate'
-        )->bind('admin_downloadproduct_csv_template');
-
-        // /**
-        //  * ルーティング登録
-        //  * CSVファイル取得
-        //  */
-        // $app->match(
-        //     '/'.$app['config']['admin_route'].'/order/productmap', 
-        //     'Plugin\DownloadProduct\Controller\Admin\Order\CsvImportController::csvOrder'
-        // )->bind('admin_downloadproduct_order_');
-
-        // 商品関連付け情報テーブルリポジトリ
-        $app['eccube.plugin.downloadproduct.repository.productmap_product'] = $app->share(function () use ($app) {
-            return $app['orm.em']->getRepository('Plugin\DownloadProduct\Entity\ProductMapProduct');
-        });
-
-        // 商品関連付けの一覧
-        $app->match('/' . $app["config"]["admin_route"] . '/downloadproduct/productmap/list', '\Plugin\DownloadProduct\Controller\Admin\Order\ProductMapController::index')
-            ->value('id', null)->assert('id', '\d+|')
-            ->bind('admin_downloadproduct_productmap_list');
-
-        // 商品関連付けの新規先
-        $app->match('/' . $app["config"]["admin_route"] . '/downloadproduct/productmap/new', '\Plugin\DownloadProduct\Controller\Admin\Order\ProductMapController::create')
-            ->value('id', null)->assert('id', '\d+|')
-            ->bind('admin_downloadproduct_productmap_new');
-
-        // 商品関連付けの新規作成・編集確定
-        $app->match('/' . $app["config"]["admin_route"] . '/downloadproduct/productmap/commit', '\Plugin\DownloadProduct\Controller\Admin\Order\ProductMapController::commit')
-        ->value('id', null)->assert('id', '\d+|')
-        ->bind('admin_downloadproduct_productmap_commit');
-
-        // 商品関連付けの編集
-        $app->match('/' . $app["config"]["admin_route"] . '/downloadproduct/productmap/edit/{id}', '\Plugin\DownloadProduct\Controller\Admin\Order\ProductMapController::edit')
-            ->value('id', null)->assert('id', '\d+|')
-            ->bind('admin_downloadproduct_productmap_edit');
-
-        // 商品関連付けの削除
-        $app->match('/' . $app["config"]["admin_route"] . '/downloadproduct/productmap/delete/{id}', '\Plugin\DownloadProduct\Controller\Admin\Order\ProductMapController::delete')
-        ->value('id', null)->assert('id', '\d+|')
-        ->bind('admin_downloadproduct_productmap_delete');
-
-
-        // 商品検索画面表示
-        $app->post('/' . $app["config"]["admin_route"] . '/downloadproduct/search/product', '\Plugin\DownloadProduct\Controller\Admin\Order\ProductMapSearchModelController::searchProduct')
-            ->bind('admin_downloadproduct_search_product');
-
 
 
         // サービスの登録
-        $app['eccube.plugin.downloadproduct.service.productmap'] = $app->share(function () use ($app) {
-            return new \Plugin\DownloadProduct\Service\ProductMapService($app);
+        $app['eccube.plugin.downloadproduct.service.download'] = $app->share(function () use ($app) {
+            return new \Plugin\DownloadProduct\Service\DownloadService($app);
         });
 
 
@@ -175,6 +166,8 @@ class DownloadProductServiceProvider implements ServiceProviderInterface
         $app['form.types'] = $app->share($app->extend('form.types', function ($types) use ($app) {
             $types[] = new \Plugin\DownloadProduct\Form\Type\DownloadProductInfoType($app);
             $types[] = new \Plugin\DownloadProduct\Form\Type\ProductMapProductType($app);
+            $types[] = new \Plugin\DownloadProduct\Form\Type\DownloadType($app);
+            $types[] = new \Plugin\DownloadProduct\Form\Type\DownloadLinkType($app);
             return $types;
         })
         );
@@ -201,97 +194,7 @@ class DownloadProductServiceProvider implements ServiceProviderInterface
                 }
             )
         );
-        $app['config'] = $app->share($app->extend('config', function ($config) {
-            $addNavi['id'] = "admin_downloadproduct_order_csv_import";
-            $addNavi['name'] = "受注CSV登録";
-            $addNavi['url'] = "admin_downloadproduct_order_csv_import";
 
-            $nav = $config['nav'];
-            foreach ($nav as $key => $val) {
-                if ("order" == $val["id"]) {
-                    $nav[$key]['child'][] = $addNavi;
-                }
-            }
-            $config['nav'] = $nav;
-
-            return $config;
-        }));
-        /*
-        $app['config'] = $app->share($app->extend('config', function ($config) {
-            $addNavi['id'] = "admin_downloadproduct_order_infotopcsv_import";
-            $addNavi['name'] = "CSV取込み（開発用）";
-            $addNavi['url'] = "admin_downloadproduct_order_infotopcsv_import";
-
-            $nav = $config['nav'];
-            foreach ($nav as $key => $val) {
-                if ("order" == $val["id"]) {
-                    $nav[$key]['child'][] = $addNavi;
-                }
-            }
-            $config['nav'] = $nav;
-
-            return $config;
-        }));
-        */
-        $app['config'] = $app->share($app->extend('config', function ($config) {
-            $addNavi['id'] = "admin_downloadproduct_customer_csv_import";
-            $addNavi['name'] = "会員CSV登録";
-            $addNavi['url'] = "admin_downloadproduct_customer_csv_import";
-
-            $nav = $config['nav'];
-            foreach ($nav as $key => $val) {
-                if ("customer" == $val["id"]) {
-                    $nav[$key]['child'][] = $addNavi;
-                }
-            }
-            $config['nav'] = $nav;
-
-            return $config;
-        }));
-        $app['config'] = $app->share($app->extend('config', function ($config) {
-            $addNavi['id'] = "admin_downloadproduct_productmap_list";
-            $addNavi['name'] = "商品ID関連付け";
-            $addNavi['url'] = "admin_downloadproduct_productmap_list";
-
-            $nav = $config['nav'];
-            foreach ($nav as $key => $val) {
-                if ("order" == $val["id"]) {
-                    $nav[$key]['child'][] = $addNavi;
-                }
-            }
-            $config['nav'] = $nav;
-
-            return $config;
-        }));
- 
-
-
-        // メニュー
-        $app['config'] = $app->share($app->extend('config', function ($config) {
-            $addNavi = array(
-                'id' => 'mail_config',
-                'name' => "メール送信設定",
-                'has_child' => true,
-                'icon' => 'cb-comment',
-                'child' => array(
-                    array(
-                        'id' => "plugin_ContactMailConfig_index",
-                        'name' => "お問い合わせメール",
-                        'url' => "plugin_ContactMailConfig_config",
-                    ),
-                ),
-            );
-
-            $nav = $config['nav'];
-            foreach ($nav as $key => $val) {
-                if ("setting" == $val['id']) {
-                    array_splice($nav, $key, 0, array($addNavi));
-                    break;
-                }
-            }
-            $config['nav'] = $nav;
-            return $config;
-        }));
 
         /**
          * メッセージ登録
