@@ -110,7 +110,12 @@ class ShoppingExtensionEvent
         $builder = $event->getArgument('builder');
         $form = $builder->getForm();
 
+        $event->setArgument('custominfo',
+            array(
+                'nonmember'=>true,
 
+            )
+        );
 
     }
     public function onFrontShoppingConfirmProcessing(EventArgs $event){

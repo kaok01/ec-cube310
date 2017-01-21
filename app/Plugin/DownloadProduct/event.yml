@@ -55,9 +55,13 @@
 
 
 # 画面レンダリング
-## 管理画面 > 受注編集
-# Admin/Order/edit.twig:
-#     - [onRenderAdminOrderEdit, NORMAL]
+# 管理画面 > 受注編集
+Admin/Order/index.twig:
+    - [onRenderAdminOrderIndex, NORMAL]
+
+# 管理画面 > 受注編集
+Admin/Order/edit.twig:
+    - [onRenderAdminOrderEdit, NORMAL]
 
 ## 管理画面 > メール通知
 # Admin/Order/mail_confirm.twig:
@@ -167,6 +171,10 @@ front.shopping.shipping.edit.complete:
 #    // nonmember
 #    const FRONT_SHOPPING_NONMEMBER_INITIALIZE = 'front.shopping.nonmember.initialize';
 #    const FRONT_SHOPPING_NONMEMBER_COMPLETE = 'front.shopping.nonmember.complete';
+front.shopping.nonmember.initialize:
+    - [onFrontShoppingNonmemberInitialize, NORMAL]
+front.shopping.nonmember.complete:
+    - [onFrontShoppingNonmemberComplete, NORMAL]
 
 
 front.shopping.shipping.multiple.change.initialize:

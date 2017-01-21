@@ -1,0 +1,51 @@
+Plugin\DownloadProduct\Entity\OrderDownloadLink:
+    type: entity
+    table: plg_downloadproduct_order_downloadlink
+    repositoryClass: Plugin\DownloadProduct\Repository\OrderDownloadLinkRepository
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            id: true
+            column: plg_downloadproduct_order_downloadlink_id
+            generator:
+                strategy: AUTO
+    fields:
+        downloadlink:
+            type: text
+            nullable: false
+        order_id:
+            type: integer
+            nullable: false
+            unsigned: false
+        customer_id:
+            type: integer
+            nullable: false
+            unsigned: false
+        start_date:
+            type: datetime
+            nullable: false
+        end_date:
+            type: datetime
+            nullable: true
+        create_date:
+            type: datetime
+            nullable: false
+        update_date:
+            type: datetime
+            nullable: false
+    manyToOne:
+        ProductDwonload:
+            targetEntity: Plugin\DownloadProduct\Entity\ProductDownload
+            inversedBy: ProductDwonload
+            joinColumn:
+                name: plg_downloadproduct_product_download_id
+                referencedColumnName: plg_downloadproduct_product_download_id
+        Customer:
+            targetEntity: Eccube\Entity\Customer
+            joinColumn:
+                name: customer_id
+                referencedColumnName: customer_id
+    lifecycleCallbacks:
+        loadClassMetadata: {  }
