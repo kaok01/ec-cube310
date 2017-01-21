@@ -188,13 +188,18 @@ class ShoppingController extends AbstractController
             $request
         );
         $app['eccube.event.dispatcher']->dispatch(EccubeEvents::FRONT_SHOPPING_CONFIRM_INITIALIZE, $event);
-
+dump('event');
+dump($event);
+        if($event->getResponse()){
+            return $event->getResponse();
+        }
         $form = $builder->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
+dump('nonmember submit');die();
 
             // トランザクション制御
             $em = $app['orm.em'];
@@ -876,20 +881,28 @@ class ShoppingController extends AbstractController
         }
 
         $builder = $app['form.factory']->createBuilder('nonmember');
+        $form = $builder->getForm();
 
         $event = new EventArgs(
             array(
                 'builder' => $builder,
+                'form'=>$form,
             ),
             $request
         );
         $app['eccube.event.dispatcher']->dispatch(EccubeEvents::FRONT_SHOPPING_NONMEMBER_INITIALIZE, $event);
+dump('handlereq');
 
-        $form = $builder->getForm();
-
+dump($request);
+dump($form);
         $form->handleRequest($request);
+dump('postedsss');
+dump($form);
 
         if ($form->isSubmitted() && $form->isValid()) {
+dump('posted');
+dump($form);
+//die();
             $data = $form->getData();
             $Customer = new Customer();
             $Customer
@@ -968,17 +981,9 @@ class ShoppingController extends AbstractController
                 return $event->getResponse();
             }
 
-
-            dump($form);//die();
-            //$form->get('email')->addError('このメールアドレスは既に登録されています。ログインしてお進みください。');
-        return $app->render('Shopping/nonmember.twig', array(
-            'form' => $form->createView(),
-            'error' => 'このメールアドレスは既に登録されています。変更、または、前に戻りログインしてお進みください。'
-        ));            
-
             return $app->redirect($app->url('shopping'));
         }
-
+dump($form->createView());
         return $app->render('Shopping/nonmember.twig', array(
             'form' => $form->createView(),
         ));
