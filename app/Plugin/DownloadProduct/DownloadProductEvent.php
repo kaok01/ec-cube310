@@ -127,7 +127,7 @@ class DownloadProductEvent
     }
 
     public function onFrontShoppingConfirmComplete(EventArgs $event){
-dump('shop cofirm comp');
+
         $app=$this->app;
         $req=$event->getRequest();
         $sec = $req->getSession();
@@ -145,9 +145,6 @@ dump('shop cofirm comp');
             }
             //会員情報を登録
             $this->createNonMemberCustomerOrder($Order,$nonmember,$customeraddress);
-
-dump('shop cofirm comp done.');
-
 
         }
 
@@ -272,7 +269,6 @@ dump('shop cofirm comp done.');
                 $service=$app['eccube.plugin.downloadproduct.service.download'];
 
                 $service->SendNonMemberResetMail($email);
-dump('reset mail done.');
 
             } catch (\Exception $e) {
                 $app->addRequestError('会員情報の送信に失敗しました。');
@@ -349,79 +345,19 @@ dump('reset mail done.');
         $sec = $req->getSession();
         $formdata = $sec->get('test_nonmember');
         $response = $event->getResponse();
-        $formdata222 = $sec->get($this->sessionKey);
-dump($formdata222);
-dump('response');
-dump($response);
+
         if($formdata){
-dump('response');
-            //$req->set();
+
             $builder = $event->getArgument('builder');
+            //本体で参照わたしでいれてる（本体のカスタマイズ）。初期値設定のため。
             $form = $event->getArgument('form');
 
             //$form = $builder->getForm();
-dump($formdata);
-dump($req); 
-            $tokenkey = Constant::TOKEN_NAME;
-dump($tokenkey); 
-                $prefid = $formdata[0]['pref']['id'];
-                $pref = $this->app['eccube.repository.master.pref']->find($prefid);
-dump($pref); 
-                $formdata[0]['pref']= $pref;
-                $reqdata = array(
-                        //$tokenkey => null,
-                        'name'=>
-                            array(
-                                'name01'=>$formdata[0]['name01'],
-                                'name02'=>$formdata[0]['name02'],
-                            ),
-                        'kana'=>
-                            array(
-                                'kana01'=>$formdata[0]['kana01'],
-                                'kana02'=>$formdata[0]['kana02'],
-                            ),
+            $prefid = $formdata[0]['pref']['id'];
+            $pref = $this->app['eccube.repository.master.pref']->find($prefid);
+            $formdata[0]['pref']= $pref;
 
-                        'company_name'=>$formdata[0]['company_name'],
-                        'zip'=>
-                            array(
-                                'zip01'=>$formdata[0]['zip01'],
-                                'zip02'=>$formdata[0]['zip02'],
-                            ),
-
-                        'address'=>
-                            array(
-                                'pref'=>$formdata[0]['pref']['id'],
-                                'addr01'=>$formdata[0]['addr01'],
-                                'addr02'=>$formdata[0]['addr02'],
-                            ),
-
-                        'tel'=>
-                            array(
-                                'tel01'=>$formdata[0]['tel01'],
-                                'tel02'=>$formdata[0]['tel02'],
-                                'tel03'=>$formdata[0]['tel03'],
-                            ),
-
-                        'email'=>
-                            array(
-                                'first'=>$formdata[0]['email'],
-                                'second'=>$formdata[0]['email'],
-                            ),
-
-                    );
-dump($reqdata);
-            // $form['name']=array(
-            //                     'name01'=>$formdata[0]['name01'],
-            //                     'name02'=>$formdata[0]['name02'],
-
-            // );//->bind($reqdata);
             $form->setData($formdata[0]);
-            //$form->bind();
-            //$form->submit($reqdata);
-            //$req->request->set('nonmember',$reqdata);
-            //$form->handleRequest($req);
-dump($form);
-dump($req);
 
         }
 
@@ -430,8 +366,7 @@ dump($req);
 
         $app=$this->app;
         $order = $event->getArgument('Order');
-dump('order');
-dump($order);
+
         $form = $event->getArgument('form');
         $email = $form['email']->getData();
         $service=$app['eccube.plugin.downloadproduct.service.download'];
@@ -448,21 +383,16 @@ dump($order);
             return;         
 
         }
-dump('comp');
-dump($form);
 
         $req = $event->getRequest();
         $sec = $req->getSession();
         $customer = $form->getData();
         dump($sec);
         $sec->set('test_nonmember',array($form->getData()));
-dump($sec->get('test_nonmember'));
-
         if(is_null($order)){
             return;
         }
-dump('order');
-dump($order);
+
         $order
                 ->setName01($customer['name01'])
                 ->setName02($customer['name02'])
@@ -480,10 +410,7 @@ dump($order);
                 ->setAddr01($customer['addr01'])
                 ->setAddr02($customer['addr02']);
 
-dump($order);
         // 非会員用セッションを作成
-
-dump('nonmember');
         $nonMember = $this->app['session']->get($this->sessionKey);
 
         if($nonMember){
@@ -508,17 +435,13 @@ dump('nonmember');
 
             $this->app['session']->set($this->sessionKey, $nonMember);
         }
-dump($nonMember);
-
-dump('customerAddresses');
 
         $customerAddresses = $this->app['session']->get($this->sessionCustomerAddressKey);
-dump($customerAddresses);
         if($customerAddresses){
-dump('1');
+
             $customerAddresses = unserialize($customerAddresses);
             $CustomerAddress = new CustomerAddress();
-dump('2');
+
             $CustomerAddress
                 ->setCustomer($nonMember['customer'])
                 ->setName01($customer['name01'])
@@ -549,17 +472,9 @@ dump('2');
                 $app->addRequestError($e->getMessage());
                 return $app->redirect($app->url('cart'));
             }
-dump('5');
+
 
         }
-dump($customerAddresses);
-dump('99');
-
-
-         // die();
-        //$email->AddError('このげげげ');
-            //$form->get('email')->addError('このメールアドレスは既に登録されています。ログインしてお進みください。');
-
 
     }
     public function onRenderShoppingNonMember(TemplateEvent $event){
@@ -619,7 +534,7 @@ dump('99');
     }
     public function onFrontProductDetailInitialize(EventArgs $event){
         $app = $this->app;
-dump('p detail idx init');
+
 
         // $app['eccube.plugin.shoppingex.service.shoppingex']->sendContact($event);
 
@@ -627,7 +542,7 @@ dump('p detail idx init');
     }
     public function onFrontProductDetailComplete(EventArgs $event){
         $app = $this->app;
-dump('p detail comp');
+
         // $req=$event->getRequest();
         // $req['mode']=
 
@@ -642,7 +557,7 @@ dump('p detail comp');
 
     public function onFrontCartIndexInitialize(EventArgs $event){
         $app = $this->app;
-dump('cart idx init');
+
 
         // $app['eccube.plugin.shoppingex.service.shoppingex']->sendContact($event);
 
@@ -663,18 +578,15 @@ dump('cart idx init');
 
     public function onFrontCartAddInitialize(EventArgs $event){
         $app = $this->app;
-dump('cart add init');
-        // $app['eccube.plugin.shoppingex.service.shoppingex']->sendContact($event);
-        $pcid = $event->getArgument('productClassId');
-        $num = $event->getArgument('quantity');
-        $event->setArgument('quantity',0);
+
+        // // $app['eccube.plugin.shoppingex.service.shoppingex']->sendContact($event);
+        // $pcid = $event->getArgument('productClassId');
+        // $num = $event->getArgument('quantity');
+        // $event->setArgument('quantity',0);
 
     }
     public function onFrontCartAddComplete(EventArgs $event){
         $app = $this->app;
-dump('cart add comp');
-die();
-        // $app['eccube.plugin.shoppingex.service.shoppingex']->sendContact($event);
 
 
     }
