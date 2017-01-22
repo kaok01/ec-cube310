@@ -199,7 +199,7 @@ dump($event);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-dump('nonmember submit');die();
+dump('nonmember submit');//die();
 
             // トランザクション制御
             $em = $app['orm.em'];
