@@ -83,8 +83,8 @@ Admin/Order/edit.twig:
 #     - [onRenderProductDetail, NORMAL]
 
 ## フロント画面 > カート
-# Cart/index.twig:
-#     - [onRenderCart, NORMAL]
+Cart/index.twig:
+    - [onRenderCart, NORMAL]
 
 ## フロント画面 > マイページ > 履歴
 # Mypage/history.twig:
@@ -203,3 +203,100 @@ mail.order:
     - [onMailServiceMailOrder, NORMAL]
 front.contact.index.complete:
     - [onFrontContactIndexComplete, NORMAL]
+
+
+# /**
+#  * ProductController
+#  */
+# // index
+# const FRONT_PRODUCT_INDEX_INITIALIZE = 'front.product.index.initialize';
+# const FRONT_PRODUCT_INDEX_SEARCH = 'front.product.index.search';
+# const FRONT_PRODUCT_INDEX_COMPLETE = 'front.product.index.complete';
+# const FRONT_PRODUCT_INDEX_DISP = 'front.product.index.disp';
+# const FRONT_PRODUCT_INDEX_ORDER = 'front.product.index.order';
+
+# // detail
+# const FRONT_PRODUCT_DETAIL_INITIALIZE = 'front.product.detail.initialize';
+# const FRONT_PRODUCT_DETAIL_FAVORITE = 'front.product.detail.favorite';
+# const FRONT_PRODUCT_DETAIL_COMPLETE = 'front.product.detail.complete';
+
+front.product.detail.initialize:
+    - [onFrontProductDetailInitialize, NORMAL]
+front.product.detail.complete:
+    - [onFrontProductDetailComplete, NORMAL]
+
+
+
+# /**
+#  * Mypage/MypageController
+#  */
+# // login
+# const FRONT_MYPAGE_MYPAGE_LOGIN_INITIALIZE = 'front.mypage.mypage.login.initialize';
+
+# // index
+# const FRONT_MYPAGE_MYPAGE_INDEX_SEARCH = 'front.mypage.mypage.index.search';
+
+# // history
+# const FRONT_MYPAGE_MYPAGE_HISTORY_INITIALIZE = 'front.mypage.mypage.history.initialize';
+
+# // order
+# const FRONT_MYPAGE_MYPAGE_ORDER_INITIALIZE = 'front.mypage.mypage.order.initialize';
+# const FRONT_MYPAGE_MYPAGE_ORDER_COMPLETE = 'front.mypage.mypage.order.complete';
+
+# // favorite
+# const FRONT_MYPAGE_MYPAGE_FAVORITE_SEARCH = 'front.mypage.mypage.favorite.search';
+
+# // delete
+# const FRONT_MYPAGE_MYPAGE_DELETE_INITIALIZE = 'front.mypage.mypage.delete.initialize';
+# const FRONT_MYPAGE_MYPAGE_DELETE_COMPLETE = 'front.mypage.mypage.delete.complete';
+
+# /**
+#  * Mypage/WithdrawController
+#  */
+# // index
+# const FRONT_MYPAGE_WITHDRAW_INDEX_INITIALIZE = 'front.mypage.withdraw.index.initialize';
+# const FRONT_MYPAGE_WITHDRAW_INDEX_COMPLETE = 'front.mypage.withdraw.index.complete';
+
+# /**
+#  * CartController
+#  */
+# // index
+# const FRONT_CART_INDEX_INITIALIZE = 'front.cart.index.initialize';
+# const FRONT_CART_INDEX_COMPLETE = 'front.cart.index.complete';
+
+front.cart.index.initialize:
+    - [onFrontCartIndexInitialize, NORMAL]
+front.cart.index.complete:
+    - [onFrontCartIndexComplete, NORMAL]
+
+# // add
+# const FRONT_CART_ADD_INITIALIZE = 'front.cart.add.initialize';
+# const FRONT_CART_ADD_COMPLETE = 'front.cart.add.complete';
+# const FRONT_CART_ADD_EXCEPTION = 'front.cart.add.exception';
+
+front.cart.add.initialize:
+    - [onFrontCartAddInitialize, NORMAL]
+
+front.cart.add.complete:
+    - [onFrontCartAddComplete, NORMAL]
+
+front.cart.add.exception:
+    - [onFrontCartAddException, NORMAL]
+
+# // up
+# const FRONT_CART_UP_INITIALIZE = 'front.cart.up.initialize';
+# const FRONT_CART_UP_COMPLETE = 'front.cart.up.complete';
+# const FRONT_CART_UP_EXCEPTION = 'front.cart.up.exception';
+
+# // down
+# const FRONT_CART_DOWN_INITIALIZE = 'front.cart.down.initialize';
+# const FRONT_CART_DOWN_COMPLETE = 'front.cart.down.complete';
+# const FRONT_CART_DOWN_EXCEPTION = 'front.cart.down.exception';
+
+# // remove
+# const FRONT_CART_REMOVE_INITIALIZE = 'front.cart.remove.initialize';
+# const FRONT_CART_REMOVE_COMPLETE = 'front.cart.remove.complete';
+
+# // buystep
+# const FRONT_CART_BUYSTEP_INITIALIZE = 'front.cart.buystep.initialize';
+# const FRONT_CART_BUYSTEP_COMPLETE = 'front.cart.buystep.complete';

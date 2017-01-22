@@ -159,7 +159,10 @@ class DownloadProductServiceProvider implements ServiceProviderInterface
             return new \Plugin\DownloadProduct\Service\DownloadService($app);
         });
 
-
+        // サービスの登録
+        $app['eccube.service.cart'] = $app->share(function () use ($app) {
+            return new \Plugin\DownloadProduct\Service\CartServiceEx($app);
+        });
         /**
          * フォームタイプ登録
          */

@@ -67,10 +67,12 @@ class DownloadProductEvent
     }
 
     public function onRenderAdminOrderIndex(TemplateEvent $event){
+        return;
         $helper = new AdminOrderIndex();
         $helper->createTwig($event);
     }
     public function onRenderAdminOrderEdit(TemplateEvent $event){
+        return;
         $helper = new AdminOrderEdit();
         $helper->createTwig($event);
     }
@@ -411,6 +413,64 @@ dump('99');
 
 
     }
+    public function onFrontProductDetailInitialize(EventArgs $event){
+        $app = $this->app;
+dump('p detail idx init');
 
+        // $app['eccube.plugin.shoppingex.service.shoppingex']->sendContact($event);
+
+
+    }
+    public function onFrontProductDetailComplete(EventArgs $event){
+        $app = $this->app;
+dump('p detail comp');
+        // $req=$event->getRequest();
+        // $req['mode']=
+
+        // $app['eccube.plugin.shoppingex.service.shoppingex']->sendContact($event);
+
+    }
+
+
+    public function onFrontCartIndexInitialize(EventArgs $event){
+        $app = $this->app;
+dump('cart idx init');
+
+        // $app['eccube.plugin.shoppingex.service.shoppingex']->sendContact($event);
+
+
+    }
+    public function onFrontCartIndexComplete(EventArgs $event){
+        $app = $this->app;
+
+        // $app['eccube.plugin.shoppingex.service.shoppingex']->sendContact($event);
+
+
+    }
+
+    public function onFrontCartAddInitialize(EventArgs $event){
+        $app = $this->app;
+dump('cart add init');
+        // $app['eccube.plugin.shoppingex.service.shoppingex']->sendContact($event);
+        $pcid = $event->getArgument('productClassId');
+        $num = $event->getArgument('quantity');
+        $event->setArgument('quantity',0);
+
+    }
+    public function onFrontCartAddComplete(EventArgs $event){
+        $app = $this->app;
+dump('cart add comp');
+die();
+        // $app['eccube.plugin.shoppingex.service.shoppingex']->sendContact($event);
+
+
+    }
+    public function onFrontCartAddException(EventArgs $event){
+        $app = $this->app;
+
+        // $app['eccube.plugin.shoppingex.service.shoppingex']->sendContact($event);
+
+
+    }
 
 }
