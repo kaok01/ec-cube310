@@ -112,6 +112,8 @@ front.shopping.confirm.processing:
     - [onFrontShoppingConfirmProcessing, NORMAL]
 front.shopping.confirm.complete:
     - [onFrontShoppingConfirmComplete, NORMAL]
+front.shopping.complete.initialize:
+    - [onFrontShoppingCompleteInitialize, NORMAL]    
 front.shopping.payment.initialize:
     - [onFrontShoppingPaymentInitialize, NORMAL]
 front.shopping.payment.complete:

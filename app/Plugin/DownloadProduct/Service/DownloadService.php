@@ -52,7 +52,44 @@ class DownloadService
     	return false;
 
     }
+    public function SendNonMemberResetMail($email){
+        $app=$this->app;
+        $request=$app['request'];
+        $Customer = $app['eccube.repository.customer']
+            ->getActiveCustomerByEmail($email);
 
+        if (!is_null($Customer)) {
+            // リセットキーの発行・有効期限の設定
+            $Customer
+                ->setResetKey($app['eccube.repository.customer']->getUniqueResetKey($app))
+                ->setResetExpire(new \DateTime('+' . $app['config']['customer_reset_expire'] .' min'));
+
+            // リセットキーを更新
+            $app['orm.em']->persist($Customer);
+            $app['orm.em']->flush();
+
+            // $event = new EventArgs(
+            //     array(
+            //         'form' => $form,
+            //         'Customer' => $Customer,
+            //     ),
+            //     $request
+            // );
+            // $app['eccube.event.dispatcher']->dispatch(EccubeEvents::FRONT_FORGOT_INDEX_COMPLETE, $event);
+
+            // 完了URLの生成
+            $reset_url = $app->url('forgot_reset', array('reset_key' => $Customer->getResetKey()));
+
+            // メール送信
+            $app['eccube.service.mail']->sendPasswordResetNotificationMail($Customer, $reset_url);
+
+            // ログ出力
+            $app['monolog']->addInfo(
+                'send reset password mail to:'  . "{$Customer->getId()} {$Customer->getEmail()} {$request->getClientIp()}"
+            );
+        }
+
+    }
     public function checkInstallPlugin($code)
     {
         $Plugin = $this->app['eccube.repository.plugin']->findOneBy(array('code' => $code, 'enable' => 1));

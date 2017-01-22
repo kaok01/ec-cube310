@@ -196,14 +196,26 @@ $(function(){
                                 </ul>
                                 {% endif %}
 
+                                {% if(Product.ProductClasses.0.ProductType.id == app.config.DownloadProduct.const.setting.producttype) %}
                                 {# 数量 #}
-                                <dl id="detail_cart_box__cart_quantity" class="quantity">
+                                <dl id="detail_cart_box__cart_quantity" class="quantity" style="display:none">
                                     <dt>数量</dt>
                                     <dd>
+
                                         {{ form_widget(form.quantity) }}
                                         {{ form_errors(form.quantity) }}
                                     </dd>
                                 </dl>
+                                {% else %}
+                                <dl id="detail_cart_box__cart_quantity" class="quantity"> 
+                                    <dt>数量</dt>
+                                    <dd>
+
+                                        {{ form_widget(form.quantity) }}
+                                        {{ form_errors(form.quantity) }}
+                                    </dd>
+                                </dl>
+                                {% endif %}
 
                                 <div class="extra-form">
                                     {% for f in form.getIterator %}

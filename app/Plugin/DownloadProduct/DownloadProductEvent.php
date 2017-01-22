@@ -42,6 +42,10 @@ class DownloadProductEvent
      */
     private $sessionCustomerAddressKey = 'eccube.front.shopping.nonmember.customeraddress';
 
+    /**
+     * @var string 受注IDキー
+     */
+    private $sessionOrderKey = 'eccube.front.shopping.order.id';
 
 
     /** @var  \Eccube\Application $app */
@@ -86,7 +90,7 @@ class DownloadProductEvent
         $app=$this->app;
         $req=$event->getRequest();
         $sec = $req->getSession();
-        // $form = $event->getArgument('form');
+        $Order = $event->getArgument('Order');
         // $email = $form['email']->getData();
 
         $nonmember = $sec->get($this->sessionKey);
@@ -98,7 +102,7 @@ class DownloadProductEvent
             $service=$app['eccube.plugin.downloadproduct.service.download'];
             $sec->set('eccube.plugin.downloadproduct.nonmember',
                 array(
-                    'emailcheck' => false
+                    'emailcheck' => true
                 )
             );
 
@@ -110,10 +114,8 @@ class DownloadProductEvent
                 );
 
                 $event->setResponse($app->redirect($app->url('shopping_nonmember')));
+                return;
             }
-
-            return;
-
 
         }
 
@@ -125,13 +127,180 @@ class DownloadProductEvent
     }
 
     public function onFrontShoppingConfirmComplete(EventArgs $event){
+dump('shop cofirm comp');
+        $app=$this->app;
+        $req=$event->getRequest();
+        $sec = $req->getSession();
+        $Order = $event->getArgument('Order');
+        // $email = $form['email']->getData();
+
+        $nonmember = $sec->get($this->sessionKey);
+        if($nonmember['customer']){
+            $customeraddress=$sec->get($this->sessionCustomerAddressKey);
+            if($customeraddress){
+                $customeraddress=unserialize($customeraddress);
+
+            }else{
+                $customeraddress=null;
+            }
+            //会員情報を登録
+            $this->createNonMemberCustomerOrder($Order,$nonmember,$customeraddress);
+
+dump('shop cofirm comp done.');
+
+
+        }
 
 
     }
 
+    private function createNonMemberCustomerOrder(&$Order,$nonmember,$customeraddress){
+        $app=$this->app;
+        $sec=$app['session'];
+        $_Customer=$nonmember['customer'];
+
+        $Customer = $app['eccube.repository.customer']->newCustomer();
+        $CustomerAddress = new \Eccube\Entity\CustomerAddress();
+        $Customer->setBuyTimes(1);
+        $Customer->setBuyTotal($Order->getTotal());
+        $Customer->setFirstBuyDate(new \Datetime());
+        $Customer->setLastBuyDate(new \Datetime());
+
+        $CustomerStatus = $app['eccube.repository.customer_status']->find(2);
+        $Pref = $app['eccube.repository.master.pref']->find($_Customer->getPref()->getId());
+        $Customer->setStatus($CustomerStatus);
+        $Customer
+            ->setName01($_Customer->getName01())
+            ->setName02($_Customer->getName02())
+            ->setKana01($_Customer->getKana01())
+            ->setKana02($_Customer->getKana02())
+            ->setCompanyName($_Customer->getCompanyName())
+            ->setZip01($_Customer->getZip01())
+            ->setZip02($_Customer->getZip02())
+            ->setZipcode($_Customer->getZip01() . $_Customer->getZip02())
+            ->setPref($Pref)
+            ->setAddr01($_Customer->getAddr01())
+            ->setAddr02($_Customer->getAddr02())
+            ->setTel01($_Customer->getTel01())
+            ->setTel02($_Customer->getTel02())
+            ->setTel03($_Customer->getTel03())
+            ->setFax01($_Customer->getFax01())
+            ->setFax02($_Customer->getFax02())
+            ->setFax03($_Customer->getFax03())
+            ->setEmail($_Customer->getEmail())
+            ->setDelFlg(Constant::DISABLED);
+
+        $Customer->setPassword($app['config']['default_password']);
+        $Customer->setSalt(
+            $app['eccube.repository.customer']->createSalt(5)
+        );
+        $Customer->setSecretKey(
+            $app['eccube.repository.customer']->getUniqueSecretKey($app)
+        );
+
+        $Customer->setPassword(
+            $app['eccube.repository.customer']->encryptPassword($app, $Customer)
+        );
+
+        $app['orm.em']->persist($Customer);
+
+        $app['orm.em']->flush($Customer);
+        if($customeraddress){
+            $_CustomerAddress=$customeraddress[0];
+            $Pref = $app['eccube.repository.master.pref']->find($_CustomerAddress->getPref()->getId());
+
+            $CustomerAddress
+                ->setName01($_CustomerAddress->getName01())
+                ->setName02($_CustomerAddress->getName02())
+                ->setKana01($_CustomerAddress->getKana01())
+                ->setKana02($_CustomerAddress->getKana02())
+                ->setCompanyName($_CustomerAddress->getCompanyName())
+                ->setZip01($_CustomerAddress->getZip01())
+                ->setZip02($_CustomerAddress->getZip02())
+                ->setZipcode($_CustomerAddress->getZip01() . $_CustomerAddress->getZip02())
+                ->setPref($Pref)
+                ->setAddr01($_CustomerAddress->getAddr01())
+                ->setAddr02($_CustomerAddress->getAddr02())
+                ->setTel01($_CustomerAddress->getTel01())
+                ->setTel02($_CustomerAddress->getTel02())
+                ->setTel03($_CustomerAddress->getTel03())
+                ->setFax01($_CustomerAddress->getFax01())
+                ->setFax02($_CustomerAddress->getFax02())
+                ->setFax03($_CustomerAddress->getFax03())
+                ->setDelFlg(Constant::DISABLED)
+                ->setCustomer($Customer);
+
+
+            $app['orm.em']->persist($CustomerAddress);
+            $app['orm.em']->flush($CustomerAddress);
+
+        }
+
+        $Order->setCustomer($Customer);
+
+        $app['orm.em']->persist($Order);
+        $app['orm.em']->flush($Order);
+
+        if(isset($app['eccube.plugin.mail_magazine.service.mail'])){
+            $Ms = $app['eccube.plugin.mail_magazine.service.mail'];
+            $Ms->saveMailmagaCustomer($Customer->getId(),1);
+        }
+
+
+
+        $nonmember['customer']=$Customer;
+
+        $sec->set($this->sessionKey,$nonmember);
+        $sec->remove($this->sessionCustomerAddressKey);
+
+
+    }
+    public function onFrontShoppingCompleteInitialize(EventArgs $event){
+        $app = $this->app;
+        $nonmember=$app['session']->get($this->sessionKey);
+        if($nonmember['customer']){
+            $orderId=$event->getArgument('orderId');
+            $email=$nonmember['customer']->getEmail();
+            // 非会員情報を削除
+            $app['session']->remove($this->sessionKey);
+
+            // 受注IDセッションを削除
+            $app['session']->remove($this->sessionOrderKey);
+
+
+            try{
+                $service=$app['eccube.plugin.downloadproduct.service.download'];
+
+                $service->SendNonMemberResetMail($email);
+dump('reset mail done.');
+
+            } catch (\Exception $e) {
+                $app->addRequestError('会員情報の送信に失敗しました。');
+                $event->setResponse(
+                 $app->redirect($app->url('cart'))
+                 );
+            }
+
+            $event->setResponse(
+                    $app->render('Shopping/complete_nonmember.twig', array(
+                        'orderId' => $orderId,
+                    ))
+
+                );
+
+
+        }
+
+
+    }    
     public function onFrontShoppingPaymentInitialize(EventArgs $event){
 
+            // $event->setResponse(
+            //         $app->render('Shopping/complete_nonmember.twig', array(
+            //             'orderId' => $orderId,
+            //         ))
 
+            //     );
 
 
     }
@@ -486,6 +655,11 @@ dump('cart idx init');
 
 
     }
+
+    public function onRenderCart(TemplateEvent $event){
+
+    }
+
 
     public function onFrontCartAddInitialize(EventArgs $event){
         $app = $this->app;
