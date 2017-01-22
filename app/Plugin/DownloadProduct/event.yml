@@ -78,9 +78,13 @@ Admin/Order/edit.twig:
 # Shopping/index.twig:
 #     - [onRenderShoppingIndex, NORMAL]
 
-## フロント画面 > 商品詳細画面
-# Product/detail.twig:
-#     - [onRenderProductDetail, NORMAL]
+# フロント画面 > 商品詳細画面
+Product/detail.twig:
+    - [onRenderProductDetail, NORMAL]
+
+# フロント画面 > 非会員
+Shopping/nonmember.twig:
+    - [onRenderShoppingNonMember, NORMAL]
 
 ## フロント画面 > カート
 Cart/index.twig:

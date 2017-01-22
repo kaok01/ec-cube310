@@ -33,6 +33,36 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 class CartServiceEx
 {
+    /**
+     *
+     * @param  string $productClassId
+     * @param  integer $quantity
+     * @return \Eccube\Service\CartService
+     */
+    public function addProduct($productClassId, $quantity = 1)
+    {
+
+
+        $ProductClass = $this->app['eccube.repository.product_class']->find($productClassId);
+
+        if($ProductClass){
+            if($ProductClass->getProductType()->getId()==$this->app['config']['DownloadProduct']['const']['setting']['producttype']){
+                $quantity =1;
+
+            }
+        }else{
+            $quantity += $this->getProductQuantity($productClassId);
+
+        }
+
+        $this->setProductQuantity($productClassId, $quantity);
+
+        return $this;
+    }
+
+    //-------------original--------------------------------
+
+
     /** @var \Eccube\Application */
     public $app;
 
@@ -201,32 +231,6 @@ class CartServiceEx
         return $this->ProductType;
     }
 
-    /**
-     *
-     * @param  string $productClassId
-     * @param  integer $quantity
-     * @return \Eccube\Service\CartService
-     */
-    public function addProduct($productClassId, $quantity = 1)
-    {
-
-dump('cartex addproduct');
-        $ProductClass = $this->app['eccube.repository.productclass']->find($productClassId);
-dump($ProductClass);
-        if($ProductClass){
-            if($ProductClass->getProductType()->getId()==3){
-                $quantity =1;
-
-            }
-        }else{
-            $quantity += $this->getProductQuantity($productClassId);
-
-        }
-
-        $this->setProductQuantity($productClassId, $quantity);
-
-        return $this;
-    }
 
     /**
      * @param  string $productClassId

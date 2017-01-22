@@ -84,26 +84,38 @@ class DownloadProductEvent
 
     public function onFrontShoppingConfirmInitialize(EventArgs $event){
         $app=$this->app;
-
+        $req=$event->getRequest();
+        $sec = $req->getSession();
         // $form = $event->getArgument('form');
         // $email = $form['email']->getData();
-        // $service=$app['eccube.plugin.downloadproduct.service.download'];
 
-        //if($service->ConfirmEmailCustomerExist($email)){
-        $event->setResponse($app->redirect($app->url('shopping_nonmember')));
-        return;
+        $nonmember = $sec->get($this->sessionKey);
+        if($nonmember['customer']){
 
-            $app->redirect();
-            $event->setResponse(
-             $this->app->render('Shopping/nonmember.twig', array(
-                'form' => $form->createView(),
-                'error' => 'このメールアドレスは既に登録されています。変更、または、前に戻りログインしてお進みください。'
-            )
-             )
-            );            
+            $email = $nonmember['customer']->getEmail();
 
-        //}
 
+            $service=$app['eccube.plugin.downloadproduct.service.download'];
+            $sec->set('eccube.plugin.downloadproduct.nonmember',
+                array(
+                    'emailcheck' => false
+                )
+            );
+
+            if($service->ConfirmEmailCustomerExist($email)){
+                $sec->set('eccube.plugin.downloadproduct.nonmember',
+                    array(
+                        'emailcheck' => false
+                    )
+                );
+
+                $event->setResponse($app->redirect($app->url('shopping_nonmember')));
+            }
+
+            return;
+
+
+        }
 
     }
     public function onFrontShoppingConfirmProcessing(EventArgs $event){
@@ -177,6 +189,8 @@ dump('response');
             //$req->set();
             $builder = $event->getArgument('builder');
             $form = $event->getArgument('form');
+
+            //$form = $builder->getForm();
 dump($formdata);
 dump($req); 
             $tokenkey = Constant::TOKEN_NAME;
@@ -275,7 +289,11 @@ dump($form);
         $sec->set('test_nonmember',array($form->getData()));
 dump($sec->get('test_nonmember'));
 
+        if(is_null($order)){
+            return;
+        }
 dump('order');
+dump($order);
         $order
                 ->setName01($customer['name01'])
                 ->setName02($customer['name02'])
@@ -375,6 +393,23 @@ dump('99');
 
 
     }
+    public function onRenderShoppingNonMember(TemplateEvent $event){
+
+        $sec = $this->app['session'];
+        $nonmember = $sec->get('eccube.plugin.downloadproduct.nonmember');
+        if($nonmember){
+            if($nonmember['emailcheck']===true){
+                //
+            }else{
+                $param = $event->getParameters();
+                $param['error'] = 'ccccccccこのメールアドレスは既に登録されています。変更、または、前に戻りログインしてお進みください。';
+
+                $event->setParameters($param);
+            }
+        }
+
+    }
+
 
 
     public function onFrontShoppingShippingMultipleChangeInitialize(EventArgs $event){
@@ -430,6 +465,10 @@ dump('p detail comp');
         // $app['eccube.plugin.shoppingex.service.shoppingex']->sendContact($event);
 
     }
+    public function onRenderProductDetail(TemplateEvent $event){
+
+    }
+
 
 
     public function onFrontCartIndexInitialize(EventArgs $event){
