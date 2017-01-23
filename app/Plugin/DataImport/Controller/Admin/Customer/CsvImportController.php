@@ -210,15 +210,17 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                         }
                         $key= '会員カナ１';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->customerTwig);
+                            $Customer->setKana01("カナ");
+                            //$this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
+                            //return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setKana01(Str::trimAll($row[$key]));
                         }
                         $key= '会員カナ2';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->customerTwig);
+                            $Customer->setKana02("カナ");
+                            //$this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
+                            //return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setKana02(Str::trimAll($row[$key]));
                         }
@@ -283,8 +285,9 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
                         }
                         $key= '住所２';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->customerTwig);
+                            $Customer->setAddr02("-");
+                            //$this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
+                            //return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $Customer->setAddr02(Str::trimAll($row[$key]));
                         }
@@ -390,8 +393,8 @@ class CsvImportController extends \Plugin\DataImport\Controller\Base\CsvImportCo
 
                         $key= '性別';
                         if (Str::isBlank($row[$key])) {
-                            $this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
-                            return $this->render($app, $form, $headers, $this->customerTwig);
+                            //$this->addErrors(($data->key() + 1) . "行目の{$key}が設定されていません。");
+                            //return $this->render($app, $form, $headers, $this->customerTwig);
                         } else {
                             $sex = str_replace(',', '', $row[$key]);
                             $Sex = $app['eccube.repository.master.sex']->find($sex);
