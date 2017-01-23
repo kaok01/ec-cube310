@@ -1,6 +1,6 @@
 name: DataImportプラグイン
 code: DataImport
-version: 1.0.0
+version: 1.0.1
 event: DataImportEvent
 service:
   - DataImportServiceProvider
