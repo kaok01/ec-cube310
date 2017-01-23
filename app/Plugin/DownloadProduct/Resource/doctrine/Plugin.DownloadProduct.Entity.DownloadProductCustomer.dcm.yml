@@ -1,0 +1,24 @@
+Plugin\DownloadProduct\Entity\DownloadProductCustomer:
+    type: entity
+    table: plg_downloadproduct_customer
+    repositoryClass: Plugin\DownloadProduct\Repository\DownloadProductCustomerRepository
+    id:
+        plg_downloadproduct_customer_id:
+            type: string
+            nullable: false
+            id: true
+    fields:
+        create_date:
+            type: datetime
+            nullable: false
+        update_date:
+            type: datetime
+            nullable: false
+    manyToOne:
+        Customer:
+            targetEntity: Eccube\Entity\Customer
+            joinColumn:
+                name: customer_id
+                referencedColumnName: customer_id
+    lifecycleCallbacks:
+        loadClassMetadata: {  }

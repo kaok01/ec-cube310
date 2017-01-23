@@ -1,0 +1,6 @@
+<p id="cart_item__downloadproduct_info" class="message">
+    現在の保有ダウンロード商品は「<strong class="text-primary">{{ downloadproduct.current >= 0 ? downloadproduct.current|number_format  : 0 }} pt</strong>」です。<br/>
+    商品購入で加算されるダウンロード商品は「<strong class="text-primary">{{ downloadproduct.add|number_format }}pt</strong>」です。<br/>
+    ダウンロード商品は商品購入時に1pt＝<strong class="text-primary">{{ downloadproduct.rate|price }}</strong>として利用することができます。
+</p>
+

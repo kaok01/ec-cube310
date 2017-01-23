@@ -1,0 +1,17 @@
+name: DownloadProductプラグイン
+code: DownloadProduct
+version: 1.0.0
+event: DownloadProductEvent
+service:
+  - DownloadProductServiceProvider
+orm.path:
+  - /Resource/doctrine
+
+const:
+  setting:
+    # ダウンロード商品として判定する商品ID
+    producttype: 3
+    # ダウンロード商品のリンクを通知するタイミング
+    sendlink_order_status: 3
+    # ダウンロード商品リンクの期限 0は無制限
+    downloadlink_period: 0
